@@ -1,0 +1,86 @@
+"use client";
+
+import React, { useRef, useState } from "react";
+import { IoIosContact } from "react-icons/io";
+import Image from "next/image";
+import ContactPopup from "./contactPopup";
+import Button from "../form/Button";
+import LocationDropdown from "./locationDropdown";
+import SearchBar from "./searchBar";
+import CategoryDropdown from "./categoryDropdown";
+
+export default function HeroSection() {
+  const [location, setLocation] = useState("Navi-Mumbai");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [showContact, setShowContact] = useState(false);
+
+  return (
+    <div className="relative w-full h-[600px] md:h-[550px] overflow-hidden shadow-xl max-w-8xl mx-auto ">
+      
+      {/* Background Image */}
+      <Image src="/palika.jpg" alt="Mahanagarpalika" fill className="object-cover opacity-90 z-0" priority/>
+
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-10 bg-white/60 backdrop-blur-md h-full ">
+        {/* Left Section */}
+        <div className="w-full md:w-1/2 m-4 sm:m-10 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
+          <h1 className="space-y-3 font-bold italic">
+            <span className="text-orange-500 text-5xl sm:text-6xl md:text-7xl font-mukta block">माझी</span>
+            <span className="text-blue-800 text-5xl sm:text-6xl md:text-7xl font-montserrat block">Navi Mumbai</span>
+            <span className="text-blue-800 text-base sm:text-lg font-medium block mt-2 md:ms-60 sm:ms-10">Local Search, Made Simple!</span>
+          </h1>
+
+          {/* Contact Us */}
+          <div className="flex flex-col md:flex-row items-center gap-4 mt-6 w-full">
+            <Button onClick={() => setShowContact(true)} className="relative overflow-hidden bg-gradient-to-r from-green-400 to-green-600 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 group">
+
+              <div className="absolute inset-0 bg-green-700 opacity-0 group-hover:opacity-10 transition duration-300 rounded-full"></div>
+              <div className="flex items-center gap-2 relative z-10">
+                <IoIosContact className="text-xl sm:text-2xl" />
+                <span className="text-base sm:text-lg font-semibold">Contact Us</span>
+                <span className="text-lg sm:text-xl font-bold transform group-hover:translate-x-1 transition duration-200">→</span>
+              </div>
+
+            </Button>
+
+            {/* Location  */}
+            
+          <div className="w-full mt-10 md:hidden flex gap-0"> 
+            <div className="w-1/2">
+              <LocationDropdown
+                location={location}
+                setLocation={setLocation}
+                showDropdown={showDropdown}
+                setShowDropdown={setShowDropdown}
+                dropdownRef={dropdownRef}
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div>
+
+            {/* SearchBar */}
+            <div className="w-1/2">
+              <SearchBar
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="w-full bg-white border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div> 
+          </div>
+
+         </div>
+        </div>
+
+        {/* Category Dropdown  */}
+        <div className="hidden md:flex w-full md:w-1/2 justify-center items-center mt-10 md:mt-0">
+          <div className="w-full max-w-lg">
+            <CategoryDropdown />
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Popup */}
+      <ContactPopup showContact={showContact} setShowContact={setShowContact} />
+    </div>
+  );
+}

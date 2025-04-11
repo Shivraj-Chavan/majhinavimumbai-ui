@@ -7,7 +7,7 @@ export default function page({ params }) {
     const selectedCategory=subcategoryApiData.find(data=>data.slug==category)
   return (
     <div className='py-30'>
-        <h1 className='text-2xl' >category page for {category} </h1>
+        <h1 className='text-2xl' >category page for  {category} </h1>
         {
             selectedCategory?.subcategories.map((data)=>{
                 return  <Link href={`${category}/${data.slug}`} >{data.name} -- | </Link>
