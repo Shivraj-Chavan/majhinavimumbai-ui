@@ -8,6 +8,7 @@ import Button from "../form/Button";
 import LocationDropdown from "./locationDropdown";
 import SearchBar from "./searchBar";
 import CategoryDropdown from "./categoryDropdown";
+import { CiLocationArrow1 } from "react-icons/ci";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -46,26 +47,24 @@ export default function HeroSection() {
 
             {/* Location  */}
             
-          <div className="w-full mt-10 md:hidden flex gap-0"> 
-            <div className="w-1/2">
-              <LocationDropdown
-                location={location}
-                setLocation={setLocation}
-                showDropdown={showDropdown}
-                setShowDropdown={setShowDropdown}
-                dropdownRef={dropdownRef}
-                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
+          <div className="w-full mt-10 md:hidden flex items-center gap-2 px-4" ref={dropdownRef}>
+          <button onClick={() => setShowDropdown(!showDropdown)} className="p-3 rounded-xl bg-white shadow-md border border-gray-300 flex items-center justify-center focus:ring-2 focus:ring-blue-400">
+              <CiLocationArrow1 className="text-gray-600 text-xl" />
+            </button>
 
-            {/* SearchBar */}
-            <div className="w-1/2">
-              <SearchBar
+            {/* Search Input with Button Inside */}
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search for services..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full bg-white border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full pl-4 pr-12 py-3 rounded-2xl bg-white shadow-md border border-gray-300 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-            </div> 
+              <button className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white bg-blue-500 hover:bg-blue-600 p-2 rounded-full shadow ">
+                <FiSearch className="text-lg" />
+              </button>
+            </div>
           </div>
 
          </div>

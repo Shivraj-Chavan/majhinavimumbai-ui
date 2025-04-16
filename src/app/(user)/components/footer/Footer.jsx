@@ -9,7 +9,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-gray-100 text-gray-800 mt-10 border-t border-t-gray-200">
-      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-8 text-sm">
+      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-8 text-sm">
+
 
         {/* Column 1 */}
         <div>

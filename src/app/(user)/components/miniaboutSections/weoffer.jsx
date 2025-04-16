@@ -6,7 +6,7 @@ export default function WeOffer() {
 
     <div className=" mt-5 mx-auto px-1 py-6 bg-blue-100 flex flex-col md:flex-row items-center justify-center h-auto md:h-[60vh] shadow-md  p-6 md:p-10 gap-6">
     
-    <div className="w-full md:w-2/3 text-center md:text-left">
+    <div className="w-full md:w-2/3 text-center md:text-left max-w-7xl">
 
       <h1 className="font-bold text-2xl md:text-3xl text-blue-800 mb-4">What We Offer</h1>
 
