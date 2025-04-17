@@ -1,13 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import category from "@/dummy/category";
+// import category from "@/dummy/category";
 import Link from "next/link";
+import { apiGet } from "@/lib/apiClient";
 
 
 export default function CategoryCards() {
-  const [categories] = useState(category);
+  const [categories,setCategories] = useState([]);
+  useEffect(()=>{
+    const fetchData=async()=>{
+       const data=await apiGet("categories")
+       setCategories(data)
+    }
+    fetchData()
+  },[])
 
   return (
     <div className="p-2 sm:p-4 max-w-6xl xl:max-w-7xl mx-auto mt-6">

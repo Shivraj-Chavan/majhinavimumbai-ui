@@ -9,6 +9,7 @@ import LocationDropdown from "./locationDropdown";
 import SearchBar from "./searchBar";
 import CategoryDropdown from "./categoryDropdown";
 import { CiLocationArrow1 } from "react-icons/ci";
+import { FiSearch } from "react-icons/fi";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -28,7 +29,7 @@ export default function HeroSection() {
         <div className="w-full md:w-1/2 m-4 sm:m-10 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
           <h1 className="space-y-3 font-bold italic">
             <span className="text-orange-500 text-5xl sm:text-6xl md:text-7xl font-mukta block">माझी</span>
-            <span className="text-blue-800 text-5xl sm:text-6xl md:text-7xl font-montserrat block">Navi Mumbai</span>
+            <span className="text-blue-800 text-5xl sm:text-6xl md:text-7xl font-montserrat block">Navi Mumbai </span>
             <span className="text-blue-800 text-base sm:text-lg font-medium block mt-2 md:ms-60 sm:ms-10">Local Search, Made Simple!</span>
           </h1>
 
