@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { IoMdContact } from "react-icons/io";
-import Button from '../form/Button';
 
 export default function PopUp({showContact, setShowContact}) {
+
   return (
     <div>
      
@@ -14,11 +14,11 @@ export default function PopUp({showContact, setShowContact}) {
           <div className="bg-white p-8 rounded-2xl shadow-xl w-11/12 max-w-md relative">
 
             {/* Close Button */}
-            <Button onClick={() => setShowContact(false)} className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-orange-600 font-bold" >
+            <button onClick={() => setShowContact(false)} className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-orange-600 font-bold" >
               &times;
-            </Button>
+            </button>
 
-            <h1 className="text-2xl font-semibold mb-4 text-center"><IoMdContact/>Contact Us</h1>
+            <h1 className="text-2xl font-semibold mb-4 text-center flex items-center justify-center gap-2"><IoMdContact className="text-3xl" /> Contact Us</h1>
 
             {/* Contact Form */}
             <form className="space-y-6 mt-5 ">
@@ -41,13 +41,15 @@ export default function PopUp({showContact, setShowContact}) {
               </div>
 
               {/* Contact Button */}
-              <Button type="button" className="w-full bg-orange-500 rounded-md hover:bg-orange-600 ">
+              <button type="button" className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition">
                 Submit
-              </Button>
+              </button>
+
             </form>
           </div>
         </div>
       )}
+
       </div>
   );
 }

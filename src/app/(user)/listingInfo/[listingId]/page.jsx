@@ -9,6 +9,7 @@ import Info from "../../components/categorylisting/Info";
 import Tab from "../../components/categorylisting/Tab";
 import Photos from "../../components/categorylisting/Photos";
 import { TbBrandWhatsapp } from "react-icons/tb";
+import { TfiShare } from "react-icons/tfi";
 
 const hours = {
   Monday: "10 AM - 10 PM",
@@ -72,7 +73,8 @@ export default function ListingInfo({ params }) {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3">
-          <Image src="/logo.png" alt="logo" width={40} height={40} />
+          {/* <Image src="/logo.png" alt="logo" width={40} height={40} /> */}
+          <p>Logo</p>
           <h1 className="text-3xl font-bold text-blue-900">{business.name}</h1>
         </div>
         <p className="text-md text-gray-600">
@@ -89,7 +91,7 @@ export default function ListingInfo({ params }) {
           </span>
         </div>
 
-        <div className="flex justify-end gap-3 mt-4">
+        <div className="flex justify-end gap-3">
         <button className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform">
           <TbBrandWhatsapp className="text-xl" />
           WhatsApp

@@ -45,19 +45,19 @@ export default function Page({ params }) {
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Page Header */}
       <div className="text-center mb-10">
-        <Link
+        {/* <Link
           href={`/${category}`}
           className="inline-block mb-2 text-blue-600 hover:underline"
         >
           ← Back to {category}
-        </Link>
+        </Link> */}
         <h1 className="text-4xl font-bold text-blue-900 capitalize">
           {subcategories.replace(/-/g, " ")} Listings
         </h1>
         <p className="text-gray-600 mt-2">
           Browse top businesses in this subcategory.
         </p>
-        <div className="mt-6">
+        <div className="mt-7 flex justify-center">
           <FilterBar />
         </div>
       </div>
@@ -121,8 +121,8 @@ export default function Page({ params }) {
                   <TbBrandWhatsapp className="text-xl"/>Watsapp
                   </button>
 
-                  <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-lg font-bold px-4 py-2 rounded-full shadow hover:scale-105 transition-transform">
-                  <TfiShare />
+                  <button className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform">
+                  <TfiShare className="text-xl"/>Share
                   </button>
 
                 </div>

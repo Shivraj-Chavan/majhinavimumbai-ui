@@ -2,17 +2,17 @@ const category=[
     {
       "id": 4,
       "name": "Automobiles",
-      "slug": "automobiles"
+      "slug": "automobile"
     },
     {
       "id": 5,
       "name": "Beauty & Wellness",
-      "slug": "beauty-and-wellness"
+      "slug": "beauty_and_wellness"
     },
     {
       "id": 14,
       "name": "Courier & Logistics",
-      "slug": "courier-and-logistics"
+      "slug": "courier_and_logistics"
     },
     {
       "id": 3,
@@ -27,37 +27,37 @@ const category=[
     {
       "id": 13,
       "name": "Entertainment & Recreation",
-      "slug": "entertainment-and-recreation"
+      "slug": "entertainment_and_recreation"
     },
     {
       "id": 9,
       "name": "Event Management & Wedding Services",
-      "slug": "event-management-and-wedding-services"
+      "slug": "event_management_and_wedding_services"
     },
     {
       "id": 11,
       "name": "Government Services",
-      "slug": "government-services"
+      "slug": "government_services"
     },
     {
       "id": 2,
       "name": "Healthcare & Medical",
-      "slug": "healthcare-and-medical"
+      "slug": "healthcare_and_medical"
     },
     {
       "id": 12,
       "name": "Home Services",
-      "slug": "home-services"
+      "slug": "home_services"
     },
     {
       "id": 17,
       "name": "Hotels & Accommodation",
-      "slug": "hotels-and-accommodation"
+      "slug": "hotels_and_accommodation"
     },
     {
       "id": 10,
       "name": "IT & Software Services",
-      "slug": "it-and-software-services"
+      "slug": "it_and_software_services"
     },
     {
       "id": 8,
@@ -67,12 +67,12 @@ const category=[
     {
       "id": 15,
       "name": "Pets & Pet Care",
-      "slug": "pets-and-pet-care"
+      "slug": "pets_and_pet_care"
     },
     {
       "id": 18,
       "name": "Political Parties & Politicians",
-      "slug": "political-parties-and-politicians"
+      "slug": "political_parties_and_politicians"
     },
     {
       "id": 6,
@@ -82,17 +82,17 @@ const category=[
     {
       "id": 1,
       "name": "Restaurants & Food",
-      "slug": "restaurants-and-food"
+      "slug": "restaurants_and_food"
     },
     {
       "id": 19,
       "name": "Shopping & Malls",
-      "slug": "shopping-and-malls"
+      "slug": "shopping_and_malls"
     },
     {
       "id": 7,
       "name": "Shopping & Retail",
-      "slug": "shopping-and-retail"
+      "slug": "shopping_and_retail"
     },
     {
       "id": 20,

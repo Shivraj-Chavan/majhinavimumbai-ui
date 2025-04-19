@@ -26,7 +26,7 @@ export default function SubcategoryCard() {
                 {category?.subcategories?.slice(0, 3).map((sub) => (
                   <div
                     key={sub.slug}
-                    className="flex flex-col items-center hover:bg-orange-200 p-2 rounded-xl transition-all duration-200 hover:shadow-md"
+                    className="flex flex-col items-center p-2 rounded-xl transition-all duration-200 hover:shadow-md"
                   >
                     <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-2xl bg-gray-200 overflow-hidden relative border border-gray-300">
                       <Image
@@ -34,7 +34,7 @@ export default function SubcategoryCard() {
                         alt={sub.name}
                         width={96}
                         height={96}
-                        className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
                     <p className="text-xs sm:text-sm font-semibold mt-2 text-gray-800 group-hover:text-orange-600">
@@ -47,7 +47,7 @@ export default function SubcategoryCard() {
               {/* Read More Button */}
               <div className="flex justify-end mt-5">
                 <Link
-                  href={`/assests/category/${category.slug}`}
+                  href={`/${category.slug}`}
                   className="group flex items-center gap-1 text-green-600 font-semibold hover:text-green-500 transition-all duration-300 text-sm sm:text-base"
                 >
                   Read More
