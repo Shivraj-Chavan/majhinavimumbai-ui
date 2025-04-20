@@ -3,14 +3,13 @@
 import Button from '../form/Button';
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiMenu, FiX } from "react-icons/fi"; 
 import PopUp from '../home/popUp';
 import LocationDropdown from '../home/locationDropdown';
 import SearchBar from '../home/searchBar';
-
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout } from '@/redux/slice/userSlice';
 
 export default function Navbar() {
   const [location, setLocation] = useState("Navi-mumbai");
@@ -18,6 +17,30 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+  // const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    // Check token on mount
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // login usage
+  const handleLoginSuccess = (user, token) => {
+    setIsLoggedIn(true);
+    setShowModal(false);
+  };
+
+  // logout usage
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("otpVerified");
+    setIsLoggedIn(false);
+  };
 
   const dropdownRef = useRef(null);
 
@@ -52,7 +75,15 @@ export default function Navbar() {
         <Button onClick={() => setShowModal(true)} className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"> Business Listing </Button>
 
           {/* Login/Signup Btn */}
-          <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase"> Login / Sign Up </Button>
+          {isLoggedIn ? (
+              <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-sm uppercase">
+                Logout
+              </Button>
+            ) : (
+              <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase">
+                Login / Sign Up
+              </Button>
+            )}
 
           </div>
 
@@ -92,26 +123,28 @@ export default function Navbar() {
 
           {/* Buttons */}
           <div className="flex gap-2 mb-5 justify-center">
-              <Button
-                onClick={() => setShowModal(true)}
-                className="bg-orange-400 hover:bg-orange-500 text-sm w-40 uppercase"
-              >
+              <Button onClick={() => setShowModal(true)} className="bg-orange-400 hover:bg-orange-500 text-sm w-40 uppercase">
                 Business Listing
               </Button>
 
-              <Button
-                onClick={() => setShowModal(true)}
-                className="bg-green-500 hover:bg-green-600 text-sm w-40 uppercase"
-              >
-                Login / Sign Up
-              </Button>
+              {isLoggedIn ? (
+                <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-sm uppercase">
+                  Logout
+                </Button>
+              ) : (
+                <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase">
+                  Login / Sign Up
+                </Button>
+              )}
+
             </div>
+
             </div>
         
             )}
             
             {/*  Login Modal */}
-            <PopUp showModal={showModal} setShowModal={setShowModal}/>
+            <PopUp showModal={showModal} setShowModal={setShowModal}  onLoginSuccess={handleLoginSuccess}/>
             
           </nav>
         );
