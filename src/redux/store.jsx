@@ -5,7 +5,6 @@ import storageSession from 'redux-persist/lib/storage/session'; // use sessionSt
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import userReducer from '@/redux/slice/userSlice';
 
-
 const persistConfig = {
   key: 'root',
   storage: storageSession,

@@ -19,15 +19,18 @@ export default function BusinessRegister() {
   
   //  OTP Verification for opening BusinessRegister page
   useEffect(() => {
-    const isVerified = localStorage.getItem("otpVerified");
-    if (isVerified !== "true") {
-      router.push("/Pop-Up");
-    } else {
-      setCheckingOtp(false); 
+    if (typeof window !== "undefined") {
+      const isVerified = localStorage.getItem("otpVerified");
+      if (isVerified !== "true") {
+        router.push("/Pop-Up");
+      } else {
+        setCheckingOtp(false);
+      }
     }
   }, []);
 
   if (checkingOtp) return null;
+  console.log("OTP Verified:", localStorage.getItem("otpVerified"));
 
   const handleCategoryChange = (e) => {
     const slug = e.target.value;

@@ -17,46 +17,56 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authPurpose, setAuthPurpose] = useState("login");
+
   const dispatch = useDispatch();
-  // const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  console.log("Redux login status:", isLoggedIn);
 
   useEffect(() => {
-    // Check token on mount
     const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
+    const role = localStorage.getItem("authRole");
+    const userStr = localStorage.getItem("authUser"); // Get the user from localStorage
+    const user = userStr ? JSON.parse(userStr) : null;
 
-  // login usage
+    if (token && user && role) {
+      dispatch(login({ user, token , role}));
+    }
+  }, [dispatch]);
+
+  // Login success handler
   const handleLoginSuccess = (user, token) => {
-    setIsLoggedIn(true);
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("authRole", user.role);
+    localStorage.setItem("authUser", JSON.stringify(user)); // Save user to localStorage
+    dispatch(login({ user, token, role: user.role }));
     setShowModal(false);
   };
 
-  // logout usage
+  // Logout handler
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    localStorage.removeItem("otpVerified");
-    setIsLoggedIn(false);
+    localStorage.removeItem("authRole");
+    localStorage.removeItem("authUser");
+    dispatch(logout());
   };
 
   const dropdownRef = useRef(null);
 
   return (
-      <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
+    <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
 
-      {/* Logo */}
-      <Link href='/' className="flex items-center">
+        {/* Logo */}
+        <Link href='/' className="flex items-center">
           <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
         </Link>
 
         {/* Location & Searchbar */}
-        {/* LocationDropdown  */}
+        {/* Uncomment if needed */}
         {/* <div className="hidden md:flex flex-1 justify-center">
-          <div className="flex items-center" >
+          <div className="flex items-center">
             <LocationDropdown 
               location={location}
               setLocation={setLocation}
@@ -68,38 +78,39 @@ export default function Navbar() {
           </div>
         </div> */}
 
-         {/*Business Listing & Login */}
-         <div className="hidden md:flex items-center space-x-4">
+        {/* Business Listing & Login */}
+        <div className="hidden md:flex items-center space-x-4">
 
-          {/* Buiness Listing Btn */}
-        <Button onClick={() => setShowModal(true)} className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"> Business Listing </Button>
+          {/* Business Listing Btn */}
+          <Button onClick={() => { setAuthPurpose("business"); setShowModal(true); }} className="bg-orange-400 hover:bg-orange-500 text-sm uppercase" >
+            Business Listing
+          </Button>
 
           {/* Login/Signup Btn */}
           {isLoggedIn ? (
-              <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-sm uppercase">
-                Logout
-              </Button>
-            ) : (
-              <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase">
-                Login / Sign Up
-              </Button>
-            )}
+            <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-sm uppercase">
+              Logout
+            </Button>
+          ) : (
+            <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase">
+              Login / Sign Up
+            </Button>
+          )}
 
-          </div>
+        </div>
 
-          {/* Mobile Menu Button */}
-          <Button className="block md:hidden text-2xl text-blue-600" onClick={() => setIsMenuOpen(!isMenuOpen)} >
+        {/* Mobile Menu Button */}
+        <Button className="block md:hidden text-2xl text-blue-600" onClick={() => setIsMenuOpen(!isMenuOpen)} >
           {isMenuOpen ? <FiX /> : <FiMenu />}
-           </Button>
-         </div>
+        </Button>
+      </div>
 
-          {/* Mobile Dropdown Menu */}
-          {isMenuOpen && (
-          <div className="w-full mt-10 md:hidden flex flex-col gap-5">
-            
+      {/* Mobile Dropdown Menu */}
+      {isMenuOpen && (
+        <div className="w-full mt-10 md:hidden flex flex-col gap-5">
+          
           {/* Location + Search */}
           <div className="flex rounded-lg">
-
             <div className="w-1/2">
               <LocationDropdown
                 location={location}
@@ -110,8 +121,6 @@ export default function Navbar() {
                 className="w-full border border-gray-300 px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
-
-            {/* Right */}
             <div className="w-1/2">
               <SearchBar
                 value={searchInput}
@@ -123,31 +132,36 @@ export default function Navbar() {
 
           {/* Buttons */}
           <div className="flex gap-2 mb-5 justify-center">
-              <Button onClick={() => setShowModal(true)} className="bg-orange-400 hover:bg-orange-500 text-sm w-40 uppercase">
-                Business Listing
+          <Button
+            onClick={() => {
+              if (isLoggedIn) {
+                window.location.href = "/businessRegister";
+              } else {
+                setAuthPurpose("business");
+                setShowModal(true);
+              }
+            }}
+            className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"
+          >
+            Business Listing
+          </Button>
+
+
+            {isLoggedIn ? (
+              <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-sm uppercase">
+                Logout
               </Button>
-
-              {isLoggedIn ? (
-                <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-sm uppercase">
-                  Logout
-                </Button>
-              ) : (
-                <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase">
-                  Login / Sign Up
-                </Button>
-              )}
-
-            </div>
-
-            </div>
-        
+            ) : (
+              <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase">
+                Login / Sign Up
+              </Button>
             )}
-            
-            {/*  Login Modal */}
-            <PopUp showModal={showModal} setShowModal={setShowModal}  onLoginSuccess={handleLoginSuccess}/>
-            
-          </nav>
-        );
-      }
-          
-  
+          </div>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      <PopUp showModal={showModal} setShowModal={setShowModal} onLoginSuccess={handleLoginSuccess} authPurpose={authPurpose} />
+    </nav>
+  );
+}

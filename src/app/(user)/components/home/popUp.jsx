@@ -4,8 +4,11 @@ import React, { useState, useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { apiPost } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
+import { useDispatch } from 'react-redux';
+import { login as reduxLogin } from '@/redux/slice/userSlice'; // alias to avoid confusion
 
-export default function PopUp({ showModal, setShowModal , onLoginSuccess }) {
+export default function PopUp({ showModal, setShowModal, onLoginSuccess, authPurpose }) {
+  const dispatch = useDispatch();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState({});
@@ -80,23 +83,38 @@ export default function PopUp({ showModal, setShowModal , onLoginSuccess }) {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      const response = await apiPost("otp/verify", { name:"demo",phone: phone, otp: otp });
-      console.log("OTP Verify Response:", response.data);
+      const data  = await apiPost("otp/verify", { name: "demo", phone: phone, otp: otp });
+      console.log("Verifying OTP:", { phone, otp });
+      console.log("OTP Verify Full Response:", data);
 
-      // stored token
-      const token = response?.data?.data?.token;
-      const user = response?.data?.data?.user;
-    
-      if (response?.data?.token) {
-        const token = response.data.token;
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("authRole", response.data.role);
-        localStorage.setItem("otpVerified", "true");
-  
-        onLoginSuccess({ role: response.data.role }, token);
+      // Extract token and role from the response
+      // const { token, role } = data;
+      // const user = response?.data?.user;
+      const { token,role, msg } = data;
+
+      // Create a minimal user object yourself if needed
+      const user = { phone }; 
+
+      if (!token) {
+        throw new Error("Token not found in response");
+      }
+
+      // Store token, role, and OTP verification status in localStorage
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("authRole", role);
+      localStorage.setItem("authUser", JSON.stringify(user));
+      localStorage.setItem("otpVerified", "true");
+
+      // Redux login
+      dispatch(reduxLogin({ user, token }));
+
+      if (onLoginSuccess) {
+        onLoginSuccess(user, token); // Callback to parent (like Navbar)
+      }
 
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
-      // localStorage.setItem("otpVerified", "true");
+
+      // Clear form and close modal 
       setTimeout(() => {
         setPhone("");
         setOtp("");
@@ -104,16 +122,16 @@ export default function PopUp({ showModal, setShowModal , onLoginSuccess }) {
         setCountdown(0);
         setShowModal(false);
         setStatusMessage({ type: "", message: "" });
-        router.push("/businessRegister");
+        if (authPurpose === "business") {
+          router.push("/businessRegister");
+        } 
       }, 1500);
-    }else {
-      throw new Error("Token not found in response.");
-    }
+
     } catch (error) {
       console.error("OTP Verify Error:", error);
       setStatusMessage({
         type: "error",
-        message: error?.response?.data?.message || "OTP verification failed.",
+        message: error?.response?.data?.message || error.message || "OTP verification failed.",
       });
       setOtp("");
     }

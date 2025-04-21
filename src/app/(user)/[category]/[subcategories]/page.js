@@ -108,7 +108,8 @@ export default function Page({ params }) {
                   </div>
                 </div>
 
-                <div className="mt-4 flex gap-4">
+              {/* view, wp, share btn */}
+                <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
                   <Link
                     href={`/listingInfo/${listing.id}`}
                     className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform"
@@ -118,14 +119,16 @@ export default function Page({ params }) {
                   </Link>
 
                   <button className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform">
-                  <TbBrandWhatsapp className="text-xl"/>Watsapp
+                    <TbBrandWhatsapp className="text-xl" />
+                    Whatsapp
                   </button>
 
-                  <button className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform">
-                  <TfiShare className="text-xl"/>Share
+                  <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform">
+                    <TfiShare className="text-xl" />
+                    Share
                   </button>
-
                 </div>
+
               </div>
             </div>
           ))}
