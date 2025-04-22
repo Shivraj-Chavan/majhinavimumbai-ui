@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "PORT=5002 next dev --turbopack",
+    "dev": "PORT=5003 next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,6 +16,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
+    "react-toastify": "^11.0.5",
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {

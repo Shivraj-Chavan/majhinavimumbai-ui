@@ -7,7 +7,7 @@ import { ReduxProvider } from '@/redux/provider';
 export default function layout({ children }) {
     return (
         <html>
-            <body>
+            <body className='bg-gray-100'>
                 <ReduxProvider>
                    <Navbar />
                     {children}

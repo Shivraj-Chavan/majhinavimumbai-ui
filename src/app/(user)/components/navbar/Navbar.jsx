@@ -82,9 +82,20 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4">
 
           {/* Business Listing Btn */}
-          <Button onClick={() => { setAuthPurpose("business"); setShowModal(true); }} className="bg-orange-400 hover:bg-orange-500 text-sm uppercase" >
+          <Button
+            onClick={() => {
+              if (isLoggedIn) {
+                window.location.href = "/businessRegister";
+              } else {
+                setAuthPurpose("business");
+                setShowModal(true);
+              }
+            }}
+            className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"
+          >
             Business Listing
           </Button>
+
 
           {/* Login/Signup Btn */}
           {isLoggedIn ? (
@@ -145,7 +156,6 @@ export default function Navbar() {
           >
             Business Listing
           </Button>
-
 
             {isLoggedIn ? (
               <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-sm uppercase">

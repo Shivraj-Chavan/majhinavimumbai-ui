@@ -20,7 +20,7 @@ export default function About() {
 
       {/* Text Section */}
       <div className="w-full md:w-2/3 text-center md:text-left">
-        <h1 className="font-bold text-2xl md:text-3xl text-orange-400 mb-4">ABOUT US</h1>
+        <h1 className="font-bold text-3xl md:text-3xl text-orange-400 mb-4">ABOUT US</h1>
         <p className="text-sm md:text-md text-gray-700 leading-relaxed">
           <span className="font-bold">Navi Mumbai Local Search (Majhi Navi Mumbai)</span> is Navi
           Mumbai’s dedicated local discovery platform. Our mission is to connect users with the
