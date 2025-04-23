@@ -16,7 +16,7 @@ export default function SidebarMenu() {
               </SidebarItemWithSubmenu>
         
               <SidebarItemWithSubmenu icon={<LuUsers className="h-5 w-5" />} title="Users">
-                <SidebarSubItem title="All Users" href="/users" />
+              <SidebarSubItem title="Business Users" href="/admin/users/businessUsers" />
                 <SidebarSubItem title="New Users" href="/users/new" />
                 <SidebarSubItem title="User Activity" href="/users/activity" />
               </SidebarItemWithSubmenu>

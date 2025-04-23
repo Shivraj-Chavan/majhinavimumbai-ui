@@ -1,14 +1,19 @@
-import { toast } from "react-toastify";
-
 export default function Validations(data) {
   const {
-    businessName,
-    contactPerson,
-    mobile,
-    whatsapp,
+    owner_id,
+    name,
+    pin_code,
+    block,
+    street,
+    landmark,
+    sector,
+    area,
+    // contactPerson,
+    phone,
+    wp_number,
     email,
     website,
-    pincode,
+    timing,
     selectedCategory,
     selectedSubcategory,
   } = data;
@@ -18,19 +23,27 @@ export default function Validations(data) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const urlRegex = /^(https?:\/\/)?([\w-]+\.)*[\w-]+\.\w{2,}(\/.*)?$/;
 
-  if (!businessName || !contactPerson || !mobile) {
-    return "Business name, contact person, and mobile number are required.";
+  if (!name?.trim()) {
+    return "Business name is required.";
   }
 
-  if (!pincodeRegex.test(pincode)) {
+  // if (!contactPerson?.trim()) {
+  //   return "Contact person is required.";
+  // }
+
+  if (!phone?.trim()) {
+    return "Mobile number is required.";
+  }
+
+  if (!pincodeRegex.test(pin_code)) {
     return "Pincode must be exactly 6 digits.";
   }
 
-  if (!phoneRegex.test(mobile)) {
+  if (!phoneRegex.test(phone)) {
     return "Enter a valid 10-digit mobile number.";
   }
 
-  if (whatsapp && !phoneRegex.test(whatsapp)) {
+  if (wp_number && !phoneRegex.test(wp_number)) {
     return "Enter a valid 10-digit WhatsApp number.";
   }
 
@@ -42,9 +55,13 @@ export default function Validations(data) {
     return "Enter a valid website URL (e.g., https://example.com).";
   }
 
-  if (!selectedCategory || !selectedSubcategory) {
-    return "Please select both category and subcategory.";
-  }
+  // if (!selectedCategory) {
+  //   return "Please select a category.";
+  // }
+
+  // if (!selectedSubcategory) {
+  //   return "Please select a subcategory.";
+  // }
 
   return true;
 }

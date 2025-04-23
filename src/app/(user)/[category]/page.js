@@ -3,7 +3,7 @@ import subcategoryApiData from '@/dummy/subcategories'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export default function Page({ params }) {
+export default async function Page({ params }) {
   const { category } = params
   const selectedCategory = subcategoryApiData.find(data => data.slug === category)
 
