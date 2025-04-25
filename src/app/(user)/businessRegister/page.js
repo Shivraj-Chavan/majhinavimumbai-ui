@@ -8,12 +8,14 @@ import { apiPost } from "@/lib/apiClient";
 import Input from "../components/businessRegistercomp/Input";
 import Validations from "../components/businessRegistercomp/Validations";
 import { FcCollaboration } from "react-icons/fc";
+import SuccessModal from "../components/businessRegistercomp/SuccessModal";
 
 export default function BusinessRegister() {
   const router = useRouter();
   const [checkingOtp, setCheckingOtp] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("1");
   const [selectedSubcategory, setSelectedSubcategory] = useState("1");
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     owner_id: "3",
@@ -34,21 +36,19 @@ export default function BusinessRegister() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isVerified = localStorage.getItem("otpVerified");
+      // const isVerified = localStorage.getItem("otpVerified");
       const storedOwnerId = localStorage.getItem("ownerId");
 
-      console.log("OTP Verified:", isVerified); 
+      // console.log("OTP Verified:", isVerified); 
       console.log("Owner ID from localStorage:", storedOwnerId); 
 
-      if (isVerified !== "true") {
-        router.push("/Pop-Up");
-      } else {
+   
         setCheckingOtp(false);
         setFormData((prev) => ({
           ...prev,
           owner_id: storedOwnerId || "3",
         }));
-      }
+      
     }
   }, [router]);
 
@@ -77,6 +77,7 @@ export default function BusinessRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting Form Data:", formData);
+    setSuccessModalOpen(true);
 
     const validationResult = Validations({
       ...formData,
@@ -96,7 +97,7 @@ export default function BusinessRegister() {
 
     try {
       await apiPost("/businesses", finalData);
-      console.log("API Response:", response);
+      // console.log("API Response:", response);
       toast.success("Business Registered Successfully!");
 
       // Reset form
@@ -137,9 +138,9 @@ export default function BusinessRegister() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Owner ID */}
-        <div className="md:col-span-6">
+        {/* <div className="md:col-span-6">
           <Input label="Owner ID" value={formData.owner_id} onChange={(value) => handleInputChange("owner_id", value)} />
-        </div>
+        </div> */}
 
         {/* Business Name */}
         <div className="md:col-span-6">
@@ -273,6 +274,10 @@ export default function BusinessRegister() {
       <button type="submit" className="w-full mt-10 px-4 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 text-white font-bold text-lg py-3 rounded-xl shadow-md hover:scale-102 transition-transform">
         Submit Registration
       </button>
+
+      <SuccessModal  isOpen={isSuccessModalOpen}
+        onClose={() => setSuccessModalOpen(false)} 
+        message="Your business has been successfully registered!"/>
     </form>
   );
 }

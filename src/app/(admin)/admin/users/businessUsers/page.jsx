@@ -2,10 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { apiGet } from "@/lib/apiClient";
+import { FaRegEye } from "react-icons/fa";
+import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchBusinessUsers = async () => {
@@ -22,55 +26,72 @@ export default function BusinessUsersPage() {
     fetchBusinessUsers();
   }, []);
 
+  const openModal = (business) => {
+    setSelectedBusiness(business);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedBusiness(null);
+  };
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Business Users</h1>
+    <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Business Users</h2>
 
       {loading ? (
         <div className="text-center text-gray-600">Loading...</div>
       ) : businessUsers.length === 0 ? (
         <div className="text-center text-gray-500">No business users found.</div>
       ) : (
-        <>
-          <div className="hidden md:block border rounded-xl shadow overflow-hidden">
-            <div className="grid grid-cols-5 bg-gray-100 text-sm font-semibold text-gray-700">
-              <div className="p-4 border-r">Name</div>
-              <div className="p-4 border-r">Phone</div>
-              <div className="p-4 border-r">Email</div>
-              <div className="p-4 border-r">Category</div>
-              <div className="p-4">Subcategory</div>
-            </div>
-            {businessUsers.map((user, index) => (
-              <div key={index} className="grid grid-cols-5 border-t bg-gray-50 hover:bg-gray-100 transition">
-                <div className="p-4 border-r">{user.name}</div>
-                <div className="p-4 border-r">{user.phone}</div>
-                <div className="p-4 border-r">{user.email}</div>
-                <div className="p-4 border-r">{user.category}</div>
-                <div className="p-4">{user.subcategory}</div>
-              </div>
-            ))}
+        <div className="w-full overflow-x-auto">
+          {/* Desktop View */}
+          <div className="hidden md:block">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-white/60 text-gray-700 uppercase text-md rounded-t-lg">
+                <tr>
+                  <th className="px-4 py-3">SR. NO</th>
+                  <th className="px-4 py-3">Business Name</th>
+                  <th className="px-4 py-3">Phone</th>
+                  <th className="px-4 py-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white/30 backdrop-blur-md">
+                {businessUsers.map((user, index) => (
+                  <tr key={index} className="hover:bg-white/50 transition-all duration-300">
+                    <td className="px-4 py-3 font-medium text-gray-800">{index + 1}</td>
+                    <td className="px-4 py-3">{user.name}</td>
+                    <td className="px-4 py-3">{user.phone}</td>
+                    <td className="px-4 py-3 text-center">
+                      <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
+                      <FaRegEye />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          {/* Small Screens */}
-          <div className="md:hidden grid gap-4">
+          {/* Mobile View */}
+          <div className="md:hidden">
             {businessUsers.map((user, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md border border-gray-200 p-4" >
-                <h3 className="text-lg font-semibold text-gray-800">{user.name}</h3>
+              <div key={index} className="mb-4 p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold">{user.name}</h3>
                 <p className="text-sm text-gray-600 mt-1">Phone: {user.phone}</p>
-                <p className="text-sm text-gray-600">Email: {user.email}</p>
-                <p className="text-sm text-gray-600">Category: {user.category}</p>
-                <p className="text-sm text-gray-600">Subcategory: {user.subcategory}</p>
-
                 <div className="mt-4 flex justify-end">
-                  <button className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-md text-xs font-medium shadow-md transition duration-200">
-                    View / Edit / Delete
+                  <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
+                  <FaRegEye />
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
+
+        <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} />
     </div>
   );
 }

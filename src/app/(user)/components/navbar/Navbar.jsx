@@ -25,30 +25,31 @@ export default function Navbar() {
   console.log("Redux login status:", isLoggedIn);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const role = localStorage.getItem("authRole");
-    const userStr = localStorage.getItem("authUser"); // Get the user from localStorage
-    const user = userStr ? JSON.parse(userStr) : null;
+    const token = localStorage.getItem("token");
+    // const role = localStorage.getItem("authRole");
+    // const userStr = localStorage.getItem("authUser"); // Get the user from localStorage
+    // const user = userStr ? JSON.parse(userStr) : null;
 
-    if (token && user && role) {
-      dispatch(login({ user, token , role}));
+    if (token) {
+      const user = { phone: "unknown" };
+      dispatch(login({ user, token }));
     }
   }, [dispatch]);
 
   // Login success handler
   const handleLoginSuccess = (user, token) => {
-    localStorage.setItem("authToken", token);
-    localStorage.setItem("authRole", user.role);
-    localStorage.setItem("authUser", JSON.stringify(user)); // Save user to localStorage
+    localStorage.setItem("token", token);
+    // localStorage.setItem("authRole", user.role);
+    // localStorage.setItem("authUser", JSON.stringify(user)); // Save user to localStorage
     dispatch(login({ user, token, role: user.role }));
     setShowModal(false);
   };
 
   // Logout handler
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("token");
     localStorage.removeItem("authRole");
-    localStorage.removeItem("authUser");
+    // localStorage.removeItem("authUser");
     dispatch(logout());
   };
 

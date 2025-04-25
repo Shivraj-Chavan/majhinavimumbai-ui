@@ -57,6 +57,9 @@ export default function PopUp({ showModal, setShowModal, onLoginSuccess, authPur
       return;
     }
 
+    setErrors({}); // Clear previous errors
+    setStatusMessage({}); // Clear previous status message
+
     try {
       const response = await apiPost("/otp/send", { phone });
       console.log("OTP Sent Response:", response.data);
@@ -100,10 +103,10 @@ export default function PopUp({ showModal, setShowModal, onLoginSuccess, authPur
       }
 
       // Store token, role, and OTP verification status in localStorage
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("token", token);
       localStorage.setItem("authRole", role);
-      localStorage.setItem("authUser", JSON.stringify(user));
-      localStorage.setItem("otpVerified", "true");
+      // localStorage.setItem("authUser", JSON.stringify(user));
+      // localStorage.setItem("otpVerified", "true");
 
       // Redux login
       dispatch(reduxLogin({ user, token }));

@@ -132,11 +132,7 @@ export default function CategoryDropdown() {
       </div>
 
       {/* Search Button */}
-      <Button
-        onClick={handleSearch}
-        disabled={!selectedCategory || !selectedSubcategory}
-        className="w-full bg-orange-500 text-white rounded-lg hover:bg-orange-600  disabled:opacity-80 disabled:cursor-not-allowed"
-      >
+      <Button onClick={handleSearch} disabled={!selectedCategory || !selectedSubcategory} className="w-full bg-orange-500 text-white rounded-lg hover:bg-orange-600  disabled:opacity-80 disabled:cursor-not-allowed" >
         Search
       </Button>
     </div>
