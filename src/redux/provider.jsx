@@ -2,10 +2,9 @@
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { makeStore } from './store';
 import { persistStore } from 'redux-persist';
+import { store } from './store';
 
-const store = makeStore();
 const persistor = persistStore(store);
 
 export function ReduxProvider({ children }) {

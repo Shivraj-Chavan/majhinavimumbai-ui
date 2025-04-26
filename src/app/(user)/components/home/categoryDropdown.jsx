@@ -1,13 +1,13 @@
 "use client";
 
-import subcategoryApiData from "@/dummy/subcategories";
 import { useRouter } from "next/navigation";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import LocationDropdown from "./locationDropdown";
 import SearchBar from "./searchBar";
 import { FcSearch } from "react-icons/fc";
-// import { LuSearch } from "react-icons/lu";
 import Button from "../form/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "@/redux/slice/categoriesSlice";
 
 export default function CategoryDropdown() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -22,13 +22,31 @@ export default function CategoryDropdown() {
   const categoryRef = useRef(null);
   const dropdownRef = useRef(null);
 
+  const dispatch = useDispatch();
+
+  const { categories, loading, error } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    if (categories?.length === 0) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categories]);
+
+  if (loading) {
+    return <div className="text-center py-10 font-semibold">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+  }
+
   const handleCategoryChange = (e) => {
     const slug = e.target.value;
     setSelectedCategory(slug);
     setSelectedSubcategory("");
     setShowWarning(false);
 
-    const matchedCategory = subcategoryApiData.find((cat) => cat.slug === slug);
+    const matchedCategory = categories.find((cat) => cat.slug === slug);
     setFilteredSubcategories(matchedCategory ? matchedCategory.subcategories : []);
   };
 
@@ -46,22 +64,22 @@ export default function CategoryDropdown() {
 
   const handleSearch = () => {
     if (selectedCategory && selectedSubcategory) {
-      router.push(
-        `/search?location=${location}&search=${searchInput}&category=${selectedCategory}&subcategory=${selectedSubcategory}`
-      );
+      const url = `/listing?category=${selectedCategory}&subcategory=${selectedSubcategory}`;
+      console.log('Navigating to:', url); 
+      router.push(url); 
     }
   };
+  
 
   return (
-    <div className=" w-full bg-white p-6 rounded-xl shadow-md mx-auto mt-10 space-y-4">
-
+    <div className="w-full bg-white p-6 rounded-xl shadow-md mx-auto mt-10 space-y-4">
       {/* Title */}
       <div className="flex items-center justify-center gap-2 text-xl font-semibold text-gray-800">
         <FcSearch className="text-2xl" />
         <h2>Find Services</h2>
       </div>
 
-    {/* Location */}
+      {/* Location */}
       <div className="flex flex-col sm:flex-row gap-0 border border-gray-100 shadow rounded-lg">
         <div className="flex-1">
           <LocationDropdown
@@ -84,7 +102,6 @@ export default function CategoryDropdown() {
         </div>
       </div>
 
-
       {/* Category */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
@@ -96,7 +113,7 @@ export default function CategoryDropdown() {
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
           >
             <option value="" disabled>Select Category</option>
-            {subcategoryApiData.map((cat) => (
+            {categories.map((cat) => (
               <option key={cat.slug} value={cat.slug}>
                 {cat.name}
               </option>
@@ -104,7 +121,7 @@ export default function CategoryDropdown() {
           </select>
         </div>
 
-        {/* Subcategory  */}
+        {/* Subcategory */}
         <div className="flex-1">
           <label className="block text-gray-700 mb-1">Subcategory</label>
           <select
@@ -132,7 +149,7 @@ export default function CategoryDropdown() {
       </div>
 
       {/* Search Button */}
-      <Button onClick={handleSearch} disabled={!selectedCategory || !selectedSubcategory} className="w-full bg-orange-500 text-white rounded-lg hover:bg-orange-600  disabled:opacity-80 disabled:cursor-not-allowed" >
+      <Button onClick={handleSearch} disabled={!selectedCategory || !selectedSubcategory} className="w-full bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-80 disabled:cursor-not-allowed">
         Search
       </Button>
     </div>

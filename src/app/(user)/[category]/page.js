@@ -1,23 +1,43 @@
-import React from 'react'
-import subcategoryApiData from '@/dummy/subcategories'
-import Link from 'next/link'
-import Image from 'next/image'
+"use client";
 
-export default async function Page({ params }) {
-  const { category } = params
-  const selectedCategory = subcategoryApiData.find(data => data.slug === category)
+import React, { useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useDispatch, useSelector } from 'react-redux'; 
+import { fetchCategories } from '@/redux/slice/categoriesSlice';
+
+export default function Page({ params }) {
+  const { category } = params;
+  const dispatch = useDispatch();
+
+  const { categories = [], loading, error } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    if (categories.length === 0) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categories.length]);
+
+  if (loading) {
+    return <div className="text-center py-10 font-semibold">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+  }
+
+  const selectedCategory = categories.find(data => data.slug === category);
 
   if (!selectedCategory) {
     return (
       <div className="text-center text-red-500 font-semibold text-lg py-20">
         Category not found.
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* Hero Section */}
       <div className="relative w-full h-[200px] sm:h-[250px] md:h-[350px] lg:h-[400px]">
         <Image
@@ -63,5 +83,5 @@ export default async function Page({ params }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

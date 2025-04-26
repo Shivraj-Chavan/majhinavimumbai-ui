@@ -1,22 +1,31 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
-// import category from "@/dummy/category";
 import Link from "next/link";
-import { apiGet } from "@/lib/apiClient";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "@/redux/slice/categoriesSlice";
 
 export default function CategoryCards() {
-  const [categories,setCategories] = useState([]);
-  useEffect(()=>{
-    const fetchData=async()=>{
-       const data=await apiGet("categories")
-       setCategories(data)
+  const dispatch = useDispatch();
+  
+    const { categories, loading, error } = useSelector((state) => state.categories);
+  
+    useEffect(() => {
+      console.log({categories})
+      if (categories?.length === 0) {
+        dispatch(fetchCategories());
+      }
+    }, [dispatch, categories]);
+  
+    if (loading) {
+      return <div className="text-center py-10 font-semibold">Loading...</div>;
     }
-    fetchData()
-  },[])
-
+  
+    if (error) {
+      return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+    }
+  
   return (
     <div className="p-2 sm:p-4 max-w-6xl xl:max-w-7xl mx-auto mt-6">
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 font-poppins">
@@ -28,7 +37,7 @@ export default function CategoryCards() {
           >
             <div className="group flex flex-col items-center justify-center w-full max-w-[100px] sm:max-w-[120px] md:max-w-[160px] p-2 bg-white rounded-lg cursor-pointer transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
               
-              {/* Image Box with hover zoom */}
+              {/* Image */}
               <div className="relative w-full h-[80px] sm:h-[100px] md:h-[120px] rounded-xl overflow-hidden border border-gray-300 transition-all duration-300">
                 <Image
                   src={`/assests/categories/${categoryItem.slug}.jpg`}
