@@ -12,14 +12,16 @@ export default function CategoryCards() {
     const { categories, loading, error } = useSelector((state) => state.categories);
   
     useEffect(() => {
-      console.log({categories})
       if (categories?.length === 0) {
         dispatch(fetchCategories());
       }
     }, [dispatch, categories]);
+
+    const handleCategoryClick = (slug) => {
+    };
   
     if (loading) {
-      return <div className="text-center py-10 font-semibold">Loading...</div>;
+      return <div className="text-center py-10 font-semibold">Loading categories...</div>;
     }
   
     if (error) {
@@ -34,6 +36,7 @@ export default function CategoryCards() {
             href={`/${categoryItem.slug}`}
             key={categoryItem.id}
             className="w-full flex justify-center"
+            onClick={() => handleCategoryClick(categoryItem.slug)}
           >
             <div className="group flex flex-col items-center justify-center w-full max-w-[100px] sm:max-w-[120px] md:max-w-[160px] p-2 bg-white rounded-lg cursor-pointer transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
               

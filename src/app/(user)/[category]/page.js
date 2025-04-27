@@ -1,40 +1,50 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { use, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux'; 
 import { fetchCategories } from '@/redux/slice/categoriesSlice';
+import { fetchBusinesses } from '@/redux/slice/bussinessSlice';
 
 export default function Page({ params }) {
-  const { category } = params;
+  const { category } = use(params);
   const dispatch = useDispatch();
 
   const { categories = [], loading, error } = useSelector((state) => state.categories);
+  const { businesses, loading: businessesLoading, error: businessesError } = useSelector((state) => state.businesses );
 
-  useEffect(() => {
-    if (categories.length === 0) {
-      dispatch(fetchCategories());
-    }
-  }, [dispatch, categories.length]);
+      useEffect(()=>{
+        if(category){
+          // alert()
+          dispatch(fetchBusinesses(category))
+        }
+      console.log({businesses})
+      },[category])
 
-  if (loading) {
-    return <div className="text-center py-10 font-semibold">Loading...</div>;
-  }
+      useEffect(() => {
+        if (categories.length === 0) {
+          dispatch(fetchCategories());
+        }
+      }, [dispatch, categories.length]);
 
-  if (error) {
-    return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
-  }
+      if (loading) {
+        return <div className="text-center py-10 font-semibold">Loading...</div>;
+      }
 
-  const selectedCategory = categories.find(data => data.slug === category);
+      if (error) {
+        return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+      }
 
-  if (!selectedCategory) {
-    return (
-      <div className="text-center text-red-500 font-semibold text-lg py-20">
-        Category not found.
-      </div>
-    );
-  }
+      const selectedCategory = categories.find(data => data.slug === category);
+
+      if (!selectedCategory) {
+        return (
+          <div className="text-center text-red-500 font-semibold text-lg py-20">
+            Category not found.
+          </div>
+        );
+      }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -82,6 +92,10 @@ export default function Page({ params }) {
           ))}
         </div>
       </div>
-    </div>
-  );
-}
+
+      {
+      businesses?.data?.map((data)=><div > <h1>okkkk</h1> {data.id} </div>)
+            }
+          </div>
+        );
+      }

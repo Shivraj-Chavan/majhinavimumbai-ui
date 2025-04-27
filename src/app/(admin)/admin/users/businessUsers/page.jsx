@@ -4,36 +4,47 @@ import React, { useEffect, useState } from "react";
 import { apiGet } from "@/lib/apiClient";
 import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
+import Pagination from "../../components/usercomp/Pagination";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const limit = 10; 
 
   useEffect(() => {
     const fetchBusinessUsers = async () => {
       try {
-        const data = await apiGet("/businesses");
-        setBusinessUsers(data);
+        setLoading(true);
+        const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
+        setBusinessUsers(response.data); 
+        setTotalPages(response.totalPages); 
       } catch (error) {
         console.error("Error fetching business users:", error);
-      } finally {
+      } finally { 
         setLoading(false);
       }
     };
 
     fetchBusinessUsers();
-  }, []);
-
+  }, [currentPage]);
+ 
   const openModal = (business) => {
-    setSelectedBusiness(business);
-    setModalOpen(true);
+    setSelectedBusiness(business); 
+    setModalOpen(true); 
   };
-
-  const closeModal = () => {
-    setModalOpen(false);
+ 
+  const closeModal = () => {  
+    setModalOpen(false);  
     setSelectedBusiness(null);
+  }; 
+ 
+  const handlePageChange = (page) => {
+    setCurrentPage(page); 
   };
 
   return (
@@ -55,17 +66,21 @@ export default function BusinessUsersPage() {
                   <th className="px-4 py-3">Business Name</th>
                   <th className="px-4 py-3">Phone</th>
                   <th className="px-4 py-3 text-center">Action</th>
-                </tr>
-              </thead>
+                </tr> 
+              </thead> 
               <tbody className="bg-white/30 backdrop-blur-md">
                 {businessUsers.map((user, index) => (
                   <tr key={index} className="hover:bg-white/50 transition-all duration-300">
-                    <td className="px-4 py-3 font-medium text-gray-800">{index + 1}</td>
+                    <td className="px-4 py-3 font-medium text-gray-800">{(currentPage - 1) * limit + (index + 1)}</td>
                     <td className="px-4 py-3">{user.name}</td>
                     <td className="px-4 py-3">{user.phone}</td>
                     <td className="px-4 py-3 text-center">
                       <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
-                      <FaRegEye />
+                        <FaRegEye />
+                      </button>
+
+                      <button className="bg-green-500 hover:bg-green-600 text-white text-md px-4 py-1 rounded-full font-medium shadow-md transition duration-200">
+                        btn
                       </button>
                     </td>
                   </tr>
@@ -82,16 +97,20 @@ export default function BusinessUsersPage() {
                 <p className="text-sm text-gray-600 mt-1">Phone: {user.phone}</p>
                 <div className="mt-4 flex justify-end">
                   <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
-                  <FaRegEye />
+                    <FaRegEye />
                   </button>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Pagination Component */}
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
         </div>
       )}
 
-        <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} />
+      {/* Modal Component */}
+      <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} />
     </div>
   );
 }

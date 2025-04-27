@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { use, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FcFinePrint, FcRating } from "react-icons/fc";
@@ -7,9 +9,47 @@ import FilterBar from "../../components/categorylisting/Filterbar";
 import { TbBrandWhatsapp } from "react-icons/tb";
 import { TfiShare } from "react-icons/tfi";
 import { SlCallIn } from "react-icons/sl";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBusinesses } from "@/redux/slice/bussinessSlice";
+import { fetchCategories } from "@/redux/slice/categoriesSlice";
 
 export default function Page({ params }) {
-  const { category, subcategories } = params;
+  const { category, subcategories } = use(params);
+  const dispatch = useDispatch();
+
+  const { categories = [], loading, error } = useSelector((state) => state.categories);
+  const { businesses, loading: businessesLoading, error: businessesError } = useSelector((state) => state.businesses);
+
+        useEffect(() => {
+          if (category && subcategories) {
+            dispatch(fetchBusinesses({ categorySlug: category, subcategorySlug: subcategories }));
+          }
+        }, [dispatch, category, subcategories]);
+
+        useEffect(() => {
+          if (categories.length === 0) {
+            dispatch(fetchCategories());
+          }
+        }, [dispatch, categories.length]);
+
+    
+      if (loading) {
+        return <div className="text-center py-10 font-semibold">Loading...</div>;
+      }
+    
+      if (error) {
+        return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+      }
+  
+      const selectedCategory = categories.find(data => data.slug === category);
+
+      if (!selectedCategory) {
+        return (
+          <div className="text-center text-red-500 font-semibold text-lg py-20">
+            Category not found.
+          </div>
+        );
+      }
 
   const listings = [
     {
@@ -51,6 +91,7 @@ export default function Page({ params }) {
         >
           ← Back to {category}
         </Link> */}
+
         <h1 className="text-4xl font-bold text-blue-900 capitalize">
           {subcategories.replace(/-/g, " ")} Listings
         </h1>
@@ -134,6 +175,11 @@ export default function Page({ params }) {
           ))}
         </div>
       )}
+
+      {
+      businesses?.data?.map((data)=><div> <h1>okkkk</h1> {data.id} </div>)
+            } 
+
     </div>
   );
 }

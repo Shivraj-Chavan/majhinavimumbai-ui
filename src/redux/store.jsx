@@ -5,6 +5,7 @@ import storageSession from 'redux-persist/lib/storage/session';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import userReducer from '@/redux/slice/userSlice';
 import categoryReducer from '@/redux/slice/categoriesSlice';
+import businessesReducer from '@/redux/slice/bussinessSlice';
 
 const persistConfig = {
   key: 'root',
@@ -14,6 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     user: userReducer,
     categories: categoryReducer,
+    businesses: businessesReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

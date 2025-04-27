@@ -34,10 +34,10 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
               <strong>Email:</strong> {business.email}
             </div>
             <div>
-              <strong>Category:</strong> {business.category}
+              <strong>Category:</strong> {business.category_id}
             </div>
             <div>
-              <strong>Subcategory:</strong> {business.subcategory}
+          <strong>Subcategory:</strong> {business.subcategory_id}
             </div>
             <div>
               <strong>Address:</strong> {business.address || "N/A"}

@@ -24,20 +24,27 @@ export default function PopUp({showContact, setShowContact}) {
             <form className="space-y-6 mt-5 ">
 
             <div>
-                <label className="block text-lg font-medium">Username</label>
+                <label className="block text-lg font-medium">Company Name</label>
+                <div className="flex items-center mt-2 border border-gray-300 rounded-lg overflow-hidden w-full">
+                <input type="name" className="w-full px-4 py-2" placeholder="Company*" />
+              </div>
+              </div>
+
+            <div>
+                <label className="block text-lg font-medium">Your Name</label>
                 <div className="flex items-center mt-2 border border-gray-300 rounded-lg overflow-hidden w-full">
                 <input type="name" className="w-full px-4 py-2" placeholder="Username*" />
               </div>
               </div>
 
               <div>
-                <label className="block text-lg font-medium">Email</label>
-                <input type="email" className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" placeholder="Email*"/>
+                <label className="block text-lg font-medium">Phone Number</label>
+                <input type="email" className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" placeholder="Phone*"/>
               </div>
 
               <div>
-                <label className="block text-lg font-medium">Message</label>
-                <textarea type="text" className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" placeholder="Message*"/>
+                <label className="block text-lg font-medium">Enquiry</label>
+                <textarea type="text" className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" placeholder="Enquiry*"/>
               </div>
 
               {/* Contact Button */}

@@ -70,7 +70,6 @@ export default function CategoryDropdown() {
     }
   };
   
-
   return (
     <div className="w-full bg-white p-6 rounded-xl shadow-md mx-auto mt-10 space-y-4">
       {/* Title */}
