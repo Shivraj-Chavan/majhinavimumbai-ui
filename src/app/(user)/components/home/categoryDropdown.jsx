@@ -29,8 +29,11 @@ export default function CategoryDropdown() {
   useEffect(() => {
     if (categories?.length === 0) {
       dispatch(fetchCategories());
+    } else {
+      console.log(categories);
     }
   }, [dispatch, categories]);
+  
 
   if (loading) {
     return <div className="text-center py-10 font-semibold">Loading...</div>;
@@ -63,10 +66,20 @@ export default function CategoryDropdown() {
   };
 
   const handleSearch = () => {
+    console.log('Selected Category:', selectedCategory);
+    console.log('Selected Subcategory:', selectedSubcategory);
+
     if (selectedCategory && selectedSubcategory) {
-      const url = `/listing?category=${selectedCategory}&subcategory=${selectedSubcategory}`;
-      console.log('Navigating to:', url); 
-      router.push(url); 
+      // Both category and subcategory selected, redirect to the listing page
+      const url = `/${selectedCategory}/${selectedSubcategory}`;
+      console.log('Navigating to:', url);
+      router.push(url);
+                         
+    } else if (selectedCategory) {
+      // Only category selected, redirect to the category page
+      const url = `/${selectedCategory}`;
+      console.log('Navigating to:', url);
+      router.push(url);
     }
   };
   

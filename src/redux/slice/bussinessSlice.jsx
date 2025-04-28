@@ -2,9 +2,19 @@ import { apiGet } from "@/lib/apiClient";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchBusinesses = createAsyncThunk("businesses/fetchBusinesses",
-  async (categorySlug) => {
-    const response = await apiGet(`/businesses?isVerified=false&limit=40&categoryslug=${categorySlug}`);
-     return response;
+async ({categoryslug,subcategoryslug}) => {
+  let url = "/businesses?isVerified=false&limit=40";
+
+  if (categoryslug) {
+    url += `&categoryslug=${categoryslug}`;
+  }
+
+
+  if (subcategoryslug) {
+    url += `&subcategoryslug=${subcategoryslug}`;
+  }
+  const response = await apiGet(url);
+  return response;
     }
   );
 

@@ -6,6 +6,7 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist
 import userReducer from '@/redux/slice/userSlice';
 import categoryReducer from '@/redux/slice/categoriesSlice';
 import businessesReducer from '@/redux/slice/bussinessSlice';
+import searchReducer from '@/redux/slice/searchSlice';
 
 const persistConfig = {
   key: 'root',
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     user: userReducer,
     categories: categoryReducer,
     businesses: businessesReducer,
+    search: searchReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

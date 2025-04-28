@@ -45,7 +45,7 @@ export default function SubcategoryCard() {
               <div className="grid grid-cols-3 gap-x-2 gap-y-4 text-center hover:text-orange-500">
                 {(category?.subcategories || []).slice(0, 3).map((sub) => (
                   <Link
-                    href={`/listing/${sub.slug}`}
+                    href={`/${category.slug}/${sub.slug}`}
                     key={sub.slug}
                     className="flex flex-col items-center p-2 rounded-xl transition-all duration-200 hover:shadow-md"
                   >
