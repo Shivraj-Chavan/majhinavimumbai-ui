@@ -176,103 +176,86 @@ export default function Page({ params }) {
         </div>
       )}
 
-      {/* Businesses Card Section */}
-             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-12">
-               <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
-                 Explore Businesses
-               </h2>
-     
-               {businessesLoading ? (
-                 <div className="text-center py-10 font-semibold">Loading Businesses...</div>
-               ) : businessesError ? (
-                 <div className="text-center py-10 text-red-500 font-semibold">{businessesError}</div>
-               ) : (
-                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                   {businesses?.length > 0 ? (
-                     businesses.data.map((business) => (
-                       <div
-                       key={business.id}
-                       className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col"
-                     >
-                       {/* Business Image */}
-                       <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-gray-100">
-                         <Image
-                           src={business.imageUrl || "/default-business.jpg"}
-                           alt={business.name || "Business Image"}
-                           fill
-                           className="object-cover"
-                         />
-                       </div>
-                     
-                       {/* Business Info */}
-                       <div className="flex flex-col gap-2 flex-grow">
-                         {/* Business Name */}
-                         <h3 className="text-lg font-bold text-gray-800 truncate">{business.name || "Business Name"}</h3>
-                     
-                         {/* Full Address */}
-                         <p className="text-sm text-gray-500 truncate">
-                           {(business.address || "Address")}, {(business.landmark || "Landmark")}, {(business.sector || "Sector")}, {(business.area || "Area")}
-                         </p>
-                     
-                         {/* Pincode */}
-                         <p className="text-sm text-gray-500">
-                           Pin Code: {business.pin_code || "Pin Code"}
-                         </p>
-                     
-                         {/* Phone */}
-                         <div className="mt-1 flex items-center gap-1 text-sm text-gray-600 font-medium">
-                           📞 {business.phone || "Phone number"}
-                         </div>
-                     
-                         {/* WhatsApp */}
-                         {business.wp_number && (
-                           <div className="flex items-center gap-1 text-sm text-green-600 font-medium">
-                             🟢 WhatsApp: {business.wp_number}
-                           </div>
-                         )}
-                     
-                         {/* Email */}
-                         {business.email && (
-                           <a href={`mailto:${business.email}`} className="text-sm text-blue-500 hover:underline">
-                             📧 {business.email}
-                           </a>
-                         )}
-                       </div>
-                     
-                       {/* Timings */}
-                       {business.timings && business.timings.length > 0 && (
-                         <div className="mt-3 border-t pt-2 text-xs text-gray-600">
-                           <div className="font-semibold mb-1 text-gray-700">Timings:</div>
-                           <ul className="space-y-1">
-                             {business.timings.map((timing, idx) => (
-                               <li key={idx}>
-                                 {timing.day || "Day"}: {timing.open || "09:00"} - {timing.close || "18:00"}
-                               </li>
-                             ))}
-                           </ul>
-                         </div>
-                       )}
-                     
-                       {/* Website */}
-                       <div className="mt-4 border-t pt-3">
-                         {business.website && (
-                           <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs hover:underline block">
-                             🌐 Visit Website
-                           </a>
-                         )}
-                       </div>
-                     </div>
-                     ))
-                   ) : (
-                     <div className="text-center text-gray-500 font-semibold py-10">
-                       No Businesses Found.
-                     </div>
-                   )}
-                 </div>
-               )}
-             </div>
-     
+      
+             {/* Businesses Card Section */}
 
+             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-12">
+  <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
+    Explore Businesses
+  </h2>
+
+  {businessesLoading ? (
+    <div className="text-center py-10 font-semibold">Loading Businesses...</div>
+  ) : businessesError ? (
+    <div className="text-center py-10 text-red-500 font-semibold">{businessesError}</div>
+  ) : (
+    <div className="space-y-6">
+      {businesses?.data?.length > 0 ? (
+        businesses?.data?.map((business) => (
+          <div
+            key={business.id}
+            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200"
+          >
+            {/* Image on the left */}
+            <div className="relative w-full sm:w-48 h-40 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+              <Image
+                src={business.imageUrl || "/default-business.jpg"}
+                alt={business.name || "Business Image"}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Info on the right */}
+            <div className="flex flex-col justify-between flex-1">
+              <h3 className="text-xl font-bold text-gray-800">{business.name || "Business Name"}</h3>
+
+              <p className="text-sm text-gray-600 mt-1">
+                {(business.address || "Address")}, {(business.landmark || "Landmark")}, {(business.sector || "Sector")}, {(business.area || "Area")}
+              </p>
+
+              <p className="text-sm text-gray-600">Pin Code: {business.pin_code || "N/A"}</p>
+
+              <div className="mt-2 space-y-1">
+                <p className="text-sm text-gray-700">📞 {business.phone || "Phone number"}</p>
+
+                {business.wp_number && (
+                  <p className="text-sm text-green-600">🟢 WhatsApp: {business.wp_number}</p>
+                )}
+
+                {business.email && (
+                  <a
+                    href={`mailto:${business.email}`}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    📧 {business.email}
+                  </a>
+                )}
+              </div>
+
+              {business.website && (
+                <a
+                  href={business.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-500 hover:underline mt-2 block"
+                >
+                  🌐 Visit Website
+                </a>
+              )}
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="text-center text-gray-500 font-semibold py-10">No Businesses Found.</div>
+      )}
     </div>
-  );
-}
+  )}
+</div>
+
+
+
+
+              </div>
+            );
+          }

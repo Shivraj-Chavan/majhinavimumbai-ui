@@ -114,7 +114,7 @@ export default function Page({ params }) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {businesses?.data?.length > 0 ? (
-                businesses.data.map((business) => (
+                businesses?.data?.map((business) => (
                   <div
                   key={business.id}
                   className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col"

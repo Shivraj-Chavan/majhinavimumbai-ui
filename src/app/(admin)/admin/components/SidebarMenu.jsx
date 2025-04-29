@@ -3,6 +3,7 @@ import SidebarItem from "./SidebarItem"
 import SidebarItemWithSubmenu from './SidebarItemWithSubmenu'
 import SidebarSubItem from './SidebarSubItem'
 import {  LuMenu,LuUsers, LuSettings, LuMail } from "react-icons/lu"
+
 export default function SidebarMenu() {
   return (
     <div>
@@ -17,7 +18,7 @@ export default function SidebarMenu() {
         
               <SidebarItemWithSubmenu icon={<LuUsers className="h-5 w-5" />} title="Users">
               <SidebarSubItem title="Business Users" href="/admin/users/businessUsers" />
-                <SidebarSubItem title="New Users" href="/users/new" />
+                <SidebarSubItem title="Users" href="/admin/users/users" />
                 <SidebarSubItem title="User Activity" href="/users/activity" />
               </SidebarItemWithSubmenu>
         
