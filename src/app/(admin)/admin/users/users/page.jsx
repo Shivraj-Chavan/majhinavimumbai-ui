@@ -48,9 +48,11 @@ export default function Page() {
   };
 
   const handleStatusChange = (id, value) => {
+    if (!value) return;
     const updatedStatus = value === "active";
     const updatedUser = users.find((user) => user.id === id);
     handleUpdate(id, { ...updatedUser, is_active: updatedStatus });
+    console.log(`User ${id} status changed to ${value}`);
   };
 
   // Pagination Logic
@@ -76,36 +78,39 @@ export default function Page() {
             </thead>
             <tbody className="bg-white/30 backdrop-blur-md">
               {currentUsers.map((user, index) => (
-                <tr key={user.id} className="hover:bg-white/50 transition-all duration-300 relative">
+                 <tr key={`user-${user.id}-${index}`} className="hover:bg-white/50 transition-all duration-300 relative">
                   <td className="px-4 py-3 font-medium text-gray-800">
                     {(currentPage - 1) * usersPerPage + index + 1}
                   </td>
                   <td className="px-4 py-3">{user.name}</td>
                   <td className="px-4 py-3">{user.phone}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
-                    <select
-                      value={user.is_active ? "active" : "inactive"}
-                      onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                      className="px-3 py-1 rounded-md bg-orange-400 outline-none text-sm shadow"
-                    >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </select>
+                  <select
+                    value={user.is_active ? "active" : "inactive"}
+                    onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                    className="h-8 px-3 rounded-md bg-orange-400 outline-none text-sm shadow text-white"
+                  >
+                    <option value="">Status</option> 
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
 
-                    <button
-                      onClick={() => handleEditOpen(user)}
-                      className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-xs"
-                    >
-                      <FaUserEdit />
-                    </button>
+                  <button
+                    onClick={() => handleEditOpen(user)}
+                    className="h-8 bg-blue-600 hover:bg-blue-500 text-white px-3 rounded text-sm flex items-center justify-center"
+                  >
+                    <FaUserEdit />
+                  </button>
 
-                    <button type="button"
-                      onClick={() => router.push("/admin/businessRegister")}
-                      className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs"
-                    >
-                      Add Business
-                    </button>
-                  </td>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/admin/businessRegister")}
+                    className="h-8 bg-green-600 hover:bg-green-500 text-white px-3 rounded text-sm"
+                  >
+                    Add Business
+                  </button>
+                </td>
+
                 </tr>
               ))}
             </tbody>
@@ -124,11 +129,13 @@ export default function Page() {
                 <strong>Phone:</strong> {user.phone}
               </p>
               <div className="mt-3 flex justify-end gap-2">
-                <select
+              <select
                   value={user.is_active ? "active" : "inactive"}
+
                   onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                  className="px-3 py-1 rounded-md bg-orange-400 outline-none text-sm shadow"
+                  className="px-3 py-1 rounded-sm bg-orange-400 outline-none text-sm shadow text-white"
                 >
+                  <option value="">Status</option> 
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
@@ -141,11 +148,16 @@ export default function Page() {
                 </button>
 
                 <button type="button"
-                  onClick={() => router.push("/admin/businessRegister")}
+                  onClick={() => {
+                    console.log("Navigating to /admin/businessRegister");
+                    router.push("/admin/businessRegister");
+                  }}
+                  
                   className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs"
                 >
                   Add Business
                 </button>
+                
               </div>
             </div>
           ))}

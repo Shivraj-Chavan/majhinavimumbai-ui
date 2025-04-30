@@ -44,7 +44,7 @@ export default function BusinessRegister() {
     }
 
   const [formData, setFormData] = useState({
-    owner_id: "3",
+    owner_id: "",
     name: "",
     category_id: "",
     subcategory_id: "",
@@ -139,7 +139,7 @@ export default function BusinessRegister() {
       setSuccessModalOpen(true);
 
       setFormData({
-        owner_id: "3",
+        owner_id: "",
         name: "",
         category_id: "",
         subcategory_id: "",

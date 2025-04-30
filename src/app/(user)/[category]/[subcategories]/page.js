@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FcFinePrint, FcRating } from "react-icons/fc";
@@ -12,9 +12,13 @@ import { SlCallIn } from "react-icons/sl";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBusinesses } from "@/redux/slice/bussinessSlice";
 import { fetchCategories } from "@/redux/slice/categoriesSlice";
+import { apiGet } from "@/lib/apiClient";
 
 export default function Page({ params }) {
-  const { category, subcategories } = use(params);
+  const { category, subcategories, id } = use(params);
+  const [business, setBusiness] = useState(null);
+  const [loadingg, setLoadingg] = useState(true);
+  const [errorr, setErrorr] = useState(null);
   const dispatch = useDispatch();
 
   const { categories = [], loading, error } = useSelector((state) => state.categories);
@@ -31,6 +35,22 @@ export default function Page({ params }) {
             dispatch(fetchCategories());
           }
         }, [dispatch, categories.length]);
+
+        useEffect(() => {
+          const fetchBusiness = async () => {
+            try {
+              const data = await apiGet(`/businesses/${id}`);
+              console.log('getbussiness',data);
+              setBusiness(data);
+            } catch (err) {
+              setErrorr(err.message || "Something went wrong");
+            } finally {
+              setLoadingg(false);
+            }
+          };
+        
+          if (id) fetchBusiness();
+        }, [id]);
 
     
       if (loading) {
@@ -175,87 +195,88 @@ export default function Page({ params }) {
           ))}
         </div>
       )}
-
       
-             {/* Businesses Card Section */}
+       {/* Businesses Card Section */}
 
-             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-12">
-  <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
-    Explore Businesses
-  </h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-12">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
+          Explore Businesses
+        </h2>
 
-  {businessesLoading ? (
-    <div className="text-center py-10 font-semibold">Loading Businesses...</div>
-  ) : businessesError ? (
-    <div className="text-center py-10 text-red-500 font-semibold">{businessesError}</div>
-  ) : (
-    <div className="space-y-6">
-      {businesses?.data?.length > 0 ? (
-        businesses?.data?.map((business) => (
-          <div
-            key={business.id}
-            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200"
-          >
-            {/* Image on the left */}
-            <div className="relative w-full sm:w-48 h-40 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-              <Image
-                src={business.imageUrl || "/default-business.jpg"}
-                alt={business.name || "Business Image"}
-                fill
-                className="object-cover"
-              />
-            </div>
+        {businessesLoading ? (
+          <div className="text-center py-10 font-semibold">Loading Businesses...</div>
+        ) : businessesError ? (
+          <div className="text-center py-10 text-red-500 font-semibold">{businessesError}</div>
+        ) : (
+          <div className="space-y-6">
+            {businesses?.data?.length > 0 ? (
+              businesses?.data?.map((business) => (
+                <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
+                {/* Business Image */}
+                <div key={business.id} className="relative w-full sm:w-48 h-40 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                  <Image
+                    src={business.imageUrl || "/default-business.jpg"}
+                    alt={business.name || "Business Image"}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
 
-            {/* Info on the right */}
-            <div className="flex flex-col justify-between flex-1">
-              <h3 className="text-xl font-bold text-gray-800">{business.name || "Business Name"}</h3>
+                {/* Business Info */}
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">{business.name}</h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {(business.address || "Address")}, {(business.landmark || "Landmark")}
+                    </p>
+                    <p className="text-sm text-gray-600">Pin Code: {business.pin_code}</p>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-sm text-gray-700">📞 {business.phone}</p>
+                      {business.wp_number && <p className="text-sm text-green-600">🟢 WhatsApp: {business.wp_number}</p>}
+                      {business.email && <p className="text-sm text-blue-600">📧 {business.email}</p>}
+                    </div>
+                  </div>
 
-              <p className="text-sm text-gray-600 mt-1">
-                {(business.address || "Address")}, {(business.landmark || "Landmark")}, {(business.sector || "Sector")}, {(business.area || "Area")}
-              </p>
+                  {/* Website + Action Buttons */}
+                  <div className="mt-4 flex flex-col gap-2">
+                    {business.website && (
+                      <a
+                        href={business.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-500 hover:underline"
+                      >
+                        🌐 Visit Website
+                      </a>
+                    )}
 
-              <p className="text-sm text-gray-600">Pin Code: {business.pin_code || "N/A"}</p>
-
-              <div className="mt-2 space-y-1">
-                <p className="text-sm text-gray-700">📞 {business.phone || "Phone number"}</p>
-
-                {business.wp_number && (
-                  <p className="text-sm text-green-600">🟢 WhatsApp: {business.wp_number}</p>
-                )}
-
-                {business.email && (
-                  <a
-                    href={`mailto:${business.email}`}
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    📧 {business.email}
-                  </a>
-                )}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <Link href={`/listingInfo/${business.id}`}>
+                        <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
+                          <FcFinePrint className="text-xl mr-1" />
+                          View Details
+                        </button>
+                      </Link>
+                      <button className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
+                        <TbBrandWhatsapp className="text-xl mr-1" />
+                        Whatsapp
+                      </button>
+                      <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
+                        <TfiShare className="text-xl mr-1" />
+                        Share
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {business.website && (
-                <a
-                  href={business.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-500 hover:underline mt-2 block"
-                >
-                  🌐 Visit Website
-                </a>
-              )}
-            </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-500 font-semibold py-10">No Businesses Found.</div>
+            )}
           </div>
-        ))
-      ) : (
-        <div className="text-center text-gray-500 font-semibold py-10">No Businesses Found.</div>
-      )}
-    </div>
-  )}
-</div>
-
-
-
-
-              </div>
-            );
-          }
+        )}
+      </div>
+      </div>
+    );
+   }

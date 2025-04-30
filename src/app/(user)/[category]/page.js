@@ -16,11 +16,10 @@ export default function Page({ params }) {
 
       useEffect(()=>{
         if(category){
-          // alert()
           dispatch(fetchBusinesses({categorySlug:category}))
         }
       console.log({businesses})
-      },[category])
+      },[dispatch,category])
 
       useEffect(() => {
         if (categories.length === 0) {
@@ -45,6 +44,7 @@ export default function Page({ params }) {
           </div>
         );
       }
+      
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,8 +98,7 @@ export default function Page({ params }) {
     ))}
   </div>
 </div>
-
-      </div>
+  </div>
 
         {/* Businesses Card Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -201,8 +200,6 @@ export default function Page({ params }) {
             </div>
           )}
         </div>
-
-
           </div>
         );
       }

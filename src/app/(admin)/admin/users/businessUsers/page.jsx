@@ -79,9 +79,9 @@ export default function BusinessUsersPage() {
                         <FaRegEye />
                       </button>
 
-                      <button className="bg-green-500 hover:bg-green-600 text-white text-md px-4 py-1 rounded-full font-medium shadow-md transition duration-200">
+                      {/* <button className="bg-green-500 hover:bg-green-600 text-white text-md px-4 py-1 rounded-full font-medium shadow-md transition duration-200">
                         btn
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))}
