@@ -215,7 +215,8 @@ export default function Page({ params }) {
                 {/* Business Image */}
                 <div key={business.id} className="relative w-full sm:w-48 h-40 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                   <Image
-                    src={business.imageUrl || "/default-business.jpg"}
+                    // src={business.imageUrl || "/default-business.jpg"}
+                    src="/resto.jpg"
                     alt={business.name || "Business Image"}
                     fill
                     className="object-cover"

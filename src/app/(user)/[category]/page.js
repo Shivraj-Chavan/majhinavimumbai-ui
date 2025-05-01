@@ -16,7 +16,7 @@ export default function Page({ params }) {
 
       useEffect(()=>{
         if(category){
-          dispatch(fetchBusinesses({categorySlug:category}))
+          dispatch(fetchBusinesses({categoryslug:category}))
         }
       console.log({businesses})
       },[dispatch,category])
@@ -45,7 +45,6 @@ export default function Page({ params }) {
         );
       }
       
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -121,7 +120,7 @@ export default function Page({ params }) {
                   {/* Business Image */}
                   <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-gray-100">
                     <Image
-                      src={business.imageUrl || "/default-business.jpg"}
+                      src="/resto.jpg"
                       alt={business.name || "Business Image"}
                       fill
                       className="object-cover"

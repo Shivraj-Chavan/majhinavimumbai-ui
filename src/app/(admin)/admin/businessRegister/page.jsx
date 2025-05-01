@@ -1,10 +1,13 @@
-import BusinessRegister from '@/app/(user)/businessRegister/page'
-import React from 'react'
+"use client";
 
-export default function page() {
-  return (
-    <div>
-        <BusinessRegister/>
-    </div>
-  )
-}
+import BusinessRegister from "@/app/(user)/businessRegister/page";
+import { useSearchParams } from "next/navigation";
+
+const Page = () => {
+  const searchParams = useSearchParams();
+  const ownerId = searchParams.get("ownerId");
+
+  return <BusinessRegister ownerId={ownerId}/>;
+};
+
+export default Page;

@@ -30,7 +30,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   if (!business) return null;
 
   const fields = [
-    { label: "Owner Id", name: "owner_id" },
+    // { label: "Owner Id", name: "owner_id" },
     { label: "Name", name: "name" },
     { label: "Phone", name: "phone" },
     { label: "Email", name: "email" },

@@ -12,7 +12,7 @@ import SuccessModal from "../components/businessRegistercomp/SuccessModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "@/redux/slice/categoriesSlice";
 
-export default function BusinessRegister() {
+export default function BusinessRegister({ ownerId }) {
   const router = useRouter();
   const [checkingOtp, setCheckingOtp] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -66,10 +66,17 @@ export default function BusinessRegister() {
       setCheckingOtp(false);
       setFormData((prev) => ({
         ...prev,
-        owner_id: storedOwnerId || "3",
+        owner_id: storedOwnerId,
       }));
     }
   }, [router]);
+
+  useEffect(() => {
+    if (ownerId) {
+      setFormData((prev) => ({ ...prev, owner_id: ownerId }));
+    }
+  }, [ownerId]);
+  
 
   const handleInputChange = (label, value) => {
     setFormData((prev) => ({ ...prev, [label]: value }));

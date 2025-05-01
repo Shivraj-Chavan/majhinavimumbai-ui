@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { FaUserEdit } from "react-icons/fa";
-
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination"; 
 import PopupEditUser from "../../components/usercomp/PopupEditUser";
+import BusinessRegister from "@/app/(user)/businessRegister/page";
 
 export default function Page() {
   const [users, setUsers] = useState([]);
@@ -14,7 +14,16 @@ export default function Page() {
   const [usersPerPage] = useState(10);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  // const [showForm, setShowForm] = useState(false);
+  const [owner, setOwner] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const storedOwner = localStorage.getItem("owner");
+    if (storedOwner) {
+      setOwner(JSON.parse(storedOwner));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -47,13 +56,19 @@ export default function Page() {
     }
   };
 
-  const handleStatusChange = (id, value) => {
-    if (!value) return;
-    const updatedStatus = value === "active";
-    const updatedUser = users.find((user) => user.id === id);
-    handleUpdate(id, { ...updatedUser, is_active: updatedStatus });
-    console.log(`User ${id} status changed to ${value}`);
+  const handleAddBusinessClick = (userId) => {
+    router.push(`/admin/businessRegister?ownerId=${userId}`);
+    console.log
   };
+  
+  
+  // const handleStatusChange = (id, value) => {
+  //   if (!value) return;
+  //   const updatedStatus = value === "active";
+  //   const updatedUser = users.find((user) => user.id === id);
+  //   handleUpdate(id, { ...updatedUser, is_active: updatedStatus });
+  //   console.log(`User ${id} status changed to ${value}`);
+  // };
 
   // Pagination Logic
   const totalPages = Math.ceil(users.length / usersPerPage);
@@ -85,15 +100,9 @@ export default function Page() {
                   <td className="px-4 py-3">{user.name}</td>
                   <td className="px-4 py-3">{user.phone}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
-                  <select
-                    value={user.is_active ? "active" : "inactive"}
-                    onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                    className="h-8 px-3 rounded-md bg-orange-400 outline-none text-sm shadow text-white"
-                  >
-                    <option value="">Status</option> 
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
+                  <span className={`h-8 px-3 rounded-md text-sm flex items-center justify-center font-semibold ${ user.is_active ? "bg-orange-500 text-white" : "bg-orange-600 text-white"}`}>
+                    {user.is_active ? "Active" : "Inactive"}
+                  </span>
 
                   <button
                     onClick={() => handleEditOpen(user)}
@@ -104,13 +113,12 @@ export default function Page() {
 
                   <button
                     type="button"
-                    onClick={() => router.push("/admin/businessRegister")}
-                    className="h-8 bg-green-600 hover:bg-green-500 text-white px-3 rounded text-sm"
+                    onClick={handleAddBusinessClick(user.id)}
+                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
                   >
                     Add Business
                   </button>
                 </td>
-
                 </tr>
               ))}
             </tbody>
@@ -129,36 +137,24 @@ export default function Page() {
                 <strong>Phone:</strong> {user.phone}
               </p>
               <div className="mt-3 flex justify-end gap-2">
-              <select
-                  value={user.is_active ? "active" : "inactive"}
+              <span className={`px-3 py-1 rounded-sm text-sm font-semibold ${user.is_active ? "bg-orange-500 text-white" : "bg-orange-600 text-white" }`}>
+                {user.is_active ? "Active" : "Inactive"}
+              </span>
 
-                  onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                  className="px-3 py-1 rounded-sm bg-orange-400 outline-none text-sm shadow text-white"
-                >
-                  <option value="">Status</option> 
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-
-                <button
-                  onClick={() => handleEditOpen(user)}
+                <button onClick={() => handleEditOpen(user)}
                   className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-xs"
                 >
                   <FaUserEdit />
                 </button>
 
-                <button type="button"
-                  onClick={() => {
-                    console.log("Navigating to /admin/businessRegister");
-                    router.push("/admin/businessRegister");
-                  }}
-                  
-                  className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs"
-                >
-                  Add Business
-                </button>
-                
-              </div>
+                <button
+                    type="button"
+                    onClick={handleAddBusinessClick(user.id)}
+                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
+                  >
+                    Add Business
+                  </button>      
+              </div> 
             </div>
           ))}
         </div>
