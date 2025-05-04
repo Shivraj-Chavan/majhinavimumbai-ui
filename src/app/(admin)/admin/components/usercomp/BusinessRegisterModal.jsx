@@ -7,8 +7,40 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    if (business) setFormData(business);
+    if (business) {
+      let parsedTimings = [];
+  
+      try {
+        parsedTimings = typeof business.timing === "string"
+          ? JSON.parse(business.timing)
+          : Array.isArray(business.timing) 
+            ? business.timing 
+            : [];
+      } catch (err) {
+        console.error("Failed to parse timing JSON", err);
+      }
+  
+      setFormData({
+        ...business,
+        timing: parsedTimings,
+      });
+    }
   }, [business]);
+  
+  useEffect(()=>{
+    // console.log(JSON.parse(formData.timing))
+    // output [{"day":"Monday","open":"10:02","close":"20:04"},{"day":"Tuesday","open":"12:04","close":"20:04"}]
+    // console.log({"ddddddddddddt":formData.timing})
+    // const timing = typeof formData.timing === "string" ? JSON.parse(formData.timing) : formData.timing || [];
+
+    // const data=JSON.parse(formData.timing)
+    // console.log(typeof timing)
+    // console.log({timing})
+    // data?.forEach((dt)=>{
+    //  console.log(dt) 
+    // })
+
+  },[formData?.timing])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +74,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
     { label: "Landmark", name: "landmark" },
     { label: "Sector", name: "sector" },
     { label: "Whatsapp Number", name: "wp_number" },
-    { label: "Timings", name: "timings" },
+    { label: "timing", name: "timing" },
     { label: "Website", name: "website" },
   ];
 
@@ -66,35 +98,85 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
 
           {/* Form */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-            {fields.map((field) => (
-              <div key={field.name}>
-                <label className="block font-medium text-gray-600 mb-1">
-                  {field.label}
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name={field.name}
-                    value={formData[field.name] || ""}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : field.name === "website" && formData.website ? (
-                  <a
-                    href={formData.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline break-words"
-                  >
-                    {formData.website}
-                  </a>
-                ) : (
-                  <div className="text-gray-800 break-words">
-                    {formData[field.name] || "N/A"}
-                  </div>
-                )}
-              </div>
-            ))}
+          {fields.map((field) => (
+          <div key={field.name}>
+            <label className="block font-medium text-gray-600 mb-1">
+              {field.label}
+            </label>
+
+          {/* timing */}
+        {field.name === "timing" ? (
+          isEditing ? (
+            <div className="flex gap-2 items-center">
+              <label className="text-sm">Open:</label>
+              <input
+                type="time"
+                name="timing"
+                value={formData.timing || ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    timing: e.target.value,
+                  }))
+                }
+                className="border border-gray-300 rounded px-2 py-1"
+              />
+              <label className="text-sm">Close:</label>
+              <input
+                type="time"
+                name="timing"
+                value={formData.timing || ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    timing: e.target.value,
+                  }))
+                }
+                className="border border-gray-300 rounded px-2 py-1"
+              />
+            </div>
+          ) : (
+            <div className="text-gray-800">
+              <div className="text-gray-800">
+              <div className="space-y-1 text-gray-800">
+  {Array.isArray(formData.timing) && formData.timing.length > 0 ? (
+    formData.timing.map((item, index) => (
+      <div key={index}>
+        {item.day}: {item.open} - {item.close}
+      </div>
+    ))
+  ) : (
+    "N/A"
+  )}
+</div>
+
+    </div>
+            </div>
+          )
+        ) : isEditing ? (
+          <input
+            type="text"
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        ) : field.name === "website" && formData.website ? (
+          <a
+            href={formData.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline break-words"
+          >
+            {formData.website}
+          </a>
+        ) : (
+          <div className="text-gray-800 break-words">
+            {formData[field.name] || "N/A"}
+          </div>
+        )}
+      </div>
+    ))}
           </div>
 
           {/* Footer Buttons */}

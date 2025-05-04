@@ -6,6 +6,7 @@ import Link from "next/link"
 import SidebarMenu from "./components/SidebarMenu"
 import './../../globals.css'
 import { LuChevronDown, LuChevronRight, LuMenu, LuX, LuHome, LuBarChart2, LuUsers, LuSettings, LuBell, LuSearch, LuUser, LuLogOut, LuHelpCircle, LuMail } from "react-icons/lu"
+import { ReduxProvider } from "@/redux/provider"
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -31,6 +32,7 @@ export default function DashboardLayout({ children }) {
   return (
     <html>
       <body  className="flex h-screen bg-gray-100" >
+      <ReduxProvider>
         
       {sidebarOpen && (
         <div className="fixed inset-0 z-20 bg-black bg-opacity-50 md:hidden" onClick={() => setSidebarOpen(false)} />
@@ -132,8 +134,8 @@ export default function DashboardLayout({ children }) {
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
+      </ReduxProvider>
       </body>
-
     </html>
   )
 }

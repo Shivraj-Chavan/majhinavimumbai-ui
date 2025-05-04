@@ -33,15 +33,15 @@ export default function BusinessRegister({ ownerId }) {
         //  dispatch(fetchCategories());
       }
     }, [categories]);
-    
-  
+
     if (loading) {
       return <div className="text-center py-10 font-semibold">Loading...</div>;
     }
-  
+    
     if (error) {
       return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
     }
+    // alert()
 
   const [formData, setFormData] = useState({
     owner_id: "",
@@ -57,47 +57,48 @@ export default function BusinessRegister({ ownerId }) {
     wp_number: "",
     email: "",
     website: "",
-    timings: [{ day: "", open: "09:00", close: "18:00" }],
+    timing:[{ day: "", open: "09:00", close: "18:00" }],
   });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOwnerId = localStorage.getItem("ownerId");
       setCheckingOtp(false);
-      setFormData((prev) => ({
-        ...prev,
-        owner_id: storedOwnerId,
-      }));
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   owner_id: storedOwnerId,
+      // }));
     }
   }, [router]);
-
-  useEffect(() => {
-    if (ownerId) {
-      setFormData((prev) => ({ ...prev, owner_id: ownerId }));
-    }
-  }, [ownerId]);
   
-
   const handleInputChange = (label, value) => {
     setFormData((prev) => ({ ...prev, [label]: value }));
   };
 
+  const daysOfWeek = [
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+  ];
+  
   const handleTimingChange = (index, field, value) => {
-    const updatedTimings = [...formData.timings];
+    const updatedTimings = [...formData.timing];
     updatedTimings[index][field] = value;
-    setFormData((prev) => ({ ...prev, timings: updatedTimings }));
+    setFormData({ ...formData, timing: updatedTimings });
   };
-
+  
   const addTiming = () => {
     setFormData((prev) => ({
       ...prev,
-      timings: [...prev.timings, { day: "", open: "09:00", close: "18:00" }],
+      timing: [...prev.timing, { day: "", open: "09:00", close: "18:00" }],
     }));
   };
 
+  useEffect(()=>{
+    console.log({"Timing-----":formData.timing})
+  },[formData.timing])
+
   const removeTiming = (index) => {
-    const updatedTimings = formData.timings.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, timings: updatedTimings }));
+    const updatedTimings = formData.timing.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, timing: updatedTimings }));
   };
 
   const handleCategoryChange = (e) => {
@@ -122,6 +123,13 @@ export default function BusinessRegister({ ownerId }) {
     }
   };
 
+  useEffect(() => {
+    console.log("Received ownerId:", ownerId);
+    if (ownerId) {
+      setFormData((prev) => ({ ...prev, owner_id: Number(ownerId),}));
+    }
+  }, [ownerId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // setSuccessModalOpen(true);
@@ -135,10 +143,9 @@ export default function BusinessRegister({ ownerId }) {
     const finalData = {
       ...formData,
       category_id: selectedCategory,
-      subcategory_id: selectedSubcategory,
-      timings:  formData.timings,
+    subcategory_id: selectedSubcategory,
     };
-    console.log("Data submitting to server:", finalData);
+    console.log("Data submitting to server:", finalData.timing);
 
     try {
       await apiPost("/businesses", finalData);
@@ -159,8 +166,9 @@ export default function BusinessRegister({ ownerId }) {
         wp_number: "",
         email: "",
         website: "",
-        timings: [{ day: "", open: "09:00", close: "18:00" }],
+        timing: [{ day: "", open: "09:00", close: "18:00" }],
       });
+      console.log("Submitting formData:", formData);
 
       setSelectedCategory("");
       setSelectedSubcategory("");
@@ -270,39 +278,73 @@ export default function BusinessRegister({ ownerId }) {
 
         {/* Business Timings */}
         <div className="md:col-span-12">
-          <h3 className="font-semibold text-gray-700 mb-4">Business Timings</h3>
-          {formData.timings.map((timing, index) => (
-            <div key={index} className="flex flex-col md:flex-row gap-4 mb-4">
-              <div className="w-full md:w-1/4">
-                <Input label="Day" value={timing.day} onChange={(value) => handleTimingChange(index, "day", value)} />
-              </div>
-              <div className="w-full md:w-1/4">
-                <Input label="Open Time" value={timing.open} onChange={(value) => handleTimingChange(index, "open", value)} />
-              </div>
-              <div className="w-full md:w-1/4">
-                <Input label="Close Time" value={timing.close} onChange={(value) => handleTimingChange(index, "close", value)} />
-              </div>
-              <div className="w-full md:w-1/4 flex items-center justify-center">
-                <button
-                  type="button"
-                  onClick={() => removeTiming(index)}
-                  className="text-red-500 hover:underline"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addTiming}
-            className="text-blue-600 mt-4 hover:underline"
-          >
-            + Add Timing
-          </button>
-        </div>
-      </div>
+            <h3 className="font-semibold text-gray-700 mb-4">Business Timings</h3>
 
+            {formData?.timing?.map((timing, index) => (
+              <div key={index} className="flex flex-col md:flex-row gap-4 mb-4">
+                
+                {/* Day Dropdown */}
+                <div className="w-full md:w-1/4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Day</label>
+                  <select
+                    value={timing.day}
+                    onChange={(e) => handleTimingChange(index, "day", e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                  >
+                    <option value="">Select Day</option>
+                    {daysOfWeek.map((day) => (
+                      <option key={day} value={day}>{day}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Open Time */}
+                <div className="w-full md:w-1/4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Open Time</label>
+                  <input
+                    type="time"
+                    value={timing.open}
+                    onChange={(e) => handleTimingChange(index, "open", e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                  />
+                </div>
+
+                {/* Close Time */}
+                <div className="w-full md:w-1/4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Close Time</label>
+                  <input
+                    type="time"
+                    value={timing.close}
+                    onChange={(e) => handleTimingChange(index, "close", e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                  />
+                </div>
+
+                {/* Remove Button */}
+                <div className="w-full md:w-1/4 flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={() => removeTiming(index)}
+                    className="text-red-500 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+              </div>
+            ))}
+
+            {/* Add Button */}
+            <button
+              type="button"
+              onClick={addTiming}
+              className="text-blue-600 mt-4 hover:underline"
+            >
+              + Add Timing
+            </button>
+          </div>
+          </div>
+          
       {/* Submit Button */}
       <button
         type="submit"

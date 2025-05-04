@@ -14,8 +14,7 @@ export default function BusinessUsersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const limit = 10; 
-
+  const limit = 10;
   useEffect(() => {
     const fetchBusinessUsers = async () => {
       try {

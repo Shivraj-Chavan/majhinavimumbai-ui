@@ -5,7 +5,7 @@ import { apiGet, apiPut } from "@/lib/apiClient";
 import { FaUserEdit } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination"; 
-import PopupEditUser from "../../components/usercomp/PopupEditUser";
+import PopupEditUser from "../components/usercomp/PopupEditUser";
 import BusinessRegister from "@/app/(user)/businessRegister/page";
 
 export default function Page() {
@@ -34,7 +34,6 @@ export default function Page() {
         console.log("Error fetching users:", error);
       }
     };
-
     fetchUsers();
   }, []);
 
@@ -57,10 +56,8 @@ export default function Page() {
   };
 
   const handleAddBusinessClick = (userId) => {
-    router.push(`/admin/businessRegister?ownerId=${userId}`);
-    console.log
+  router.push(`users/businessRegister?ownerId=${userId}`);
   };
-  
   
   // const handleStatusChange = (id, value) => {
   //   if (!value) return;
@@ -113,7 +110,7 @@ export default function Page() {
 
                   <button
                     type="button"
-                    onClick={handleAddBusinessClick(user.id)}
+                    onClick={()=>handleAddBusinessClick(user.id)}
                     className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
                   >
                     Add Business
@@ -125,39 +122,6 @@ export default function Page() {
           </table>
         </div>
 
-        {/* Smaller screens */}
-        <div className="md:hidden">
-          {currentUsers.map((user, index) => (
-            <div key={user.id} className="mb-4 p-4 bg-white rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold">{user.name}</h3>
-              <p className="text-md text-gray-600">
-                <strong>Email:</strong> {user.email}
-              </p>
-              <p className="text-md text-gray-600">
-                <strong>Phone:</strong> {user.phone}
-              </p>
-              <div className="mt-3 flex justify-end gap-2">
-              <span className={`px-3 py-1 rounded-sm text-sm font-semibold ${user.is_active ? "bg-orange-500 text-white" : "bg-orange-600 text-white" }`}>
-                {user.is_active ? "Active" : "Inactive"}
-              </span>
-
-                <button onClick={() => handleEditOpen(user)}
-                  className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-xs"
-                >
-                  <FaUserEdit />
-                </button>
-
-                <button
-                    type="button"
-                    onClick={handleAddBusinessClick(user.id)}
-                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
-                  >
-                    Add Business
-                  </button>      
-              </div> 
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Pagination Component */}
