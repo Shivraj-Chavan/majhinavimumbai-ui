@@ -139,18 +139,17 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
             <div className="text-gray-800">
               <div className="text-gray-800">
               <div className="space-y-1 text-gray-800">
-  {Array.isArray(formData.timing) && formData.timing.length > 0 ? (
-    formData.timing.map((item, index) => (
-      <div key={index}>
-        {item.day}: {item.open} - {item.close}
-      </div>
-    ))
-  ) : (
-    "N/A"
-  )}
-</div>
-
-    </div>
+                {Array.isArray(formData.timing) && formData.timing.length > 0 ? (
+                  formData.timing.map((item, index) => (
+                    <div key={index}>
+                      {item.day}: {item.open} - {item.close}
+                    </div>
+                  ))
+                ) : (
+                  "N/A"
+                )}
+              </div>
+           </div>
             </div>
           )
         ) : isEditing ? (

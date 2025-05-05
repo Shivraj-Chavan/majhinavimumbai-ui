@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { apiGet, apiPut } from "@/lib/apiClient";
+import { apiDelete, apiGet, apiPut } from "@/lib/apiClient";
 import { FaUserEdit } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination"; 
 import PopupEditUser from "../components/usercomp/PopupEditUser";
 import BusinessRegister from "@/app/(user)/businessRegister/page";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [users, setUsers] = useState([]);
@@ -29,6 +30,7 @@ export default function Page() {
     const fetchUsers = async () => {
       try {
         const data = await apiGet("/users");
+        console.log("Fetched users:", data); 
         setUsers(data);
       } catch (error) {
         console.log("Error fetching users:", error);
@@ -57,6 +59,30 @@ export default function Page() {
 
   const handleAddBusinessClick = (userId) => {
   router.push(`users/businessRegister?ownerId=${userId}`);
+  };
+
+  const handleDelete = async (businessId) => {
+    console.log("Attempting to delete business ID:", businessId);
+  
+    if (!businessId || isNaN(businessId)) {
+      console.log("Invalid business ID:", businessId);
+      toast.error("Invalid business ID");
+      return;
+    }
+  
+    const confirmed = window.confirm("Are you sure you want to delete this business?");
+    if (!confirmed) return;
+    
+    const { success, data } = await apiDelete(`businesses/${businessId}`);
+  
+    if (success) {
+      toast.success("Business deleted successfully");
+      console.log(" Updating users ");
+      setUsers((prev) => prev.map((user) => user.business_id === businessId ? { ...user, business_id: null } : user)
+      );
+    } else {
+      toast.error(data.msg || "Failed to delete business");
+    }
   };
   
   // const handleStatusChange = (id, value) => {
@@ -115,6 +141,14 @@ export default function Page() {
                   >
                     Add Business
                   </button>
+
+                  <button
+                    onClick={() => handleDelete(user.business_id)}
+                    className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-xs disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+
                 </td>
                 </tr>
               ))}

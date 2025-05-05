@@ -41,7 +41,6 @@ export default function BusinessRegister({ ownerId }) {
     if (error) {
       return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
     }
-    // alert()
 
   const [formData, setFormData] = useState({
     owner_id: "",

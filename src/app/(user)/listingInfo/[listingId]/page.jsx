@@ -11,6 +11,7 @@ import { TfiShare } from "react-icons/tfi";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { FcGlobe, FcDownRight, FcCallback, FcBookmark } from "react-icons/fc";
 import { apiGet } from "@/lib/apiClient";
+import UsersndMsg from "../../components/categorylisting/UsersndMsg";
 
 const hours = {
   Monday: "10 AM - 10 PM",
@@ -106,6 +107,9 @@ export default function ListingInfo() {
 
       <Info business={business} hours={hours} />
       <Tab business={business} renderStars={renderStars} />
+
+        {/* send enquiry to business owners */}
+        <UsersndMsg/>
     </div>
   );
 }

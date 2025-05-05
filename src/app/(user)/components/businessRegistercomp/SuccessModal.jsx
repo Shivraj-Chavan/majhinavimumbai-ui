@@ -3,14 +3,12 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { MdCheckCircle } from "react-icons/md";
-import { useRouter } from "next/navigation";
 
 export default function SuccessModal({ isOpen, onClose, message }) {
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleClose = () => {
     onClose(); 
-    router.push("/"); 
   };
 
   return (
