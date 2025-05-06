@@ -35,13 +35,13 @@ export default function CategoryDropdown() {
   }, [dispatch, categories]);
   
 
-  if (loading) {
-    return <div className="text-center py-10 font-semibold">Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div className="text-center py-10 font-semibold">Loading...</div>;
+  // }
 
-  if (error) {
-    return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
-  }
+  // if (error) {
+  //   return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+  // }
 
   const handleCategoryChange = (e) => {
     const slug = e.target.value;

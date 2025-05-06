@@ -19,13 +19,13 @@ export default function SubcategoryCard() {
     }
   }, [dispatch, categories]);
 
-  if (loading) {
-    return <div className="text-center py-10 font-semibold">Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div className="text-center py-10 font-semibold">Loading...</div>;
+  // }
 
-  if (error) {
-    return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
-  }
+  // if (error) {
+  //   return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+  // }
 
   return (
     <div className="bg-orange-50">

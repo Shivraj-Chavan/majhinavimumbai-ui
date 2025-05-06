@@ -6,7 +6,6 @@ import { FaUserEdit } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination"; 
 import PopupEditUser from "../components/usercomp/PopupEditUser";
-import BusinessRegister from "@/app/(user)/businessRegister/page";
 import { toast } from "react-toastify";
 
 export default function Page() {
@@ -17,6 +16,7 @@ export default function Page() {
   const [showPopup, setShowPopup] = useState(false);
   // const [showForm, setShowForm] = useState(false);
   const [owner, setOwner] = useState(null);
+  const [businesses, setBusinesses] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,47 +44,70 @@ export default function Page() {
     setShowPopup(true);
   };
 
+  useEffect(() => {
+    const fetchBusinessesForActiveUsers = async () => {
+      console.log('Fetching businesses for active users...');
+      const allBusinesses = [];
+  
+      for (const user of users) {
+        if (user.is_active) {
+          try {
+            console.log(`user ID: ${user.id}`);
+            const userBusinesses = await apiGet(`/users/${user.id}/businesses`);
+            allBusinesses.push(...userBusinesses.map(b => ({ ...b, ownerId: user.id })));
+          } catch (err) {
+            console.error(`Failed to fetch businesses for user ${user.id}:`, err);
+          }
+        }
+      }
+      setBusinesses(allBusinesses);
+    };
+  
+    if (users.length > 0) {
+      fetchBusinessesForActiveUsers();
+    }
+  }, [users]);
+
   const handleUpdate = async (id, updatedData) => {
     try {
-      await apiPut("/users/profile", updatedData);
+      console.log("Updating user with ID:", id);
+      console.log("Updated data:", updatedData);
+  
+      const response = await apiPut(`/users/${id}/profile`, updatedData);
+      toast.success("User updated successfully");
+  
       setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === id ? { ...user, ...updatedData } : user
-        )
+        prevUsers.map((user) =>user.id === id ? { ...user, ...response.data } : user )
       );
     } catch (err) {
       console.error("Update failed:", err);
+      toast.error("Failed to update user");
     }
   };
-
+  
   const handleAddBusinessClick = (userId) => {
   router.push(`users/businessRegister?ownerId=${userId}`);
   };
 
-  const handleDelete = async (businessId) => {
-    console.log("Attempting to delete business ID:", businessId);
-  
-    if (!businessId || isNaN(businessId)) {
-      console.log("Invalid business ID:", businessId);
-      toast.error("Invalid business ID");
-      return;
-    }
-  
-    const confirmed = window.confirm("Are you sure you want to delete this business?");
-    if (!confirmed) return;
-    
-    const { success, data } = await apiDelete(`businesses/${businessId}`);
-  
-    if (success) {
-      toast.success("Business deleted successfully");
-      console.log(" Updating users ");
-      setUsers((prev) => prev.map((user) => user.business_id === businessId ? { ...user, business_id: null } : user)
-      );
-    } else {
-      toast.error(data.msg || "Failed to delete business");
+  const handleDelete = async (id) => {
+    console.log("Attempting to delete business ID:", id); 
+    const confirmDelete = window.confirm("Are you sure you want to delete this business?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await apiDelete(`businesses/${id}`);
+      console.log("Delete response:", res.data);
+      alert(res.data.msg);
+      
+      // After successful delete, remove the deleted business from the state
+      setBusinesses((prevBusinesses) => prevBusinesses.filter((business) => business.id !== id));
+    } catch (error) {
+      console.error("Error deleting business:", error);
+      alert("Failed to delete business");
     }
   };
-  
+
+
   // const handleStatusChange = (id, value) => {
   //   if (!value) return;
   //   const updatedStatus = value === "active";
@@ -123,9 +146,13 @@ export default function Page() {
                   <td className="px-4 py-3">{user.name}</td>
                   <td className="px-4 py-3">{user.phone}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
-                  <span className={`h-8 px-3 rounded-md text-sm flex items-center justify-center font-semibold ${ user.is_active ? "bg-orange-500 text-white" : "bg-orange-600 text-white"}`}>
+
+                  <button
+                    onClick={() => handleUpdate(user.id, { is_active: !user.is_active })}
+                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ user.is_active ? "bg-orange-600 hover:bg-orange-500" : "bg-gray-500 hover:bg-gray-400"} text-white`}>
                     {user.is_active ? "Active" : "Inactive"}
-                  </span>
+                  </button>
+
 
                   <button
                     onClick={() => handleEditOpen(user)}
@@ -142,12 +169,20 @@ export default function Page() {
                     Add Business
                   </button>
 
-                  <button
-                    onClick={() => handleDelete(user.business_id)}
-                    className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-xs disabled:opacity-50"
-                  >
-                    Delete
-                  </button>
+                  {businesses.filter(b => b.ownerId === user.id).length === 0 ? (
+                      <p className="text-xs text-gray-500">No businesses</p>
+                    ) : (
+                      businesses.filter(b => b.ownerId === user.id).map((business) => (
+                          <div key={business.id} className="border p-2 mb-1 rounded shadow">
+                            <button type="button"
+                              onClick={() => handleDelete(business.id)}
+                              className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs mt-1"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ))
+                    )}
 
                 </td>
                 </tr>

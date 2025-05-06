@@ -20,13 +20,13 @@ export default function CategoryCards() {
     const handleCategoryClick = (slug) => {
     };
   
-    if (loading) {
-      return <div className="text-center py-10 font-semibold">Loading categories...</div>;
-    }
+    // if (loading) {
+    //   return <div className="text-center py-10 font-semibold">Loading categories...</div>;
+    // }
   
-    if (error) {
-      return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
-    }
+    // if (error) {
+    //   return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+    // }
   
   return (
     <div className="p-2 sm:p-4 max-w-6xl xl:max-w-7xl mx-auto mt-6">

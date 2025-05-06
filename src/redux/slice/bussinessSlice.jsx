@@ -3,12 +3,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchBusinesses = createAsyncThunk("businesses/fetchBusinesses",
 async ({categoryslug,subcategoryslug}) => {
-  let url = "/businesses?isVerified=false&limit=40";
+  let url = "/businesses?isVerified=true&limit=40";
 
   if (categoryslug) {
     url += `&categoryslug=${categoryslug}`;
   }
-
 
   if (subcategoryslug) {
     url += `&subcategoryslug=${subcategoryslug}`;

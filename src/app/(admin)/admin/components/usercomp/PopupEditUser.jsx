@@ -7,7 +7,7 @@ const PopupEditUser = ({ user, isOpen, onClose, onUpdate }) => {
     email: '',
     phone: '',
     profile_image: '',
-    is_active: 1,
+    is_active: true,
   });
 
   useEffect(() => {
@@ -75,8 +75,8 @@ const PopupEditUser = ({ user, isOpen, onClose, onUpdate }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value={1}>Active</option>
-              <option value={0}>Inactive</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
             </select>
             <label className="absolute -top-3 left-3 text-sm text-gray-600 bg-white px-1">Status</label>
           </div>
