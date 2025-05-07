@@ -46,20 +46,22 @@ export default function Page() {
 
   useEffect(() => {
     const fetchBusinessesForActiveUsers = async () => {
-      console.log('Fetching businesses for active users...');
       const allBusinesses = [];
   
-      for (const user of users) {
-        if (user.is_active) {
-          try {
-            console.log(`user ID: ${user.id}`);
-            const userBusinesses = await apiGet(`/users/${user.id}/businesses`);
-            allBusinesses.push(...userBusinesses.map(b => ({ ...b, ownerId: user.id })));
-          } catch (err) {
-            console.error(`Failed to fetch businesses for user ${user.id}:`, err);
-          }
-        }
-      }
+      // for (const user of users) {
+      //   if (user.is_active) {
+      //     try {
+      //       console.log(`user ID: ${user.id}`);
+      //       const response = await apiGet(`/users/${user.id}`);
+      //       console.log("Response for user:", response);
+      //       const userBusinesses = response.businesses || [];
+      //       allBusinesses.push(...userBusinesses.map(b => ({ ...b, ownerId: user.id })));
+      //     } catch (err) {
+      //       console.error(`Failed to fetch businesses for user ${user.id}:`, err);
+      //     }
+      //   }
+      // }
+      console.log("Fetched businesses:", allBusinesses);
       setBusinesses(allBusinesses);
     };
   
@@ -69,11 +71,10 @@ export default function Page() {
   }, [users]);
 
   const handleUpdate = async (id, updatedData) => {
+    console.log("Clicked update for:",id, "with data:", updatedData); 
     try {
-      console.log("Updating user with ID:", id);
-      console.log("Updated data:", updatedData);
-  
       const response = await apiPut(`/users/${id}/profile`, updatedData);
+      console.log("Response after update:", response);
       toast.success("User updated successfully");
   
       setUsers((prevUsers) =>
@@ -90,12 +91,12 @@ export default function Page() {
   };
 
   const handleDelete = async (id) => {
-    console.log("Attempting to delete business ID:", id); 
+    console.log("Deleting business with ID:", id);
     const confirmDelete = window.confirm("Are you sure you want to delete this business?");
     if (!confirmDelete) return;
 
     try {
-      const res = await apiDelete(`businesses/${id}`);
+      const res = await apiDelete(`/businesses/${id}`);
       console.log("Delete response:", res.data);
       alert(res.data.msg);
       
@@ -147,12 +148,14 @@ export default function Page() {
                   <td className="px-4 py-3">{user.phone}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
 
-                  <button
-                    onClick={() => handleUpdate(user.id, { is_active: !user.is_active })}
-                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ user.is_active ? "bg-orange-600 hover:bg-orange-500" : "bg-gray-500 hover:bg-gray-400"} text-white`}>
-                    {user.is_active ? "Active" : "Inactive"}
-                  </button>
-
+                  <button onClick={() => { 
+                    const newStatus = user.is_active === 1 || user.is_active === true ? 0 : 1; 
+                    console.log("Toggling status to:", newStatus); 
+                    handleUpdate(user.id, { is_active: newStatus });}}
+                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ user.is_active === 1 || user.is_active === true
+                    ? "bg-gray-500 hover:bg-gray-400" : "bg-orange-500 hover:bg-orange-400" } text-white`}>
+                    {user.is_active === 1 || user.is_active === true ? "Inactive" : "Active"}
+                    </button>
 
                   <button
                     onClick={() => handleEditOpen(user)}
@@ -169,20 +172,20 @@ export default function Page() {
                     Add Business
                   </button>
 
-                  {businesses.filter(b => b.ownerId === user.id).length === 0 ? (
-                      <p className="text-xs text-gray-500">No businesses</p>
-                    ) : (
-                      businesses.filter(b => b.ownerId === user.id).map((business) => (
+                  <div className="mt-2">
+                      {businesses.filter(b => b.ownerId === id).length === 0 ? (
+                        <p className="text-xs text-gray-500">No businesses</p>
+                      ) : (
+                        businesses.filter(b => b.ownerId === id).map((business) => (
                           <div key={business.id} className="border p-2 mb-1 rounded shadow">
-                            <button type="button"
-                              onClick={() => handleDelete(business.id)}
-                              className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs mt-1"
-                            >
+                            <p className="text-xs font-medium">{business.name}</p>
+                            <button onClick={() => handleDelete(business.id)} className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs mt-1">
                               Delete
                             </button>
                           </div>
                         ))
-                    )}
+                      )}
+                    </div>
 
                 </td>
                 </tr>

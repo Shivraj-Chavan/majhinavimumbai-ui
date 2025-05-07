@@ -127,12 +127,12 @@ export default function Navbar() {
                 >
                   <Image
                     src="/user-avatar.png"
-                    // alt="User"
+                    alt="User"
                     width={32}
                     height={32}
                     className="rounded-full object-cover"
                   />
-                  <span className="text-sm">User</span>
+                  {/* <span className="text-sm">User</span> */}
                   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
