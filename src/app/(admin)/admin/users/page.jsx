@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { apiDelete, apiGet, apiPut } from "@/lib/apiClient";
+import { apiGet, apiPut } from "@/lib/apiClient";
 import { FaUserEdit } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination"; 
@@ -18,6 +18,7 @@ export default function Page() {
   const [owner, setOwner] = useState(null);
   const [businesses, setBusinesses] = useState([]);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const storedOwner = localStorage.getItem("owner");
@@ -30,7 +31,11 @@ export default function Page() {
     const fetchUsers = async () => {
       try {
         const data = await apiGet("/users");
-        console.log("Fetched users:", data); 
+        console.log("Fetched users:", data);  
+  
+        // const verifiedUsers = data.filter(user => user.details && user.details.isVerified === true);
+        // console.log("Verified users:", verifiedUsers);
+        // setUsers(verifiedUsers);
         setUsers(data);
       } catch (error) {
         console.log("Error fetching users:", error);
@@ -38,7 +43,7 @@ export default function Page() {
     };
     fetchUsers();
   }, []);
-
+  
   const handleEditOpen = (user) => {
     setSelectedUser(user);
     setShowPopup(true);
@@ -73,7 +78,7 @@ export default function Page() {
   const handleUpdate = async (id, updatedData) => {
     console.log("Clicked update for:",id, "with data:", updatedData); 
     try {
-      const response = await apiPut(`/users/${id}/profile`, updatedData);
+      const response = await apiPut(`/${id}/profile`, updatedData);
       console.log("Response after update:", response);
       toast.success("User updated successfully");
   
@@ -90,25 +95,34 @@ export default function Page() {
   router.push(`users/businessRegister?ownerId=${userId}`);
   };
 
-  const handleDelete = async (id) => {
-    console.log("Deleting business with ID:", id);
-    const confirmDelete = window.confirm("Are you sure you want to delete this business?");
-    if (!confirmDelete) return;
-
+  const handleBlock = async (id) => {  
+    if (!id) {
+      alert('User ID is required');
+      return; 
+    }
+    setIsLoading(true);
+  
     try {
-      const res = await apiDelete(`/businesses/${id}`);
-      console.log("Delete response:", res.data);
-      alert(res.data.msg);
-      
-      // After successful delete, remove the deleted business from the state
-      setBusinesses((prevBusinesses) => prevBusinesses.filter((business) => business.id !== id));
+      console.log('Blocking user with ID:', id);
+      const response = await apiPut(`/block/${id}`);  
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data); 
+        alert('User blocked successfully');
+      } else {
+        const data = await response.json();
+        console.log(data); 
+        alert(data.message || 'Failed to block user');
+      }
     } catch (error) {
-      console.error("Error deleting business:", error);
-      alert("Failed to delete business");
+      console.log('Error occurred while blocking the user:', error);
+      alert('An error occurred while blocking the user');
+    } finally {
+      setIsLoading(false);
     }
   };
-
-
+  
   // const handleStatusChange = (id, value) => {
   //   if (!value) return;
   //   const updatedStatus = value === "active";
@@ -161,7 +175,7 @@ export default function Page() {
                     onClick={() => handleEditOpen(user)}
                     className="h-8 bg-blue-600 hover:bg-blue-500 text-white px-3 rounded text-sm flex items-center justify-center"
                   >
-                    <FaUserEdit />
+                    <FaUserEdit/>
                   </button>
 
                   <button
@@ -172,21 +186,11 @@ export default function Page() {
                     Add Business
                   </button>
 
-                  <div className="mt-2">
-                      {businesses.filter(b => b.ownerId === id).length === 0 ? (
-                        <p className="text-xs text-gray-500">No businesses</p>
-                      ) : (
-                        businesses.filter(b => b.ownerId === id).map((business) => (
-                          <div key={business.id} className="border p-2 mb-1 rounded shadow">
-                            <p className="text-xs font-medium">{business.name}</p>
-                            <button onClick={() => handleDelete(business.id)} className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs mt-1">
-                              Delete
-                            </button>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
+                  <button type="button" className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-xs"
+                    onClick={() => handleBlock(user.id)} disabled={isLoading} >
+                    {isLoading ? 'Blocking...' : 'Block'}
+                  </button>
+  
                 </td>
                 </tr>
               ))}

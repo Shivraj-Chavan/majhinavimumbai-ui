@@ -8,7 +8,8 @@ const Page = () => {
   const searchParams = useSearchParams();
   const ownerId = searchParams.get("ownerId");
   console.log({ownerId})
-  return <BusinessRegister ownerId={ownerId}/>;
+ 
+  return <BusinessRegister ownerId={ownerId} />;
 };
 
 export default Page;

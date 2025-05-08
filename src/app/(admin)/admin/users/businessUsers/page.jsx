@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { apiGet } from "@/lib/apiClient";
+import { apiDelete, apiGet } from "@/lib/apiClient";
 import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 
-export default function BusinessUsersPage() {
+export default function BusinessUsersPage({business}) {
   const [businessUsers, setBusinessUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
@@ -46,6 +46,27 @@ export default function BusinessUsersPage() {
     setCurrentPage(page); 
   };
 
+const handleDelete = async (id) => {
+  console.log("Deleting business with ID:", id);
+  if (!id) {
+    alert("Invalid business ID");
+    return;
+  }
+
+  try {
+    const data = await apiDelete(`/businesses/${id}`);
+    alert(data.msg || "Business deleted");
+    setBusinessUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));  // delete business from that place
+
+    if (businessUsers.length <= limit) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  } catch (err) {
+    console.log("API Error:", err);
+    alert(err.message);
+  }
+};
+
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Business Users</h2>
@@ -67,9 +88,9 @@ export default function BusinessUsersPage() {
                   <th className="px-4 py-3 text-center">Action</th>
                 </tr> 
               </thead> 
-              <tbody className="bg-white/30 backdrop-blur-md">
+              <tbody className="bg-white/30 backdrop-blur-md ">
                 {businessUsers.map((user, index) => (
-                  <tr key={index} className="hover:bg-white/50 transition-all duration-300">
+                  <tr key={index} className="hover:bg-white/50 transition-all duration-300 gap-3">
                     <td className="px-4 py-3 font-medium text-gray-800">{(currentPage - 1) * limit + (index + 1)}</td>
                     <td className="px-4 py-3">{user.name}</td>
                     <td className="px-4 py-3">{user.phone}</td>
@@ -78,9 +99,16 @@ export default function BusinessUsersPage() {
                         <FaRegEye />
                       </button>
 
-                      {/* <button className="bg-green-500 hover:bg-green-600 text-white text-md px-4 py-1 rounded-full font-medium shadow-md transition duration-200">
-                        btn
-                      </button> */}
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white text-md px-4 py-1 mx-3 rounded-full font-medium shadow-md transition duration-200"
+                        onClick={() => {
+                          if (confirm("Are you sure you want to delete this business?")) {
+                            handleDelete(user?.id);}
+                        }}
+                      >
+                        Delete
+                      </button>
+
                     </td>
                   </tr>
                 ))}
@@ -98,6 +126,16 @@ export default function BusinessUsersPage() {
                   <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
                     <FaRegEye />
                   </button>
+
+                  <button
+                        className="bg-red-500 hover:bg-red-600 text-white text-md px-4 py-1 mx-3 rounded-full font-medium shadow-md transition duration-200"
+                        onClick={() => {
+                          if (confirm("Are you sure you want to delete this business?")) {
+                            handleDelete(user?.id);}
+                        }}
+                      >
+                        Delete
+                      </button>
                 </div>
               </div>
             ))}

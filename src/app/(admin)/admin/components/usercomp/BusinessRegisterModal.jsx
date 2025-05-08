@@ -1,57 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dialog } from "@headlessui/react";
 import { IoMdClose } from "react-icons/io";
+import { useDispatch, useSelector } from 'react-redux';
+import { apiPut } from '@/lib/apiClient';
 
 export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [subcategoriesData, setSubcategoriesData] = useState([]);
+  const [filteredSubcategories, setFilteredSubcategories] = useState([]);
+  const [showWarning, setShowWarning] = useState(false);
+
+  const dispatch = useDispatch();
+  const { categories, loading, error } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    if (categories?.length > 0) {
+      setSubcategoriesData(categories);
+    }
+  }, [categories]);
 
   useEffect(() => {
     if (business) {
       let parsedTimings = [];
-  
       try {
         parsedTimings = typeof business.timing === "string"
           ? JSON.parse(business.timing)
-          : Array.isArray(business.timing) 
-            ? business.timing 
+          : Array.isArray(business.timing)
+            ? business.timing
             : [];
       } catch (err) {
         console.error("Failed to parse timing JSON", err);
       }
-  
       setFormData({
         ...business,
         timing: parsedTimings,
       });
+      setSelectedCategory(business.category);
+      setSelectedSubcategory(business.subcategory);
     }
   }, [business]);
-  
-  useEffect(()=>{
-    // console.log(JSON.parse(formData.timing))
-    // output [{"day":"Monday","open":"10:02","close":"20:04"},{"day":"Tuesday","open":"12:04","close":"20:04"}]
-    // console.log({"ddddddddddddt":formData.timing})
-    // const timing = typeof formData.timing === "string" ? JSON.parse(formData.timing) : formData.timing || [];
-
-    // const data=JSON.parse(formData.timing)
-    // console.log(typeof timing)
-    // console.log({timing})
-    // data?.forEach((dt)=>{
-    //  console.log(dt) 
-    // })
-
-  },[formData?.timing])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleTimingChange = (index, type, value) => {
+    const updatedTiming = [...formData.timing];
+    updatedTiming[index][type] = value;
+    setFormData((prev) => ({ ...prev, timing: updatedTiming }));
+  };
+
   const handleUpdate = async () => {
     try {
-      const response = await apiPut("/users/profile", formData);
+      const payload = {
+        ...formData,
+        category: selectedCategory,
+        subcategory: selectedSubcategory,
+        timing: JSON.stringify(formData.timing),
+      };
+      await apiPut("/users/profile", payload);
       toast.success("Business updated successfully!");
-      console.log("Updated Data:", response);
       setIsEditing(false);
     } catch (error) {
       console.error("Update failed:", error);
@@ -59,138 +71,155 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
     }
   };
 
-  if (!business) return null;
+  const handleCategoryChange = (e) => {
+    const selectedSlug = e.target.value;
+    setSelectedCategory(selectedSlug);
+    setSelectedSubcategory("");
+    const category = subcategoriesData.find((cat) => cat.id == selectedSlug);
+    setFilteredSubcategories(category ? category.subcategories : []);
+  };
 
-  const fields = [
-    // { label: "Owner Id", name: "owner_id" },
-    { label: "Name", name: "name" },
-    { label: "Phone", name: "phone" },
-    { label: "Email", name: "email" },
-    { label: "Category", name: "category_id" },
-    { label: "Subcategory", name: "subcategory_id" },
-    { label: "Address", name: "address" },
-    { label: "Area", name: "area" },
-    { label: "Pincode", name: "pin_code" },
-    { label: "Landmark", name: "landmark" },
-    { label: "Sector", name: "sector" },
-    { label: "Whatsapp Number", name: "wp_number" },
-    { label: "timing", name: "timing" },
-    { label: "Website", name: "website" },
-  ];
+  const handleSubcategoryChange = (e) => {
+    setSelectedSubcategory(e.target.value);
+  };
+
+  const handleSubcategoryFocus = () => {
+    if (!selectedCategory) setShowWarning(true);
+    else setShowWarning(false);
+  };
+
+  if (!business) return null;
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
-
-      {/* Modal container */}
       <div className="fixed inset-0 flex items-start justify-center p-4 overflow-y-auto sm:items-center">
-        <Dialog.Panel className="w-full max-w-3xl  transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 mt-0 md:mt-30 sm:mt-0 shadow-2xl transition-all">
-          
+        <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all mt-25">
           {/* Header */}
           <div className="flex justify-between items-center border-b pb-4 mb-4">
-            <Dialog.Title className="text-xl sm:text-2xl font-semibold text-gray-800">
+            <Dialog.Title className="text-2xl font-semibold text-gray-800">
               Business Details
             </Dialog.Title>
             <button onClick={onClose}>
-              <IoMdClose className="text-2xl text-gray-500 hover:text-red-600 transition" />
+              <IoMdClose className="text-2xl text-gray-500 hover:text-red-600" />
             </button>
           </div>
 
-          {/* Form */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-          {fields.map((field) => (
-          <div key={field.name}>
-            <label className="block font-medium text-gray-600 mb-1">
-              {field.label}
-            </label>
+          {/* Fields */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            {/* Text Inputs */}
+            {[
+              { label: "Name", name: "name" },
+              { label: "Phone", name: "phone" },
+              { label: "Email", name: "email" },
+              { label: "Address", name: "address" },
+              { label: "Area", name: "area" },
+              { label: "Pincode", name: "pin_code" },
+              { label: "Landmark", name: "landmark" },
+              { label: "Sector", name: "sector" },
+              { label: "Whatsapp Number", name: "wp_number" },
+              { label: "Website", name: "website" },
+            ].map(({ label, name }) => (
+              <div key={name}>
+                <label className="block text-gray-600 font-medium mb-1">{label}</label>
+                <input
+                  name={name}
+                  value={formData[name] || ""}
+                  onChange={handleChange}
+                  readOnly={!isEditing}
+                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none ${isEditing ? "border-gray-300 focus:ring-2 focus:ring-orange-400" : "bg-gray-100 text-gray-700" }`}
+                />
+              </div>
+            ))}
 
-          {/* timing */}
-        {field.name === "timing" ? (
-          isEditing ? (
-            <div className="flex gap-2 items-center">
-              <label className="text-sm">Open:</label>
-              <input
-                type="time"
-                name="timing"
-                value={formData.timing || ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    timing: e.target.value,
-                  }))
-                }
-                className="border border-gray-300 rounded px-2 py-1"
-              />
-              <label className="text-sm">Close:</label>
-              <input
-                type="time"
-                name="timing"
-                value={formData.timing || ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    timing: e.target.value,
-                  }))
-                }
-                className="border border-gray-300 rounded px-2 py-1"
-              />
+            {/* Category */}
+            <div>
+              <label className="block text-gray-600 font-medium mb-1">Category</label>
+              <select
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border rounded-xl"
+              >
+                <option value="">Select Category</option>
+                {subcategoriesData.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
             </div>
-          ) : (
-            <div className="text-gray-800">
-              <div className="text-gray-800">
-              <div className="space-y-1 text-gray-800">
+
+            {/* Subcategory */}
+            <div>
+              <label className="block text-gray-600 font-medium mb-1">Subcategory</label>
+              <select
+                value={selectedSubcategory}
+                onChange={handleSubcategoryChange}
+                onFocus={handleSubcategoryFocus}
+                disabled={!isEditing || !filteredSubcategories.length}
+                className={`w-full px-4 py-2 border rounded-xl ${showWarning ? "border-red-500 ring-red-400" : ""}`}
+              >
+                <option value="">Select Subcategory</option>
+                {filteredSubcategories.map((sub, i) => (
+                  <option key={i} value={sub.id}>{sub.name}</option>
+                ))}
+              </select>
+              {showWarning && <p className="text-red-500 text-sm mt-1">Please select a category first.</p>}
+            </div>
+
+            {/* Timing */}
+            <div className="sm:col-span-2">
+              <label className="block text-gray-600 font-medium mb-1">Timing</label>
+              <div className="space-y-1">
                 {Array.isArray(formData.timing) && formData.timing.length > 0 ? (
                   formData.timing.map((item, index) => (
-                    <div key={index}>
-                      {item.day}: {item.open} - {item.close}
+                    <div key={index} className="flex gap-3 items-center">
+                      <span className="w-20">{item.day}</span>
+                      {isEditing ? (
+                        <>
+                          <input
+                            type="time"
+                            value={item.open}
+                            onChange={(e) => handleTimingChange(index, "open", e.target.value)}
+                            className="border rounded px-2 py-1"
+                          />
+                          <span>to</span>
+                          <input
+                            type="time"
+                            value={item.close}
+                            onChange={(e) => handleTimingChange(index, "close", e.target.value)}
+                            className="border rounded px-2 py-1"
+                          />
+                        </>
+                      ) : (
+                        <span>{item.open} - {item.close}</span>
+                      )}
                     </div>
                   ))
                 ) : (
-                  "N/A"
+                  <div className="text-gray-500">N/A</div>
                 )}
               </div>
-           </div>
             </div>
-          )
-        ) : isEditing ? (
-          <input
-            type="text"
-            name={field.name}
-            value={formData[field.name] || ""}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        ) : field.name === "website" && formData.website ? (
-          <a
-            href={formData.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline break-words"
-          >
-            {formData.website}
-          </a>
-        ) : (
-          <div className="text-gray-800 break-words">
-            {formData[field.name] || "N/A"}
-          </div>
-        )}
-      </div>
-    ))}
           </div>
 
-          {/* Footer Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
             {isEditing ? (
               <>
                 <button
                   onClick={handleUpdate}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium shadow transition w-full sm:w-auto"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium"
                 >
                   Save Changes
                 </button>
                 <button
-                  onClick={() => { setIsEditing(false); setFormData(business); }}
-                  className="bg-gray-300 hover:bg-gray-400 text-black px-6 py-2 rounded-full font-medium shadow transition w-full sm:w-auto"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setFormData(business);
+                    setSelectedCategory(business.category);
+                    setSelectedSubcategory(business.subcategory);
+                  }}
+                  className="bg-gray-300 hover:bg-gray-400 text-black px-6 py-2 rounded-full font-medium"
                 >
                   Cancel
                 </button>
@@ -198,7 +227,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-medium shadow transition w-full sm:w-auto"
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-medium"
               >
                 Edit Business
               </button>
