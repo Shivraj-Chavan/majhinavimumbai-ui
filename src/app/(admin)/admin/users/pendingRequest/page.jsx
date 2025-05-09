@@ -1,105 +1,132 @@
 "use client";
 
-import { apiGet } from '@/lib/apiClient';
-import React, { useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Pagination from '../../components/usercomp/Pagination';
+import React, { useEffect, useState } from "react";
+import { apiGet, apiPut } from "@/lib/apiClient";
+import { FaRegEye } from "react-icons/fa";
+import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
+import Pagination from "../../components/usercomp/Pagination";
 
-
-const PendingRequestsPage = () => {
-  const [users, setUsers] = useState([]);
+export default function BusinessUsersPage({business}) {
+  const [businessUsers, setBusinessUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(10);
+  const [pendingList, setPendingList] = useState([]);
 
+  const limit = 10;
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchBusinessUsers = async () => {
       try {
-        const data = await apiGet("/users");
-        console.log("Fetched users:", data);
-        setUsers(data);
+        setLoading(true);
+        const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
+        setBusinessUsers(response.data); 
+        setTotalPages(response.totalPages); 
       } catch (error) {
-        console.error("Error fetching users:", error);
-        toast.error("Failed to fetch users");
+        console.error("Error fetching business users:", error);
+      } finally { 
+        setLoading(false);
       }
     };
 
-    fetchUsers();
-  }, []);
-
-  const handleStatusChange = (id, newStatus) => {
-    setUsers((prev) => prev.map((user) =>user.id === id ? { ...user, status: newStatus } : user ));
-    toast.success(`User marked as ${newStatus}`);
+    fetchBusinessUsers();
+  }, [currentPage]);
+ 
+  const openModal = (business) => {
+    setSelectedBusiness(business); 
+    setModalOpen(true); 
+  };
+ 
+  const closeModal = () => {  
+    setModalOpen(false);  
+    setSelectedBusiness(null);
+  }; 
+ 
+  const handlePageChange = (page) => {
+    setCurrentPage(page); 
   };
 
-  const statusColors = {
-    Pending: 'bg-yellow-100 text-yellow-800',
-    Verified: 'bg-green-100 text-green-800',
-    Unverified: 'bg-red-100 text-red-800',
+  const handleVerified = async (id) => {
+    setPendingList((prev) =>
+      prev.filter((biz) => biz.id !== verifiedBusinessId)
+    );
+    try {
+      const response = await apiPut(`/businesses/${id}`, { isVerified: true });
+      if (response && response.success) {
+        setBusinessUsers((prev) => prev.filter((biz) => biz.id !== id));
+        alert("Business verified successfully");
+      } else {
+        alert("Failed to verify business");
+      }
+    } catch (error) {
+      console.error("Error verifying business:", error);
+      alert("Failed to verify the business");
+    }
   };
-
-  // Pagination Logic
-  const totalPages = Math.ceil(users.length / usersPerPage);
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-  <h1 className="text-2xl font-semibold mb-4 text-gray-800"> Pending Requests</h1>
-  
-  <div className="w-full overflow-x-auto">
-    <div className="hidden md:block">
-      <table className="min-w-full text-sm text-left">
-        <thead className="bg-white/60 text-gray-700 uppercase text-xs rounded-t-lg">
-          <tr>
-            <th className="px-4 py-3">SR.No</th>
-            <th className="px-4 py-3">User</th>
-            <th className="px-4 py-3">Phone</th>
-            <th className="px-4 py-3">Status</th>
-            <th className="px-4 py-3">Action</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white/30 backdrop-blur-md">
-          {currentUsers.map((user, index) => (
-            <tr key={user.id} className="hover:bg-white/50 transition-all duration-300">
-              <td className="px-4 py-3 font-medium text-gray-800">
-                {(currentPage - 1) * usersPerPage + index + 1}
-              </td>
-              <td className="px-4 py-3">{user.name}</td>
-              <td className="px-4 py-3">{user.phone}</td>
-              <td className="px-4 py-3">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusColors[user.status] || 'bg-gray-200 text-gray-700'}`}>
-                  {user.status}
-                </span>
-              </td>
-              <td className="px-4 py-3">
-                <select value={user.status} onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                  className="border-gray-300 rounded px-3 py-1 text-sm focus:ring focus:ring-indigo-200"
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Verified">Verified</option>
-                  <option value="Unverified">Unverified</option>
-                </select>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Pending Bussiness Request</h2>
+
+      {loading ? (
+        <div className="text-center text-gray-600">Loading...</div>
+      ) : businessUsers.length === 0 ? (
+        <div className="text-center text-gray-500">No business users found.</div>
+      ) : (
+        <div className="w-full overflow-x-auto">
+          {/* Desktop View */}
+          <div className="hidden md:block">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-white/60 text-gray-700 uppercase text-md rounded-t-lg">
+                <tr>
+                  <th className="px-4 py-3">SR. NO</th>
+                  <th className="px-4 py-3">Business Name</th>
+                  <th className="px-4 py-3">Phone</th>
+                  <th className="px-4 py-3 text-center">Action</th>
+                </tr> 
+              </thead> 
+              <tbody className="bg-white/30 backdrop-blur-md ">
+                {businessUsers.map((user, index) => (
+                  <tr key={index} className="hover:bg-white/50 transition-all duration-300 gap-3">
+                    <td className="px-4 py-3 font-medium text-gray-800">{(currentPage - 1) * limit + (index + 1)}</td>
+                    <td className="px-4 py-3">{user.name}</td>
+                    <td className="px-4 py-3">{user.phone}</td>
+                    <td className="px-4 py-3 text-center">
+                      <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
+                        <FaRegEye />
+                      </button>
+
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile View */}
+          <div className="md:hidden">
+            {businessUsers.map((user, index) => (
+              <div key={index} className="mb-4 p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold">{user.name}</h3>
+                <p className="text-sm text-gray-600 mt-1">Phone: {user.phone}</p>
+                <div className="mt-4 flex justify-end">
+                  <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
+                    <FaRegEye />
+                  </button>
+
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination Component */}
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
+        </div>
+      )}
+
+      {/* Modal Component */}
+      <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} onVerified={handleVerified} />
     </div>
-  </div>
-
-  {/* Pagination */}
-  {totalPages > 1 && (
-    <div className="mt-4">
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
-    </div>
-  )}
-
-  <ToastContainer position="top-right" autoClose={2000} />
-</div>
-
   );
-};
-
-export default PendingRequestsPage;
+}

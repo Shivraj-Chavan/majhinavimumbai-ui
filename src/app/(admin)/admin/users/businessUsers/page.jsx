@@ -6,7 +6,7 @@ import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 
-export default function BusinessUsersPage({business}) {
+export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
@@ -19,7 +19,8 @@ export default function BusinessUsersPage({business}) {
     const fetchBusinessUsers = async () => {
       try {
         setLoading(true);
-        const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
+        const response = await apiGet(`/businesses?isVerified=true&page=${currentPage}&limit=${limit}`);
+        console.log("Verified businesses response:", response);
         setBusinessUsers(response.data); 
         setTotalPages(response.totalPages); 
       } catch (error) {
@@ -65,6 +66,13 @@ const handleDelete = async (id) => {
     console.log("API Error:", err);
     alert(err.message);
   }
+};
+
+const updateVerifiedBusinessList = (updatedBusiness) => {
+  setBusinessUsers((prevUsers) => {
+    const existing = prevUsers.filter((user) => user.id !== updatedBusiness.id);  // Add the new verified business and remove it from the pending list 
+    return [...existing, updatedBusiness];
+  });
 };
 
   return (
@@ -147,7 +155,7 @@ const handleDelete = async (id) => {
       )}
 
       {/* Modal Component */}
-      <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} />
+      <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} updateVerifiedBusinessList={updateVerifiedBusinessList}/>
     </div>
   );
 }
