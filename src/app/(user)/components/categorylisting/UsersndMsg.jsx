@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function UsersndMsg() {
     const [message, setMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
 
+    const handleMessageSubmit=()=>{}
   return (
     <div className="mt-10 bg-white rounded-xl shadow p-6 max-w-2xl mx-auto">
     <h2 className="text-xl font-semibold mb-4 text-blue-800">Send an Enquiry</h2>

@@ -25,28 +25,53 @@ const hours = {
 
 export default function ListingInfo() {
   const params = useParams();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const slug = params?.slug ? (Array.isArray(params.slug) ? params.slug[0] : params.slug) : null;
   const [business, setBusiness] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+    useEffect(() => {
+      if (!slug) return;
+    
+      const fetchBusiness = async () => {
+        try {
+          const data = await apiGet(`/businesses/s/${slug}`);
+          console.log("API data response:", data); 
+    
+          if (!data.business) {
+            throw new Error("Business not found.");
+          }
+    
+          setBusiness(data.business); 
+        } catch (err) {
+          console.error("Fetch error:", err);
+          setError(err.message || "Error loading business");
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      fetchBusiness();
+    }, [slug]);
+    
+  
+  // useEffect(() => {
+  //   const fetchBusiness = async () => {
+  //     try {
+  //       const data = await apiGet(`/businesses/${id}`);
+  //       console.log("Fetched business:", data);
+  //       setBusiness(data);
+  //     } catch (err) {
+  //       console.error(err);
+  //       setError(err.message || "Failed to fetch business.");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const fetchBusiness = async () => {
-      try {
-        const data = await apiGet(`/businesses/${id}`);
-        console.log("Fetched business:", data);
-        setBusiness(data);
-      } catch (err) {
-        console.error(err);
-        setError(err.message || "Failed to fetch business.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchBusiness();
-    console.log('Params',params);
-  }, [id]);
+  //   if (id) fetchBusiness();
+  //   console.log('Params',params);
+  // }, [id]);
 
   const renderStars = (rating) => {
     const full = Math.floor(rating);
@@ -55,9 +80,9 @@ export default function ListingInfo() {
 
     return (
       <>
-        {[...Array(full)].map((_, i) => <FaStar key={`full-${i}`} />)}
+        {/* {[...Array(full)].map((_, i) => <FaStar key={`full-${i}`} />)}
         {half && <FaStarHalfAlt />}
-        {[...Array(empty)].map((_, i) => <FaRegStar key={`empty-${i}`} />)}
+        {[...Array(empty)].map((_, i) => <FaRegStar key={`empty-${i}`} />)} */}
       </>
     );
   };
@@ -101,7 +126,7 @@ export default function ListingInfo() {
       <div className="flex flex-wrap gap-3 mb-6 justify-center">
         <Actionbtn href={business.website} icon={<FcGlobe />} label="Website" ringColor="blue" />
         <Actionbtn href={business.mapLink} icon={<FcDownRight />} label="Directions" ringColor="gray" />
-        <Actionbtn href={`tel:${business.contact}`} icon={<FcCallback />} label="Call" ringColor="green" />
+        <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
         <Actionbtn icon={<FcBookmark />} label="Save" ringColor="orange" isButton />
       </div>
 

@@ -51,7 +51,7 @@ export default function Page() {
 
   useEffect(() => {
     const fetchBusinessesForActiveUsers = async () => {
-      const allBusinesses = [];
+      // const allBusinesses = [];
   
       // for (const user of users) {
       //   if (user.is_active) {
@@ -66,8 +66,8 @@ export default function Page() {
       //     }
       //   }
       // }
-      console.log("Fetched businesses:", allBusinesses);
-      setBusinesses(allBusinesses);
+      // console.log("Fetched businesses:", allBusinesses);
+      // setBusinesses(allBusinesses);
     };
   
     if (users.length > 0) {
@@ -76,17 +76,16 @@ export default function Page() {
   }, [users]);
 
   const handleUpdate = async (id, updatedData) => {
-    console.log("Clicked update for:",id, "with data:", updatedData); 
+    console.log("Clicked update for:", id, "with data:", updatedData);
     try {
-      const response = await apiPut(`/${id}/profile`, updatedData);
+      const response = await apiPut(`/users/${id}/profile`, updatedData);
       console.log("Response after update:", response);
+  
       toast.success("User updated successfully");
   
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>user.id === id ? { ...user, ...response.data } : user )
-      );
+      setUsers((prevUsers) => prevUsers.map((user) => user.id === id ? { ...user, ...response } : user));
     } catch (err) {
-      console.error("Update failed:", err);
+      console.error("Update failed:", err.response?.data || err.message);
       toast.error("Failed to update user");
     }
   };
@@ -95,41 +94,40 @@ export default function Page() {
   router.push(`users/businessRegister?ownerId=${userId}`);
   };
 
-  const handleBlock = async (id) => {  
+  const handleBlock = async (id) => {
     if (!id) {
       alert('User ID is required');
-      return; 
+      return;
     }
     setIsLoading(true);
   
     try {
       console.log('Blocking user with ID:', id);
-      const response = await apiPut(`/block/${id}`);  
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data); 
-        alert('User blocked successfully');
-      } else {
-        const data = await response.json();
-        console.log(data); 
-        alert(data.message || 'Failed to block user');
-      }
+      const response = await apiPut(`/users/block/${id}`); 
+      console.log(response);
+      alert('User blocked successfully');
     } catch (error) {
       console.log('Error occurred while blocking the user:', error);
-      alert('An error occurred while blocking the user');
+      const message = error.response?.data?.message || 'Failed to block user';
+      alert(message);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleStatusToggle = async (userId, currentStatus) => {
+    const newStatus = currentStatus === 1 ? 0 : 1;
   
-  // const handleStatusChange = (id, value) => {
-  //   if (!value) return;
-  //   const updatedStatus = value === "active";
-  //   const updatedUser = users.find((user) => user.id === id);
-  //   handleUpdate(id, { ...updatedUser, is_active: updatedStatus });
-  //   console.log(`User ${id} status changed to ${value}`);
-  // };
+    try {
+      const updatedUser = await apiPut(`/users/${userId}/profile`, { is_active: newStatus });
+      console.log('User status updated:', updatedUser);
+  
+      setUsers(prevUsers => prevUsers.map(user => (user._id === userId ? { ...user, is_active: newStatus } : user)));
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      toast.error('Failed to update user status');
+    }
+  };
 
   // Pagination Logic
   const totalPages = Math.ceil(users.length / usersPerPage);
@@ -162,14 +160,14 @@ export default function Page() {
                   <td className="px-4 py-3">{user.phone}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
 
-                  <button onClick={() => { 
-                    const newStatus = user.is_active === 1 || user.is_active === true ? 0 : 1; 
-                    console.log("Toggling status to:", newStatus); 
-                    handleUpdate(user.id, { is_active: newStatus });}}
-                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ user.is_active === 1 || user.is_active === true
-                    ? "bg-gray-500 hover:bg-gray-400" : "bg-orange-500 hover:bg-orange-400" } text-white`}>
-                    {user.is_active === 1 || user.is_active === true ? "Inactive" : "Active"}
-                    </button>
+                  <button
+                    onClick={() => handleStatusToggle(user._id, user.is_active)}
+                    className={`h-8 px-3 rounded-md text-sm font-semibold ${
+                      user.is_active ? 'bg-gray-500 hover:bg-gray-400' : 'bg-orange-500 hover:bg-orange-400'
+                    } text-white`}
+                  >
+                    {user.is_active ? 'Inactive' : 'Active'}
+                  </button>
 
                   <button
                     onClick={() => handleEditOpen(user)}

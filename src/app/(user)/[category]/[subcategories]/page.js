@@ -15,7 +15,7 @@ import { fetchCategories } from "@/redux/slice/categoriesSlice";
 import { apiGet } from "@/lib/apiClient";
 
 export default function Page({ params }) {
-  const { category, subcategories, id } = use(params);
+  const { category, subcategories, slug } = use(params);
   const [business, setBusiness] = useState(null);
   const [loadingg, setLoadingg] = useState(true);
   const [errorr, setErrorr] = useState(null);
@@ -39,18 +39,17 @@ export default function Page({ params }) {
         useEffect(() => {
           const fetchBusiness = async () => {
             try {
-              const data = await apiGet(`/businesses/${id}`);
-              console.log('getbussiness',data);
-              setBusiness(data);
+              const data = await apiGet(`/s/${slug}`);
+              setBusiness(data.business);
             } catch (err) {
-              setErrorr(err.message || "Something went wrong");
+              setErrorr(err.message || "Failed to fetch business.");
             } finally {
-              setLoadingg(false);
+              setLoading(false);
             }
           };
-        
-          if (id) fetchBusiness();
-        }, [id]);
+      
+          if (slug) fetchBusiness();
+        }, [slug]);
 
     
       if (loading) {
@@ -130,9 +129,9 @@ export default function Page({ params }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
-          {listings.map((listing) => (
+          {listings.map((listing,id) => (
             <div
-              key={listing.id}
+              key={id}
               className="bg-white shadow-xl hover:shadow-2xl transition rounded-3xl p-5 flex flex-col sm:flex-row gap-6 border border-gray-100"
             >
               {/* Image */}
@@ -172,7 +171,7 @@ export default function Page({ params }) {
               {/* view, wp, share btn */}
                 <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
                   <Link
-                    href={`/listingInfo/${listing.id}`}
+                    href={`/listinginfo/${slug}`}
                     className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm px-4 py-2 rounded-full shadow hover:scale-105 transition-transform"
                   >
                     <FcFinePrint className="text-xl" />
@@ -252,7 +251,7 @@ export default function Page({ params }) {
                     )}
 
                     <div className="flex flex-wrap gap-2 mt-2">
-                      <Link href={`/listingInfo/${business.id}`}>
+                      <Link href={`/listinginfo/${business.slug}`}>
                         <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
                           <FcFinePrint className="text-xl mr-1" />
                           View Details

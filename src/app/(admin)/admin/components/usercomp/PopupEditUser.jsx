@@ -7,35 +7,36 @@ const PopupEditUser = ({ user, isOpen, onClose, onUpdate }) => {
     email: '',
     phone: '',
     profile_image: '',
-    is_active: true,
+    is_active: 1,
   });
 
   useEffect(() => {
     if (user) {
+      console.log("Loading user", user);
       setFormData({
         name: user.name || '',
         email: user.email || '',
         phone: user.phone || '',
         profile_image: user.profile_image || '',
-        is_active: user.is_active,
+        is_active: typeof user.is_active === "number" ? user.is_active : 1,
       });
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'is_active' ? parseInt(value) : value,
-    }));
+    console.log(`Field changed: ${name} = ${value}`);
+    setFormData((prev) => ({...prev,[name]: name === 'is_active' ? parseInt(value) : value,}));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Submitting updated form data for user ID:", user.id);
+    console.log(formData);
     onUpdate(user.id, formData);
     onClose();
   };
-
+  
   if (!isOpen) return null;
 
   return (
@@ -68,18 +69,18 @@ const PopupEditUser = ({ user, isOpen, onClose, onUpdate }) => {
             </div>
           ))}
 
-          <div className="relative">
-            <select
-              name="is_active"
-              value={formData.is_active}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-            <label className="absolute -top-3 left-3 text-sm text-gray-600 bg-white px-1">Status</label>
-          </div>
+            <div className="relative">
+              <select
+                name="is_active"
+                value={formData.is_active ? "1" : "0"}
+                onChange={(e) => setFormData({...formData,is_active: parseInt(e.target.value)})}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="0">Inactive</option>
+                <option value="1">Active</option>
+              </select>
+              <label className="absolute -top-3 left-3 text-sm text-gray-600 bg-white px-1">Status</label>
+            </div>
 
           <button
             type="submit"

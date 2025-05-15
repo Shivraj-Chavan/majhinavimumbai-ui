@@ -36,10 +36,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
       } catch (err) {
         console.error("Failed to parse timing JSON", err);
       }
-      setFormData({
-        ...business,
-        timing: parsedTimings,
-      });
+      setFormData({...business,timing: parsedTimings,});
       setSelectedCategory(business.category);
       setSelectedSubcategory(business.subcategory);
     }
@@ -77,11 +74,16 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
 
   const handleCategoryChange = (e) => {
     const selectedSlug = e.target.value;
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setSelectedCategory(selectedSlug);
-    setSelectedSubcategory("");
-    const category = subcategoriesData.find((cat) => cat.id == selectedSlug);
-    setFilteredSubcategories(category ? category.subcategories : []);
   };
+
+  useEffect(()=>{
+    setSelectedSubcategory("");
+    const category = subcategoriesData.find((cat) => cat.id == selectedCategory);
+    setFilteredSubcategories(category ? category.subcategories : []);
+  },[selectedCategory])
 
   const handleSubcategoryChange = (e) => {
     setSelectedSubcategory(e.target.value);
@@ -94,8 +96,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
 
   const handleSubmit = async () => {
     try {
-      const payload = {
-        ...formData,
+      const payload = { ...formData,
         category: selectedCategory,
         subcategory: selectedSubcategory,
         timing: JSON.stringify(formData.timing),
@@ -197,8 +198,9 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
                 <div>
                   <label className="block text-gray-600 font-medium mb-1">Category</label>
                   <select
-                    value={selectedCategory}
+                    value={formData['category_id']}
                     onChange={handleCategoryChange}
+                    name='category_id'
                     className="w-full px-4 py-2 border rounded-xl"
                   >
                     <option value="">Select Category</option>
@@ -212,8 +214,9 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
                 <div>
                   <label className="block text-gray-600 font-medium mb-1">Subcategory</label>
                   <select
-                    value={selectedSubcategory}
-                    onChange={handleSubcategoryChange}
+                    value={formData['subcategory_id']}
+                    onChange={handleChange}
+                    name='subcategory_id'
                     onFocus={handleSubcategoryFocus}
                     className={`w-full px-4 py-2 border rounded-xl ${showWarning ? "border-red-500 ring-red-400" : ""}`}
                   >
