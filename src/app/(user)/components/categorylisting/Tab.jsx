@@ -35,16 +35,20 @@ export default function Tab({ business, renderStars }) {
         ></iframe>
       </section>
 
-      {/* Menu Section */}
+          {/* Menu Section */}
       <section id="menu" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-2">Menu</h2>
         <ul className="text-gray-700 space-y-2">
-          {business.menu.map((item, idx) => (
-            <li key={idx} className="flex justify-between border-b py-2">
-              <span>{item.item}</span>
-              <span>{item.price}</span>
-            </li>
-          ))}
+          {business.menu?.length > 0 ? (
+            business.menu.map((item, idx) => (
+              <li key={idx} className="flex justify-between border-b py-2">
+                <span>{item.item}</span>
+                <span>{item.price}</span>
+              </li>
+            ))
+          ) : (
+            <p className="text-gray-500">No menu items available.</p>
+          )}
         </ul>
       </section>
 
@@ -52,17 +56,21 @@ export default function Tab({ business, renderStars }) {
       <section id="reviews" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-4">Reviews</h2>
         <div className="space-y-4">
-          {business.reviewsList.map((review, i) => (
-            <div key={i} className="bg-gray-50 p-4 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">{review.user}</span>
-                <div className="flex gap-1 text-yellow-500">
-                  {renderStars(review.rating)}
+          {business.reviewsList?.length > 0 ? (
+            business.reviewsList.map((review, i) => (
+              <div key={i} className="bg-gray-50 p-4 rounded-xl shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">{review.user}</span>
+                  <div className="flex gap-1 text-yellow-500">
+                    {renderStars(review.rating)}
+                  </div>
                 </div>
+                <p className="text-gray-600 mt-1">{review.comment}</p>
               </div>
-              <p className="text-gray-600 mt-1">{review.comment}</p>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500">No reviews yet.</p>
+          )}
         </div>
       </section>
 
@@ -77,18 +85,23 @@ export default function Tab({ business, renderStars }) {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {business.images.map((img, i) => (
-            <div key={i} className="relative h-40 rounded-lg overflow-hidden">
-              <Image
-                src={img}
-                alt={`Photo ${i + 1}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
+          {business.images?.length > 0 ? (
+            business.images.map((img, i) => (
+              <div key={i} className="relative h-40 rounded-lg overflow-hidden">
+                <Image
+                  src={img}
+                  alt={`Photo ${i + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 col-span-full">No images available.</p>
+          )}
         </div>
       </section>
+
     </div>
       </>
   )

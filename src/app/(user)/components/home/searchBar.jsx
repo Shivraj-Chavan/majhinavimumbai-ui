@@ -80,7 +80,7 @@ export default React.memo(function SearchBar() {
         </div>
       )}
 
-      {loading && <div className="absolute top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2 z-10 p-2">Loading...</div>}
+      {/* {loading && <div className="absolute top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2 z-10 p-2">Loading...</div>} */}
       {error && <div className="absolute top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2 z-10 p-2 text-red-500">{error}</div>}
       {query && !loading && !error && filteredSuggestions.length === 0 && (
         <div className="absolute top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2 z-10 p-2 text-gray-500">

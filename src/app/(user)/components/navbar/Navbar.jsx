@@ -143,7 +143,7 @@ export default function Navbar() {
                     <ul className="py-1 text-sm text-gray-700">
                       <li>
                         <button
-                          onClick={() => handleNavigate("/my-business")}
+                          onClick={() => handleNavigate("/MyBussiness")}
                           className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
                         >
                           <IoBusinessSharp className="text-md" />
