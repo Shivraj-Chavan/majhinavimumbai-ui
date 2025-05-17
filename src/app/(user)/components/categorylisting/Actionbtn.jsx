@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Actionbtn({ href, icon, label, ringColor, isButton }) {
-  const classes = `flex items-center gap-2 border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-700 hover:ring-2 hover:ring-${ringColor}-400 transition`;
+  const classes = `flex items-center gap-2 border border-gray-200 rounded-xl px-18 py-2 text-sm text-gray-700 hover:ring-2 hover:ring-${ringColor}-400 transition`;
 
   if (isButton) {
     return (

@@ -16,6 +16,14 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { CiSquareQuestion } from 'react-icons/ci';
 import { useRouter } from 'next/navigation';
 
+export function handleLoginSuccess (user, token) {
+  localStorage.setItem("token", token);
+  // localStorage.setItem("authRole", user.role);
+  // localStorage.setItem("authUser", JSON.stringify(user));
+  dispatch(login({ user, token, role: user.role }));
+  setShowModal(false);
+};
+
 export default function Navbar() {
   const [location, setLocation] = useState("Navi-mumbai");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -55,13 +63,7 @@ export default function Navbar() {
     };
   }, []);
 
-  const handleLoginSuccess = (user, token) => {
-    localStorage.setItem("token", token);
-    // localStorage.setItem("authRole", user.role);
-    // localStorage.setItem("authUser", JSON.stringify(user));
-    dispatch(login({ user, token, role: user.role }));
-    setShowModal(false);
-  };
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -337,7 +339,6 @@ export default function Navbar() {
       <PopUp
         showModal={showModal}
         setShowModal={setShowModal}
-        onLoginSuccess={handleLoginSuccess}
         authPurpose={authPurpose}
       />
     </nav>

@@ -62,12 +62,25 @@ export default function MyBusinessPage() {
 
         {/* Logo and Description */}
         <div className="flex flex-col lg:flex-row items-center gap-8">
-          <div className="w-35 h-35 bg-gray-100 border rounded-full flex items-center justify-center overflow-hidden">
+          <div className="w-35 h-35 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
             <img src={business.logoUrl || "/logo-placeholder.png"} alt="Business Logo" className="object-contain w-full h-full"/>
           </div>
           <div className="text-center lg:text-left space-y-2">
             <h2 className="text-2xl font-semibold text-gray-800">{business.name}</h2>
             <p className="text-gray-600">{business.description}</p>
+          </div>
+
+          {/* Verified/Unverified */}
+          <div className="mt-4 lg:mt-0 lg:justify-self-end ms-64">
+            {business.isVerified ? (
+              <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-2 rounded-full border border-green-300">
+                Verified
+              </span>
+            ) : (
+              <span className="text-red-600 font-semibold text-sm bg-red-100 px-4 py-2 rounded-full border border-red-300">
+                Unverified
+              </span>
+            )}
           </div>
         </div>
 
@@ -79,7 +92,7 @@ export default function MyBusinessPage() {
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Photo Gallery</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {business.photos.map((url, index) => (
-                <img key={index} src={url} alt={`Photo ${index + 1}`} className="w-full h-30 sm:h-40 object-cover rounded-lg border"/>
+                <img key={index} src={url} alt={`Photo ${index + 1}`} className="w-full h-30 sm:h-40 object-cover rounded-xl border border-gray-300"/>
               ))}
             </div>
           </div>

@@ -6,8 +6,9 @@ import { apiPost } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { useDispatch } from 'react-redux';
 import { login as reduxLogin } from '@/redux/slice/userSlice'; // alias to avoid confusion
+import { handleLoginSuccess } from "../navbar/Navbar";
 
-export default function PopUp({ showModal, setShowModal, onLoginSuccess, authPurpose }) {
+export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const dispatch = useDispatch();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -111,9 +112,8 @@ export default function PopUp({ showModal, setShowModal, onLoginSuccess, authPur
       // Redux login
       dispatch(reduxLogin({ user, token }));
 
-      if (onLoginSuccess) {
-        onLoginSuccess(user, token); // Callback to parent (like Navbar)
-      }
+    handleLoginSuccess(user, token); // Callback to parent (like Navbar)
+      
 
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
 

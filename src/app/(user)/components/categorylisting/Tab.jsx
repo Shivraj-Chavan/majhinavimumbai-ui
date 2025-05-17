@@ -5,16 +5,18 @@ import Image from "next/image";
 import { FcOldTimeCamera } from 'react-icons/fc';
 
 export default function Tab({ business, renderStars }) {
-    const sections = ["overview", "menu", "reviews", "photos"];
+  const sections = ["overview", "detail", "reviews", "photos"];
 
   return (
-    <>
-<div className="space-y-10 scroll-smooth">
-      
-      {/* Tab Buttons (Anchor Links) */}
+    <div className="space-y-10 scroll-smooth">
+      {/* Tab Buttons */}
       <div className="flex gap-6 border-b mb-4">
         {sections.map((item) => (
-          <a key={item} href={`#${item}`} className="pb-2 capitalize text-gray-600 hover:text-blue-700 font-medium transition">
+          <a
+            key={item}
+            href={`#${item}`}
+            className="pb-2 capitalize text-gray-600 hover:text-blue-700 font-medium transition"
+          >
             {item}
           </a>
         ))}
@@ -24,20 +26,59 @@ export default function Tab({ business, renderStars }) {
       <section id="overview" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-2">Overview</h2>
         <p className="text-gray-700 mb-4">{business.description}</p>
-        <iframe
-          src={business.mapLink}
-          width="100%"
-          height="300"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          className="rounded-lg shadow"
-        ></iframe>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2 text-gray-700 mb-6">
+          {business.phone && <p><strong>Phone:</strong> {business.phone}</p>}
+          {business.wp_number && <p><strong>WhatsApp:</strong> {business.wp_number}</p>}
+          {business.email && <p><strong>Email:</strong> {business.email}</p>}
+          {business.website && (
+            <p>
+              <strong>Website:</strong>{" "}
+              <a
+                href={business.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                {business.website}
+              </a>
+            </p>
+          )}
+          {business.pin_code && <p><strong>Pincode:</strong> {business.pin_code}</p>}
+          {business.landmark && <p><strong>Landmark:</strong> {business.landmark}</p>}
+          {business.sector && <p><strong>Sector:</strong> {business.sector}</p>}
+          {business.area && <p><strong>Area:</strong> {business.area}</p>}
+        </div>
+
+        {business.timings?.length > 0 && (
+          <div className="mb-6">
+            <h3 className="font-semibold text-gray-800">Business Timings</h3>
+            <ul className="list-disc ml-6 text-sm text-gray-700">
+              {business.timings.map((t, i) => (
+                <li key={i}>
+                  <strong>{t.day}:</strong> {t.openTime} - {t.closeTime}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {business.mapLink && (
+          <iframe
+            src={business.mapLink}
+            width="100%"
+            height="300"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            className="rounded-lg shadow"
+          ></iframe>
+        )}
       </section>
 
-          {/* Menu Section */}
+      {/* Menu Section */}
       <section id="menu" className="scroll-mt-24">
-        <h2 className="text-2xl font-semibold text-blue-900 mb-2">Menu</h2>
+        <h2 className="text-2xl font-semibold text-blue-900 mb-2">Detail</h2>
         <ul className="text-gray-700 space-y-2">
           {business.menu?.length > 0 ? (
             business.menu.map((item, idx) => (
@@ -101,8 +142,6 @@ export default function Tab({ business, renderStars }) {
           )}
         </div>
       </section>
-
     </div>
-      </>
-  )
+  );
 }
