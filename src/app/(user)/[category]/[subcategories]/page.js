@@ -10,6 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchBusinesses } from "@/redux/slice/bussinessSlice";
 import { fetchCategories } from "@/redux/slice/categoriesSlice";
 import FilterBar from "../../components/categorylisting/Filterbar";
+import { FaWhatsapp } from "react-icons/fa";
+import { IoIosCall } from "react-icons/io";
+import { ImMail4 } from "react-icons/im";
 
 export default function Page({ params }) {
   const { category, subcategories } = params;
@@ -55,7 +58,7 @@ export default function Page({ params }) {
       {/* Page Header */}
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold text-blue-900 capitalize">
-          {subcategories.replace(/-/g, " ")} Listings
+          {subcategories.replace(/-/g, " ")} 
         </h1>
         <p className="text-gray-600 mt-2">
           Browse top businesses in this subcategory.
@@ -75,18 +78,10 @@ export default function Page({ params }) {
           <div className="space-y-6">
             {businesses?.data?.length > 0 ? (
               businesses.data.map((business) => (
-                <div
-                  key={business.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200"
-                >
+                <div key={business.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
                   {/* Business Image */}
-                  <div className="relative w-full sm:w-48 h-40 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-                    <Image
-                      src="/resto.jpg"
-                      alt={business.name || "Business Image"}
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="relative w-full sm:w-48 h-40 rounded-xl mt-5 overflow-hidden bg-gray-100 flex-shrink-0">
+                    <Image src="/image.png" alt={business.name || "Business Image"} fill className="object-cover"/>
                   </div>
 
                   {/* Business Info */}
@@ -98,28 +93,19 @@ export default function Page({ params }) {
                       </p>
                       <p className="text-sm text-gray-600">Pin Code: {business.pin_code}</p>
                       <div className="mt-2 space-y-1">
-                        <p className="text-sm text-gray-700">📞 {business.phone}</p>
-                        {business.wp_number && (
-                          <p className="text-sm text-green-600">
-                            🟢 WhatsApp: {business.wp_number}
-                          </p>
-                        )}
-                        {business.email && (
-                          <p className="text-sm text-blue-600">📧 {business.email}</p>
-                        )}
+                      {business.phone && (<p className="flex items-center gap-2 text-sm text-gray-700"><IoIosCall className="text-lg text-blue-600" /> <a href={`tel:${business.phone}`} className="hover:underline">{business.phone}</a></p>)}
+                        {business.wp_number && (<p className="flex items-center gap-2"> <FaWhatsapp className="text-green-500 text-md" />
+                           <a href={`https://wa.me/91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="text-green-600"> {business.wp_number}</a> </p>)}
+                           {business.email && (
+                        <p className="flex items-center gap-2 text-sm text-gray-700"> <ImMail4 className="text-red-600 text-lg" /> <a href={`mailto:${business.email}`} className="text-blue-600 hover:underline"> {business.email}</a></p>)}
                       </div>
                     </div>
 
                     {/* Website + Action Buttons */}
                     <div className="mt-4 flex flex-col gap-2">
                       {business.website && (
-                        <a
-                          href={business.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-blue-500 hover:underline"
-                        >
-                          🌐 Visit Website
+                        <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline">
+                          🌐 {business.website}
                         </a>
                       )}
 
@@ -130,10 +116,10 @@ export default function Page({ params }) {
                             View Details
                           </button>
                         </Link>
-                        <button className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
-                          <TbBrandWhatsapp className="text-xl mr-1" />
-                          Whatsapp
-                        </button>
+                        <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-4 py-2 rounded-full shadow-lg transition-all hover:scale-105">
+                           <TbBrandWhatsapp className="text-xl" />
+                            WhatsApp
+                        </a>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
                           <TfiShare className="text-xl mr-1" />
                           Share

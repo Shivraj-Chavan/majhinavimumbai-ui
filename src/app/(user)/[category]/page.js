@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux'; 
 import { fetchCategories } from '@/redux/slice/categoriesSlice';
 import { fetchBusinesses } from '@/redux/slice/bussinessSlice';
+import { FcFinePrint } from 'react-icons/fc';
 
 export default function Page({ params }) {
   const { category } = use(params);
@@ -58,9 +59,9 @@ export default function Page({ params }) {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-center drop-shadow-xl px-4">
+          {/* <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-center drop-shadow-xl px-4">
             {selectedCategory.name}
-          </h1>
+          </h1> */}
         </div>
       </div>
 
@@ -101,9 +102,9 @@ export default function Page({ params }) {
 
         {/* Businesses Card Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
+          {/* <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
             Explore Businesses
-          </h2>
+          </h2> */}
 
           {businessesLoading ? (
             <div className="text-center py-10 font-semibold">Loading Businesses...</div>
@@ -119,13 +120,9 @@ export default function Page({ params }) {
                 >
                   {/* Business Image */}
                   <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-gray-100">
-                    <Image
-                      src="/resto.jpg"
-                      alt={business.name || "Business Image"}
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={business?.images?.[0] || "/image.png"} alt={business?.name || "Business Image"} fill className="object-cover" />
                   </div>
+
                 
                   {/* Business Info */}
                   <div className="flex flex-col gap-2 flex-grow">
@@ -148,11 +145,20 @@ export default function Page({ params }) {
                     </div>
                 
                     {/* WhatsApp */}
-                    {business.wp_number && (
-                      <div className="flex items-center gap-1 text-sm text-green-600 font-medium">
-                        🟢 WhatsApp: {business.wp_number}
-                      </div>
-                    )}
+                      {business.wp_number && (
+                        <div className="flex items-center gap-1 text-sm text-green-600 font-medium">
+                          🟢 WhatsApp:{" "}
+                          <a
+                            href={`https://wa.me/+91${business.wp_number}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline hover:text-green-800"
+                          >
+                            {business.wp_number}
+                          </a>
+                        </div>
+                      )}
+
                 
                     {/* Email */}
                     {business.email && (
@@ -177,18 +183,25 @@ export default function Page({ params }) {
                   )}
                 
                   {/* Website */}
-                  <div className="mt-4 border-t pt-3">
+                  <div className="mt-4 border-t border-gray-300 pt-3">
                     {business.website && (
                       <a
                         href={business.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-500 text-xs hover:underline block"
+                        className="text-blue-500 text-sm hover:underline block"
                       >
                         🌐 Visit Website
                       </a>
                     )}
                   </div>
+
+                  <Link href={`/listinginfo/${business.slug}`}>
+                      <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 mt-5 rounded-md text-sm shadow flex items-center">
+                        <FcFinePrint className="text-xl mr-1" />
+                            View Details
+                          </button>
+                      </Link>
                 </div>
                 ))
               ) : (

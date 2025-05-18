@@ -29,21 +29,9 @@ export default function Tab({ business, renderStars }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2 text-gray-700 mb-6">
           {business.phone && <p><strong>Phone:</strong> {business.phone}</p>}
-          {business.wp_number && <p><strong>WhatsApp:</strong> {business.wp_number}</p>}
-          {business.email && <p><strong>Email:</strong> {business.email}</p>}
-          {business.website && (
-            <p>
-              <strong>Website:</strong>{" "}
-              <a
-                href={business.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline"
-              >
-                {business.website}
-              </a>
-            </p>
-          )}
+          {business.wp_number && ( <p> <strong>WhatsApp:</strong>{" "} <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="text-black underline"> {business.wp_number}</a></p>)}
+          {business.email && ( <p> <strong>Email:</strong>{" "} <a href={`mailto:${business.email}`} className="text-blue-600 ">{business.email}</a></p>)}
+          {business.website && (<p><strong>Website:</strong>{" "} <a href={ business.website.startsWith("http") ? business.website : `https://${business.website}` } target="_blank" rel="noopener noreferrer" className="text-blue-600 underline" > {business.website} </a> </p>)}
           {business.pin_code && <p><strong>Pincode:</strong> {business.pin_code}</p>}
           {business.landmark && <p><strong>Landmark:</strong> {business.landmark}</p>}
           {business.sector && <p><strong>Sector:</strong> {business.sector}</p>}
@@ -119,10 +107,10 @@ export default function Tab({ business, renderStars }) {
       <section id="photos" className="scroll-mt-24">
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-semibold text-blue-900">Photos</h2>
-          <button className="bg-orange-400 flex gap-2 text-white text-md px-4 py-2 rounded-full font-semibold hover:bg-orange-500 transition">
+          {/* <button className="bg-orange-400 flex gap-2 text-white text-md px-4 py-2 rounded-full font-semibold hover:bg-orange-500 transition">
             <FcOldTimeCamera className="text-xl" />
             <span>Add Photo</span>
-          </button>
+          </button> */}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">

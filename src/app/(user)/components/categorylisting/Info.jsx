@@ -9,9 +9,9 @@ export default function Info({business, hours}) {
 
   return (
     <div className="mb-8">
-    <p className="text-lg font-semibold text-gray-800">
+    {/* <p className="text-lg font-semibold text-gray-800">
       <strong>Price Range:</strong> <span className="text-blue-700">{business.priceRange}</span>
-    </p>
+    </p> */}
   
     <div
       onClick={() => setShowHours(!showHours)}
@@ -20,9 +20,7 @@ export default function Info({business, hours}) {
       <BsClockHistory className="text-xl" />
       <span className="font-medium text-md">Hours</span>
       <MdArrowDropDown
-        className={`text-2xl transition-transform duration-200 ${
-          showHours ? "rotate-180" : ""
-        }`}
+        className={`text-2xl transition-transform duration-200 ${showHours ? "rotate-180" : "" }`}
       />
     </div>
   

@@ -21,7 +21,7 @@ export default function FilterBar() {
   return (
     <div className="flex flex-wrap gap-3  justify-center items-center sm:justify-start mb-8 overflow-x-visible pb-2 scrollbar-hide">
       {/* Sort By */}
-      <div className="relative">
+      {/* <div className="relative">
         <select className={dropdownClass}>
           <option>Sort by</option>
           <option>Top Rated</option>
@@ -29,16 +29,16 @@ export default function FilterBar() {
           <option>Newest</option>
         </select>
         {dropdownArrow}
-      </div>
+      </div> */}
 
       {/* Top Rated */}
-      <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-full border border-blue-500 text-blue-500 hover:bg-blue-100 transition">
+      {/* <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-full border border-blue-500 text-blue-500 hover:bg-blue-100 transition">
         <FcRating className="text-lg" />
         Top Rated
-      </button>
+      </button> */}
 
       {/* Ratings */}
-      <div className="relative">
+      {/* <div className="relative">
         <select className={dropdownClass + " min-w-[130px]"}>
           <option>Ratings</option>
           <option>4.5+ Stars</option>
@@ -46,12 +46,12 @@ export default function FilterBar() {
           <option>3.5+ Stars</option>
         </select>
         {dropdownArrow}
-      </div>
+      </div> */}
 
       {/* All Filters */}
       <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-600 text-gray-800 hover:bg-gray-200 transition">
         <FcFilledFilter className="text-lg" />
-        All Filters
+         Filters
       </button>
     </div>
   );
