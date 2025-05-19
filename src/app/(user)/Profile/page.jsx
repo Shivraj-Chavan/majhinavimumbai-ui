@@ -3,14 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { apiGet } from '@/lib/apiClient';
+import PopUp from '@/app/(user)/components/home/popUp';
 
 export default function Page() {
   const router = useRouter();
+  const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
 
   const dummyUser = {
     name: 'Food Truck',
@@ -23,13 +25,24 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/');
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+
+    if (!storedToken) {
+      setLoading(false);
     } else {
       setUser(dummyUser);
       setLoading(false);
     }
-  }, [isLoggedIn, router]);
+  }, []);
+
+  const handleLoginSuccess = () => {
+    const newToken = localStorage.getItem("token");
+    if (newToken) {
+      setToken(newToken);
+      setUser(dummyUser);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,8 +62,11 @@ export default function Page() {
     console.log('Updated user data:', user);
   };
 
-  if (!isLoggedIn) return <div className="text-center py-10">Redirecting to home...</div>;
-  if (loading || !user) return <div className="text-center py-10">Loading profile...</div>;
+  if (loading) return <div className="text-center py-10">Loading...</div>;
+
+  if (!token) {
+    return <PopUp onClose={handleLoginSuccess} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 py-10 px-4 sm:px-8">
@@ -59,14 +75,14 @@ export default function Page() {
           <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-300 shadow">
             <img src={user?.profileImage || '/default-avatar.png'} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
             {isEditing && (
-              <input type="file" accept="image/*" className="absolute bottom-0 left-0 opacity-0 w-full h-full cursor-pointer" onChange={handleImageChange}/>
+              <input type="file" accept="image/*" className="absolute bottom-0 left-0 opacity-0 w-full h-full cursor-pointer" onChange={handleImageChange} />
             )}
           </div>
           {isEditing ? (
             <>
-              <input type="text" name="name" value={user.name} onChange={handleChange} className="mt-4 text-xl font-bold text-center border-b border-gray-300 focus:outline-none"/>
-              <input type="email" name="email" value={user.email} onChange={handleChange} className="text-gray-500 text-sm mt-1 border-b border-gray-300 focus:outline-none"/>
-              <input type="url" name="website" value={user.website} onChange={handleChange} className="text-blue-500 mt-1 text-sm border-b border-gray-300 focus:outline-none"/>
+              <input type="text" name="name" value={user.name} onChange={handleChange} className="mt-4 text-xl font-bold text-center border-b border-gray-300 focus:outline-none" />
+              <input type="email" name="email" value={user.email} onChange={handleChange} className="text-gray-500 text-sm mt-1 border-b border-gray-300 focus:outline-none" />
+              <input type="url" name="website" value={user.website} onChange={handleChange} className="text-blue-500 mt-1 text-sm border-b border-gray-300 focus:outline-none" />
             </>
           ) : (
             <>
@@ -85,7 +101,7 @@ export default function Page() {
           <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
             <h3 className="text-sm font-medium text-gray-600">Full Name</h3>
             {isEditing ? (
-              <input type="text" name="fullName" value={user.fullName} onChange={handleChange} className="w-full bg-transparent border-b border-gray-300 focus:outline-none"/>
+              <input type="text" name="fullName" value={user.fullName} onChange={handleChange} className="w-full bg-transparent border-b border-gray-300 focus:outline-none" />
             ) : (
               <p className="text-gray-800">{user.fullName}</p>
             )}
@@ -93,7 +109,7 @@ export default function Page() {
           <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
             <h3 className="text-sm font-medium text-gray-600">Phone Number</h3>
             {isEditing ? (
-              <input type="text" name="phone" value={user.phone} onChange={handleChange} className="w-full bg-transparent border-b border-gray-300 focus:outline-none"/>
+              <input type="text" name="phone" value={user.phone} onChange={handleChange} className="w-full bg-transparent border-b border-gray-300 focus:outline-none" />
             ) : (
               <p className="text-gray-800">{user.phone}</p>
             )}

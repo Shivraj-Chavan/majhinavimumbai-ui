@@ -112,8 +112,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       // Redux login
       dispatch(reduxLogin({ user, token }));
 
-    handleLoginSuccess(user, token); // Callback to parent (like Navbar)
-      
+      handleLoginSuccess(user, token); // Callback to parent (like Navbar)
 
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
 

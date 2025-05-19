@@ -3,25 +3,35 @@ import Image from "next/image";
 
 export default function Photos({ business, setTab }) {
   const hasImages = business?.images?.length > 0;
-  const imagecopy = "/imagecopy.png"; 
+  const imagecopy = "/imagecopy.png";
 
   if (!hasImages) {
     return (
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 z-0 relative">
         <div className="relative col-span-1 h-36 sm:h-40 md:h-48 rounded-xl overflow-hidden">
-          <Image src={imagecopy} alt="No Images Available" fill className="object-cover" />
+          <Image
+            src={imagecopy}
+            alt="No Images Available"
+            fill
+            className="object-cover"
+          />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+    <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 z-0 relative">
       {/* Main Featured Image */}
-      <div className="relative w-40 h-40 rounded-xl overflow-hidden bg-gray-100">
-      <Image src={business.images?.[0] || "/imagecopy.png"} alt="Business Image" fill className="object-cover"/>
+      <div className="relative w-full h-40 rounded-xl overflow-hidden bg-gray-100">
+        <Image
+          src={business.images?.[0] || imagecopy}
+          alt="Business Image"
+          fill
+          className="object-cover"
+        />
       </div>
-      
+
       {/* Thumbnails */}
       {business.images.map((img, i) => {
         if (i === 0) return null;
@@ -30,7 +40,7 @@ export default function Photos({ business, setTab }) {
         return (
           <div
             key={i}
-            className="relative h-30 sm:h-24 md:h-24 rounded-lg overflow-hidden group cursor-pointer"
+            className="relative w-full h-24 rounded-lg overflow-hidden group cursor-pointer"
             onClick={() => isLast && setTab && setTab("photos")}
           >
             <Image

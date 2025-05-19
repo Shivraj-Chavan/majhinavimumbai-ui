@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import SidebarMenu from "./components/SidebarMenu"
 import './../../globals.css'
@@ -11,7 +11,11 @@ import { ReduxProvider } from "@/redux/provider"
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
-  const pathname = usePathname()
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [showLoginPopup, setShowLoginPopup] = useState(false); 
+  const pathname = usePathname();
+  const [authPurpose, setAuthPurpose] = useState("login");
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,9 +33,32 @@ export default function DashboardLayout({ children }) {
     }
   }, [pathname])
 
+  // useEffect(() => {
+  //   // Check if admin is logged in by checking localStorage token & role
+  //   const token = localStorage.getItem("token");
+  //   const role = localStorage.getItem("authRole");
+
+  //   if (token && role === "admin") {
+  //     setIsLoggedIn(true);
+  //     setShowLoginPopup(false);
+  //   } else {
+  //     setIsLoggedIn(false);
+  //     setShowLoginPopup(true);
+  //   }
+  // }, []);
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <PopUp showModal={showLoginPopup} setShowModal={setShowLoginPopup} authPurpose={authPurpose} />
+    );
+  }
+
   return (
     <html>
-      <body  className="flex h-screen bg-gray-100" >
+      <body className="flex h-screen bg-gray-100" >
       <ReduxProvider>
         
       {sidebarOpen && (

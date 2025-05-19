@@ -26,10 +26,9 @@ export default function Enquirymsg() {
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-xl p-6 max-w-2xl mx-auto">
-
       {isLoggedIn ? (
         <form onSubmit={handleMessageSubmit}>
-            <h2 className="text-xl font-semibold mb-4 text-blue-800">Enquiry</h2>
+          <h2 className="text-xl font-semibold mb-4 text-blue-800">Enquiry</h2>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -50,7 +49,10 @@ export default function Enquirymsg() {
         </form>
       ) : (
         <div className="text-center">
-          <button onClick={() => setShowLoginPopup(true)} className="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition">
+          <button
+            onClick={() => setShowLoginPopup(true)}
+            className="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition"
+          >
             Send Enquiry
           </button>
         </div>
@@ -58,16 +60,25 @@ export default function Enquirymsg() {
 
       {/* Login Popup */}
       {showLoginPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl max-w-sm w-full relative">
-            <button className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg" onClick={() => setShowLoginPopup(false)} >
-              &times;
-            </button>
-            <h3 className="text-lg font-bold mb-4">Login Required</h3>
-            <PopUp showModal={showLoginPopup} setShowModal={setShowLoginPopup} authPurpose={authPurpose}/>
-          </div>
-        </div>
-      )}
+      <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
+
+    <div className="bg-white p-6 rounded-xl max-w-sm w-full relative">
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl font-bold"
+        onClick={() => setShowLoginPopup(false)}
+      >
+        &times;
+      </button>
+      <h3 className="text-lg font-bold mb-4">Login Required</h3>
+      <PopUp
+        showModal={showLoginPopup}
+        setShowModal={setShowLoginPopup}
+        authPurpose={authPurpose}
+      />
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '@/redux/slice/categoriesSlice';
 import { fetchBusinesses } from '@/redux/slice/bussinessSlice';
 import { FcFinePrint } from 'react-icons/fc';
+import { TbBrandWhatsapp } from 'react-icons/tb';
+import { IoCallSharp } from 'react-icons/io5';
 
 export default function Page({ params }) {
   const { category } = use(params);
@@ -59,33 +61,27 @@ export default function Page({ params }) {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          {/* <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-center drop-shadow-xl px-4">
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-center drop-shadow-xl px-4">
             {selectedCategory.name}
-          </h1> */}
+          </h1>
         </div>
       </div>
 
       {/* Subcategory Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
+        {/* <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-500 uppercase mb-10 tracking-wide">
           Explore Subcategories
-        </h2>
+        </h2> */}
 
         <div className="bg-blue-900/10 py-10 px-4 sm:px-6 lg:px-8 rounded-3xl">
        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 place-items-center">
         {selectedCategory.subcategories.map((data) => (
-        <Link key={data.slug} href={`/${category}/${data.slug}`} className="w-full">
+          <Link key={data.slug} href={`/${category}/${data.slug}`} className="w-full">
           <div className="group bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all w-full text-center p-4 cursor-pointer hover:border-orange-400 hover:-translate-y-1 duration-300">
           
           {/* Subcategory Image */}
           <div className="relative w-full aspect-square overflow-hidden rounded-xl mb-3 bg-gray-100">
-            <Image
-              src={`/assests/category/${category}/${data.slug}.jpg`} 
-              alt={data.name}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-            />
+            <Image src={`/assests/category/${category}/${data.slug}.jpg`}  alt={data.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-500"/>
           </div>
 
           {/* Subcategory Name */}
@@ -94,11 +90,11 @@ export default function Page({ params }) {
           </p>
           
         </div>
-      </Link>
-    ))}
-  </div>
-</div>
-  </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+        </div>
 
         {/* Businesses Card Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -141,19 +137,17 @@ export default function Page({ params }) {
                 
                     {/* Phone */}
                     <div className="mt-1 flex items-center gap-1 text-sm text-gray-600 font-medium">
-                      📞 {business.phone || "Phone number"}
+                      <IoCallSharp className="text-blue-600" />
+                      <a href={`tel:${business.phone}`} className="hover:underline">
+                        {business.phone || "Phone number"}
+                      </a>
                     </div>
-                
+
                     {/* WhatsApp */}
                       {business.wp_number && (
-                        <div className="flex items-center gap-1 text-sm text-green-600 font-medium">
-                          🟢 WhatsApp:{" "}
-                          <a
-                            href={`https://wa.me/+91${business.wp_number}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline hover:text-green-800"
-                          >
+                        <div className="flex items-center gap-1 text-sm text-green-600">
+                         <TbBrandWhatsapp className="text-lg" /> {" "}
+                          <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className=" hover:text-green-800 hover:underline">
                             {business.wp_number}
                           </a>
                         </div>
@@ -183,21 +177,16 @@ export default function Page({ params }) {
                   )}
                 
                   {/* Website */}
-                  <div className="mt-4 border-t border-gray-300 pt-3">
+                  <div className="mt-2 border-b pb-5 border-gray-300 ">
                     {business.website && (
-                      <a
-                        href={business.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 text-sm hover:underline block"
-                      >
-                        🌐 Visit Website
+                      <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-sm hover:underline block">
+                        🌐 {business.website}
                       </a>
                     )}
                   </div>
 
                   <Link href={`/listinginfo/${business.slug}`}>
-                      <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 mt-5 rounded-md text-sm shadow flex items-center">
+                      <button className="bg-orange-500 hover:bg-orange-600  text-white px-3 py-1.5 mt-4 rounded-md text-sm shadow flex items-center">
                         <FcFinePrint className="text-xl mr-1" />
                             View Details
                           </button>

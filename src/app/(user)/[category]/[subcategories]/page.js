@@ -56,13 +56,29 @@ export default function Page({ params }) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Page Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-blue-900 capitalize">
-          {subcategories.replace(/-/g, " ")} 
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Browse top businesses in this subcategory.
-        </p>
+        <div className="text-center mb-10">
+          {/* Breadcrumb */}
+        <div className="text-sm text-gray-600 mb-4">
+       <nav className="flex items-center space-x-2">
+        <Link href="/" className="hover:underline text-blue-600">Home</Link>
+        <span>/</span>
+        <Link href={`/category/${category}`} className="hover:underline text-blue-600 capitalize">
+          {category.replace(/-/g, " ")}
+        </Link>
+        <span>/</span>
+        <span className="text-gray-800 capitalize">{subcategories.replace(/-/g, " ")}</span>
+      </nav>
+    </div>
+
+    {/* Heading */}
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-blue-900 capitalize">
+        {subcategories.replace(/-/g, " ")}
+      </h1>
+      <p className="text-gray-600 mt-2">
+        Browse top businesses in this subcategory.
+      </p>
+    </div>
         <div className="mt-7 flex justify-center">
           <FilterBar />
         </div>

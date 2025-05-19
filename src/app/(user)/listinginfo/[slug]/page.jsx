@@ -14,6 +14,7 @@ import { PiChatText } from "react-icons/pi";
 import { apiGet } from "@/lib/apiClient";
 import UsersndMsg from "../../components/categorylisting/UsersndMsg";
 import Enquirymsg from "../../components/categorylisting/Enquirymsg";
+import Link from "next/link";
 
 const hours = {
   Monday: "10 AM - 10 PM",
@@ -32,6 +33,7 @@ export default function ListingInfo() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showEnquiryPopup, setShowEnquiryPopup] = useState(false);
+  const [showStickyHero, setShowStickyHero] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -51,16 +53,28 @@ export default function ListingInfo() {
     fetchBusiness();
   }, [slug]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroSection = document.getElementById("hero-section");
+      if (!heroSection) return;
+
+      const rect = heroSection.getBoundingClientRect();
+      setShowStickyHero(rect.bottom <= 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const renderStars = (rating) => {
     const full = Math.floor(rating);
     const half = rating % 1 >= 0.5;
     const empty = 5 - full - (half ? 1 : 0);
     return (
       <>
-        {/* {[...Array(full)].map((_, i) => (<FaStar key={`f-${i}`} className="text-yellow-400" /> ))}
+        {/* {[...Array(full)].map((_, i) => (<FaStar key={`f-${i}`} className="text-yellow-400" />))}
         {half && <FaStarHalfAlt className="text-yellow-400" />}
-        {[...Array(empty)].map((_, i) => (<FaRegStar key={`e-${i}`} className="text-yellow-400" />))} */
-        }
+        {[...Array(empty)].map((_, i) => (<FaRegStar key={`e-${i}`} className="text-yellow-400" />))} */}
       </>
     );
   };
@@ -69,16 +83,33 @@ export default function ListingInfo() {
   if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <div className="max-w-7xl mx-auto px-4 pt-10">
+      {/* breadcrumb */}
+      {business?.category && business?.subcategory && (
+      <div className="relative z-30 text-sm text-black ">
+        <nav className="flex items-center space-x-2">
+          <Link href="/" className="hover:underline text-blue-600">Home</Link>
+          <span>/</span>
+          <Link href={`/category/${business.categorySlug || business.category}`} className="hover:underline text-blue-600 capitalize">
+            {business.category.replace(/-/g, " ")}
+          </Link>
+          <span>/</span>
+          <span className="text-gray-800 capitalize">
+            {business.subcategory.replace(/-/g, " ")}
+          </span>
+        </nav>
+      </div>
+    )}
+
       {/* Hero Card */}
-      <div className="relative bg-gradient-to-tr from-blue-50 to-blue-100 shadow-xl sm:p-8 rounded-3xl mb-10 overflow-hidden">
+      <div id="hero-section" className="relative bg-gradient-to-tr from-blue-50 to-blue-100 shadow-xl sm:p-8 rounded-3xl mt-4 mb-10 overflow-hidden">
         <div className="absolute  bg-blue-300 opacity-20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-300 opacity-20 rounded-full blur-3xl animate-pulse" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex items-start gap-5">
             {/* logo */}
-            <div className="w-25 h-25 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-2xl font-extrabold text-blue-700 shadow-lg">
+            <div className="w-20 h-20 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-2xl font-extrabold text-blue-700 shadow-lg">
               {business.name?.[0]}
             </div>
             <div>
@@ -90,36 +121,41 @@ export default function ListingInfo() {
               </p>
               <div className="flex items-center gap-2">
                 {renderStars(business.rating)}
-                {/* <span className="text-gray-800 font-semibold">{business.rating}</span> */}
-                {/* <span className="text-gray-500 text-sm">({business.reviews} reviews)</span> */}
               </div>
             </div>
           </div>
 
           <div className="flex gap-4">
-          <button className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105" onClick={() => setShowEnquiryPopup(true)}>
-           <PiChatText className="text-xl" />
-           Enquiry
-          </button>
-
-      {showEnquiryPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
-              onClick={() => setShowEnquiryPopup(false)}
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
+              onClick={() => setShowEnquiryPopup(true)}
             >
-              &times;
+              <PiChatText className="text-xl" />
+              Enquiry
             </button>
 
-            {/* Enquiry Message Form */}
-            <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} />
-          </div>
-        </div>
-      )}
-            <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105">
-            <TbBrandWhatsapp className="text-xl" />
-             WhatsApp
+            {showEnquiryPopup && (
+              <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 animate-fadeIn">
+                  <button
+                    className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
+                    onClick={() => setShowEnquiryPopup(false)}
+                  >
+                    &times;
+                  </button>
+                  <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} />
+                </div>
+              </div>
+            )}
+
+            <a
+              href={`https://wa.me/+91${business.wp_number}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
+            >
+              <TbBrandWhatsapp className="text-xl" />
+              WhatsApp
             </a>
             <button className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105">
               <TfiShare className="text-lg" />
@@ -136,7 +172,14 @@ export default function ListingInfo() {
       {/* Action Buttons */}
       <div className="flex justify-center gap-6 mb-9">
         <Actionbtn href={business.website} icon={<FcGlobe />} label="Website" ringColor="blue" />
-        <Actionbtn href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(business.mapLink || business.name || 'Your Business Location')}`} icon={<FcDownRight />} label="Directions" ringColor="gray"/>
+        <Actionbtn
+          href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(
+            business.mapLink || business.name || "Your Business Location"
+          )}`}
+          icon={<FcDownRight />}
+          label="Directions"
+          ringColor="gray"
+        />
         <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
         <Actionbtn icon={<FcBookmark />} label="Save" ringColor="orange" isButton />
       </div>
@@ -149,11 +192,36 @@ export default function ListingInfo() {
         </div>
 
         {/* Enquiry Section */}
-      <div className="mt-12">
-      <UsersndMsg />
-      </div>
+        <div className="mt-12">
+          <UsersndMsg />
+        </div>
       </div>
 
+      {/* Sticky Bottom Hero Bar */}
+      {showStickyHero && (
+        <div className="fixed bottom-0 left-0 w-full bg-gradient-to-tr from-blue-50 to-blue-300 border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50 px-4 py-3">
+          <div className="flex items-center justify-between max-w-7xl mx-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-15 h-15 bg-white border-2 border-blue-300 rounded-full flex items-center justify-center text-lg font-bold text-blue-700 shadow">
+                {business.name?.[0]}
+              </div>
+              <div className="text-lg">
+                <div className="font-semibold text-blue-900">{business.name}</div>
+                <div className="text-gray-500 text-xs">{business.category}</div>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <a href={`tel:${business.phone}`} className="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow hover:bg-green-600 transition">
+                Call
+              </a>
+              <button className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow hover:bg-orange-600 transition" onClick={() => setShowEnquiryPopup(true)}>
+                Enquiry
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
