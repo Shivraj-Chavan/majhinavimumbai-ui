@@ -128,20 +128,20 @@ export default function Navbar() {
                   className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-2 py-1 hover:shadow transition"
                 >
                   <Image
-                    src="/user-avatar.png"
+                    src="/image.png"
                     alt="User"
                     width={32}
                     height={32}
                     className="rounded-full object-cover"
                   />
                   {/* <span className="text-sm">User</span> */}
-                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {/* <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  </svg> */}
                 </button>
 
                 {open && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-50">
                     <ul className="py-1 text-sm text-gray-700">
                       <li>
                         <button

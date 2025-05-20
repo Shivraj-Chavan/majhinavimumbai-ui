@@ -15,6 +15,7 @@ import { apiGet } from "@/lib/apiClient";
 import UsersndMsg from "../../components/categorylisting/UsersndMsg";
 import Enquirymsg from "../../components/categorylisting/Enquirymsg";
 import Link from "next/link";
+import { IoIosCall } from "react-icons/io";
 
 const hours = {
   Monday: "10 AM - 10 PM",
@@ -83,14 +84,14 @@ export default function ListingInfo() {
   if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-10">
+    <div>
       {/* breadcrumb */}
-      {business?.category && business?.subcategory && (
+    {business?.category && business?.subcategory && (
       <div className="relative z-30 text-sm text-black ">
         <nav className="flex items-center space-x-2">
-          <Link href="/" className="hover:underline text-blue-600">Home</Link>
+          <Link href="/" className="hover:underline text-black font-semibold">Home</Link>
           <span>/</span>
-          <Link href={`/category/${business.categorySlug || business.category}`} className="hover:underline text-blue-600 capitalize">
+          <Link href={`/category/${business.categorySlug || business.category}`} className="hover:underline text-black capitalize">
             {business.category.replace(/-/g, " ")}
           </Link>
           <span>/</span>
@@ -100,7 +101,8 @@ export default function ListingInfo() {
         </nav>
       </div>
     )}
-
+    <div className="max-w-7xl mx-auto px-4 pt-10">
+    
       {/* Hero Card */}
       <div id="hero-section" className="relative bg-gradient-to-tr from-blue-50 to-blue-100 shadow-xl sm:p-8 rounded-3xl mt-4 mb-10 overflow-hidden">
         <div className="absolute  bg-blue-300 opacity-20 rounded-full blur-3xl animate-pulse" />
@@ -126,21 +128,14 @@ export default function ListingInfo() {
           </div>
 
           <div className="flex gap-4">
-            <button
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
-              onClick={() => setShowEnquiryPopup(true)}
-            >
-              <PiChatText className="text-xl" />
-              Enquiry
+            <button className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105" onClick={() => setShowEnquiryPopup(true)}>
+              <PiChatText className="text-xl" /> Enquiry
             </button>
 
             {showEnquiryPopup && (
               <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 animate-fadeIn">
-                  <button
-                    className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
-                    onClick={() => setShowEnquiryPopup(false)}
-                  >
+                  <button className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg" onClick={() => setShowEnquiryPopup(false)}>
                     &times;
                   </button>
                   <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} />
@@ -148,12 +143,7 @@ export default function ListingInfo() {
               </div>
             )}
 
-            <a
-              href={`https://wa.me/+91${business.wp_number}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
-            >
+            <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105">
               <TbBrandWhatsapp className="text-xl" />
               WhatsApp
             </a>
@@ -172,16 +162,13 @@ export default function ListingInfo() {
       {/* Action Buttons */}
       <div className="flex justify-center gap-6 mb-9">
         <Actionbtn href={business.website} icon={<FcGlobe />} label="Website" ringColor="blue" />
-        <Actionbtn
-          href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(
-            business.mapLink || business.name || "Your Business Location"
-          )}`}
+        <Actionbtn href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent( business.mapLink || business.name || "Your Business Location")}`}
           icon={<FcDownRight />}
           label="Directions"
           ringColor="gray"
         />
         <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
-        <Actionbtn icon={<FcBookmark />} label="Save" ringColor="orange" isButton />
+        <Actionbtn icon={<FcBookmark/>} label="Save" ringColor="orange" isButton />
       </div>
 
       {/* Info & Tabs */}
@@ -190,7 +177,7 @@ export default function ListingInfo() {
         <div className="mt-8">
           <Tab business={business} renderStars={renderStars} />
         </div>
-
+    
         {/* Enquiry Section */}
         <div className="mt-12">
           <UsersndMsg />
@@ -212,16 +199,17 @@ export default function ListingInfo() {
             </div>
 
             <div className="flex gap-2">
-              <a href={`tel:${business.phone}`} className="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow hover:bg-green-600 transition">
-                Call
-              </a>
-              <button className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow hover:bg-orange-600 transition" onClick={() => setShowEnquiryPopup(true)}>
-                Enquiry
-              </button>
+            <a href={`tel:${business.phone}`} className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow hover:bg-blue-600 transition">
+             <IoIosCall className="text-lg" /> Call
+               </a>
+              <button className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105" onClick={() => setShowEnquiryPopup(true)}>
+               <PiChatText className="text-xl" /> Enquiry
+                </button>
             </div>
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

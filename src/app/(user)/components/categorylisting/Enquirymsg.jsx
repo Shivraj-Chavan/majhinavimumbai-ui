@@ -37,11 +37,7 @@ export default function Enquirymsg() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           ></textarea>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
-          >
+          <button type="submit" disabled={submitting} className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition">
             {submitting ? "Sending..." : "Send Enquiry"}
           </button>
 
@@ -49,10 +45,7 @@ export default function Enquirymsg() {
         </form>
       ) : (
         <div className="text-center">
-          <button
-            onClick={() => setShowLoginPopup(true)}
-            className="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition"
-          >
+          <button onClick={() => setShowLoginPopup(true)} className="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition">
             Send Enquiry
           </button>
         </div>
@@ -63,22 +56,15 @@ export default function Enquirymsg() {
       <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
 
     <div className="bg-white p-6 rounded-xl max-w-sm w-full relative">
-      <button
-        className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl font-bold"
-        onClick={() => setShowLoginPopup(false)}
-      >
+      <button className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl font-bold" onClick={() => setShowLoginPopup(false)}>
         &times;
       </button>
+
       <h3 className="text-lg font-bold mb-4">Login Required</h3>
-      <PopUp
-        showModal={showLoginPopup}
-        setShowModal={setShowLoginPopup}
-        authPurpose={authPurpose}
-      />
+      <PopUp showModal={showLoginPopup} setShowModal={setShowLoginPopup} authPurpose={authPurpose}/>
     </div>
   </div>
 )}
-
     </div>
   );
 }

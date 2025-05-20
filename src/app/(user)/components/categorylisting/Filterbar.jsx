@@ -1,7 +1,7 @@
 import React from "react";
 import { FcApproval, FcFilledFilter, FcFlashOn, FcHighPriority, FcRating } from "react-icons/fc";
 
-export default function FilterBar() {
+export default function FilterBar({onSortChange}) {
   const dropdownArrow = (
     <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
       <svg
@@ -17,6 +17,11 @@ export default function FilterBar() {
   );
 
   const dropdownClass ="appearance-none border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px] pr-10";
+
+  const handleSortChange = (e) => {
+    const selected = e.target.value;
+    onSortChange(selected); // Pass to parent
+  };
 
   return (
     <div className="flex flex-wrap gap-3  justify-center items-center sm:justify-start mb-8 overflow-x-visible pb-2 scrollbar-hide">
@@ -49,10 +54,23 @@ export default function FilterBar() {
       </div> */}
 
       {/* All Filters */}
-      <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-600 text-gray-800 hover:bg-gray-200 transition">
+      <div className="flex flex-wrap gap-3 justify-center items-center sm:justify-start mb-8 overflow-x-visible pb-2 scrollbar-hide">
+      {/* Sort by A-Z / Z-A */}
+      <div className="relative">
+        <select className={dropdownClass} onChange={handleSortChange}>
+          <option>Filter</option>
+          <option value="asc">Sort: A to Z</option>
+          <option value="desc">Sort: Z to A</option>
+        </select>
+        {dropdownArrow}
+      </div>
+
+      {/* Optional: Filters Button */}
+      {/* <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-600 text-gray-800 hover:bg-gray-200 transition">
         <FcFilledFilter className="text-lg" />
-         Filters
-      </button>
+        Filters
+      </button> */}
+    </div>
     </div>
   );
 }

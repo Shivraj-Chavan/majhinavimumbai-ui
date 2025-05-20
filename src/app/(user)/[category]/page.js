@@ -131,11 +131,12 @@ export default function Page({ params }) {
                     </p>
                 
                     {/* Pincode */}
-                    <p className="text-sm text-gray-500">
+                    {/* <p className="text-sm text-gray-500">
                       Pin Code: {business.pin_code || "Pin Code"}
-                    </p>
+                    </p> */}
                 
                     {/* Phone */}
+                    <div className='flex gap-6'>
                     <div className="mt-1 flex items-center gap-1 text-sm text-gray-600 font-medium">
                       <IoCallSharp className="text-blue-600" />
                       <a href={`tel:${business.phone}`} className="hover:underline">
@@ -143,23 +144,16 @@ export default function Page({ params }) {
                       </a>
                     </div>
 
-                    {/* WhatsApp */}
-                      {business.wp_number && (
-                        <div className="flex items-center gap-1 text-sm text-green-600">
-                         <TbBrandWhatsapp className="text-lg" /> {" "}
-                          <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className=" hover:text-green-800 hover:underline">
-                            {business.wp_number}
-                          </a>
-                        </div>
-                      )}
+                    
+                      </div>
 
                 
                     {/* Email */}
-                    {business.email && (
+                    {/* {business.email && (
                       <a href={`mailto:${business.email}`} className="text-sm text-blue-500 hover:underline">
                         📧 {business.email}
                       </a>
-                    )}
+                    )} */}
                   </div>
                 
                   {/* Timings */}
@@ -184,13 +178,24 @@ export default function Page({ params }) {
                       </a>
                     )}
                   </div>
-
+                  
+                  <div className="flex items-center gap-3 mt-4">
+                  {/* View Details */}
                   <Link href={`/listinginfo/${business.slug}`}>
-                      <button className="bg-orange-500 hover:bg-orange-600  text-white px-3 py-1.5 mt-4 rounded-md text-sm shadow flex items-center">
-                        <FcFinePrint className="text-xl mr-1" />
-                            View Details
-                          </button>
-                      </Link>
+                    <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-md text-xs shadow flex items-center">
+                      <FcFinePrint className="text-xl mr-1" />
+                      View Details
+                    </button>
+                  </Link>
+
+                  {/* WhatsApp */}
+                  {business.wp_number && (
+                    <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs shadow flex items-center gap-2">
+                      <TbBrandWhatsapp className="text-lg" />
+                      {business.wp_number}
+                    </a>
+                  )}
+                </div>
                 </div>
                 ))
               ) : (
