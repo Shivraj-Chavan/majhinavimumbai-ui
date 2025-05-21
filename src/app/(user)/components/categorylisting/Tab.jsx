@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Star from '@/app/(user)/components/categorylisting/Star';
 import { FcOldTimeCamera } from "react-icons/fc";
+import { apiGet } from "@/lib/apiClient";
 
 const dummyReviews = [
   {
@@ -31,7 +31,25 @@ const dummyReviews = [
 
 export default function Tab({ business, renderStars }) {
   const sections = ["overview", "detail", "reviews", "photos"];
-  const reviews = dummyReviews;
+  // const reviews = dummyReviews;
+  const [reviews, setReviews] = useState(dummyReviews);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await apiGet(`/reviews/${business.id}`);
+        if (!res.ok) throw new Error("Failed to fetch reviews");
+        const data = await res.json();
+        setReviews(data); 
+      } catch (error) {
+        console.error("Error loading reviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (business?.id) fetchReviews();
+  }, [business?.id]);
 
   return (
     <div className="space-y-10 scroll-smooth">
@@ -121,7 +139,7 @@ export default function Tab({ business, renderStars }) {
       {/* Reviews Section */}
       <section id="reviews" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
-        <Star/>
+      
         <div className="grid md:grid-cols-2 gap-6">
           {reviews.length > 0 ? (
             reviews.map((review, i) => (

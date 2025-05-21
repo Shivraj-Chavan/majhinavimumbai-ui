@@ -46,15 +46,15 @@ export default function DashboardLayout({ children }) {
   //     setShowLoginPopup(true);
   //   }
   // }, []);
-  if (isLoggedIn === null) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoggedIn === null) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (!isLoggedIn) {
-    return (
-      <PopUp showModal={showLoginPopup} setShowModal={setShowLoginPopup} authPurpose={authPurpose} />
-    );
-  }
+  // if (!isLoggedIn) {
+  //   return (
+  //     <PopUp showModal={showLoginPopup} setShowModal={setShowLoginPopup} authPurpose={authPurpose} />
+  //   );
+  // }
 
   return (
     <html>

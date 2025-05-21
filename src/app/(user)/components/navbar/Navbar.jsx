@@ -163,7 +163,7 @@ export default function Navbar() {
                       </li>
                       <li>
                         <button
-                          onClick={() => handleNavigate("/requests")}
+                          onClick={() => handleNavigate("/MyRequest")}
                           className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
                         >
                           <CiSquareQuestion className="text-md" />
