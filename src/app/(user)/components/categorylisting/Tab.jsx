@@ -2,45 +2,27 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { FcOldTimeCamera } from "react-icons/fc";
-import { apiGet } from "@/lib/apiClient";
+import { apiDelete, apiGet } from "@/lib/apiClient";
 
-const dummyReviews = [
-  {
-    user: "Rohit Sharma",
-    avatar: "/image.png",
-    rating: 4,
-    comment: "Great service and very professional. Highly recommended!",
-    date: "May 10, 2025",
-  },
-  {
-    user: "Shraddha Kapoor",
-    avatar: "/image.png",
-    rating: 5,
-    comment: "Exceptional experience! Will definitely use again.",
-    date: "May 15, 2025",
-  },
-  {
-    user: "Virat Kholi",
-    avatar: "/image.png",
-    rating: 3,
-    comment: "Good, but there's room for improvement in response time.",
-    date: "May 18, 2025",
-  },
-];
+const Tab = ({ business, renderStars }) => {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default function Tab({ business, renderStars }) {
   const sections = ["overview", "detail", "reviews", "photos"];
-  // const reviews = dummyReviews;
-  const [reviews, setReviews] = useState(dummyReviews);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await apiGet(`/reviews/${business.id}`);
-        if (!res.ok) throw new Error("Failed to fetch reviews");
-        const data = await res.json();
-        setReviews(data); 
+        
+        setLoading(true);
+        // const res = await apiGet(`/reviews/?businessId=${business.id}`);
+        const res = await apiGet(`reviews/${business.id}`)
+        console.log("Fetching reviews for business:", business?.id);
+        // if (!res.ok) throw new Error("Failed to fetch reviews");
+        // const data = await res.json();
+        console.log(res);
+        
+        setReviews(res);
       } catch (error) {
         console.error("Error loading reviews:", error);
       } finally {
@@ -51,9 +33,24 @@ export default function Tab({ business, renderStars }) {
     if (business?.id) fetchReviews();
   }, [business?.id]);
 
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+
+    try {
+      const res = await apiDelete(`/reviews/${reviewId}`);
+      console.log("Delete reviews for business:", reviewId);
+      alert("Review Deleted Successfully !!")
+      // if (!res.ok) throw new Error("Failed to delete review");
+      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+    } catch (err) {
+      console.error("Error deleting review:", err);
+      alert("Failed to delete review");
+    }
+  };
+
   return (
     <div className="space-y-10 scroll-smooth">
-      {/* Tab Buttons */}
+      {/* Tabs */}
       <div className="flex gap-6 border-b mb-4">
         {sections.map((item) => (
           <a key={item} href={`#${item}`} className="pb-2 capitalize text-gray-600 hover:text-blue-700 font-medium transition">
@@ -62,11 +59,10 @@ export default function Tab({ business, renderStars }) {
         ))}
       </div>
 
-      {/* Overview Section */}
+      {/* Overview */}
       <section id="overview" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-2">Overview</h2>
         <p className="text-gray-700 mb-4">{business.description}</p>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2 text-gray-700 mb-6">
           {business.phone && <p><strong>Phone:</strong> {business.phone}</p>}
           {business.wp_number && (
@@ -88,7 +84,8 @@ export default function Tab({ business, renderStars }) {
           {business.website && (
             <p>
               <strong>Website:</strong>{" "}
-              <a href={ business.website.startsWith("http") ? business.website : `https://${business.website}`}
+              <a
+                href={business.website.startsWith("http") ? business.website : `https://${business.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 underline"
@@ -108,7 +105,9 @@ export default function Tab({ business, renderStars }) {
             <h3 className="font-semibold text-gray-800">Business Timings</h3>
             <ul className="list-disc ml-6 text-sm text-gray-700">
               {business.timings.map((t, i) => (
-                <li key={i}> <strong>{t.day}:</strong> {t.openTime} - {t.closeTime} </li>
+                <li key={i}>
+                  <strong>{t.day}:</strong> {t.openTime} - {t.closeTime}
+                </li>
               ))}
             </ul>
           </div>
@@ -119,7 +118,7 @@ export default function Tab({ business, renderStars }) {
         )}
       </section>
 
-      {/* Detail Section */}
+      {/* Detail */}
       <section id="detail" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-2">Detail</h2>
         <ul className="text-gray-700 space-y-2">
@@ -136,35 +135,52 @@ export default function Tab({ business, renderStars }) {
         </ul>
       </section>
 
-      {/* Reviews Section */}
+      {/* Reviews */}
       <section id="reviews" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
-      
-        <div className="grid md:grid-cols-2 gap-6">
-          {reviews.length > 0 ? (
-            reviews.map((review, i) => (
-              <div key={i} className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
+
+        {loading ? (
+          <p className="text-gray-500 text-sm">Loading reviews...</p>
+        ) : reviews.length > 0 ? (
+          <div className="grid md:grid-cols-2 gap-6">
+            {reviews.map((review) => (
+              <div
+                key={review._id}
+                className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300"
+              >
+                {/* Delete Button */}
+                <button onClick={() => handleDeleteReview(review._id)} className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm" title="Delete Review">
+                  ✕
+                </button>
+
                 <div className="flex items-center gap-4 mb-2">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden border border-gray-300">
-                    <Image src={review.avatar} alt={review.user} fill className="object-cover"/>
+                    <Image
+                      src={review.avatar || "/default-avatar.png"}
+                      alt={review.user || "User"}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">{review.user}</h4>
-                    <p className="text-sm text-gray-500">{review.date}</p>
+                    <h4 className="font-semibold text-gray-800">{review.user || "Anonymous"}</h4>
+                    <p className="text-sm text-gray-500">
+                      {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "N/A"}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex gap-1 mb-2">{renderStars(review.rating)}</div>
                 <p className="text-gray-700 text-sm">{review.comment}</p>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-500 text-sm">No reviews yet.</p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-sm">No reviews yet.</p>
+        )}
       </section>
 
-      {/* Photos Section */}
+      {/* Photos */}
       <section id="photos" className="scroll-mt-24">
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-semibold text-blue-900">Photos</h2>
@@ -174,12 +190,7 @@ export default function Tab({ business, renderStars }) {
           {business.images?.length > 0 ? (
             business.images.map((img, i) => (
               <div key={i} className="relative h-40 rounded-lg overflow-hidden">
-                <Image
-                  src={img}
-                  alt={`Photo ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
+                <Image src={img} alt={`Photo ${i + 1}`} fill className="object-cover" />
               </div>
             ))
           ) : (
@@ -189,4 +200,6 @@ export default function Tab({ business, renderStars }) {
       </section>
     </div>
   );
-}
+};
+
+export default Tab;

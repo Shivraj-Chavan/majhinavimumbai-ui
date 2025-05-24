@@ -62,6 +62,8 @@ export default function BusinessRegister({ ownerId }) {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOwnerId = localStorage.getItem("ownerId");
+      console.log("ownerId from localStorage:", storedOwnerId);
+      
       setCheckingOtp(false);
       // setFormData((prev) => ({
       //   ...prev,
@@ -85,8 +87,7 @@ export default function BusinessRegister({ ownerId }) {
   };
   
   const addTiming = () => {
-    setFormData((prev) => ({
-      ...prev,
+    setFormData((prev) => ({ ...prev,
       timing: [...prev.timing, { day: "", open: "09:00", close: "18:00" }],
     }));
   };
@@ -148,6 +149,8 @@ export default function BusinessRegister({ ownerId }) {
 
     try {
       await apiPost("/businesses", finalData);
+      console.log('bussiness',finalData);
+      
       // toast.success("Business Registered Successfully!");
       setSuccessModalOpen(true);
 

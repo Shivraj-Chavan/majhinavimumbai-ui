@@ -176,12 +176,12 @@ export default function ListingInfo() {
       <div className="bg-white rounded-3xl shadow-xl p-8">
         <Info business={business} hours={hours} />
         <div className="mt-8">
-          <Tab business={business} renderStars={renderStars} reviews={reviews}   />
+        <Tab business={business} renderStars={renderStars} />
         </div>
     
         {/* Enquiry Section */}
         <div className="mt-12">
-          <UsersndMsg setReviews={setReviews} />
+        <UsersndMsg setReviews={setReviews} />
         </div>
       </div>
 

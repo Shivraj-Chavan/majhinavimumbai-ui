@@ -3,22 +3,30 @@
 import { apiDelete, apiGet } from '@/lib/apiClient';
 import { useEffect, useState } from 'react';
 
-export default function MyRequestPage() {
+export default function MyRequestPage({business}) {
   const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const data = await apiGet(`/reviews/${businessId}`); 
-        console.log('Fetched reviews:', data);
-        setReviews(data);
-      } catch (error) {
-        console.error('Error fetching reviews:', error);
-      }
-    };
-
-    fetchReviews();
-  }, []);
+      const fetchReviews = async () => {
+        try {
+          
+          setLoading(true);
+           const res = await apiGet(`/reviews/?businessId=${business.id}`);
+          console.log("Fetching reviews for business:", business?.id);
+          // if (!res.ok) throw new Error("Failed to fetch reviews");
+          // const data = await res.json();
+          console.log(res);
+          
+          setReviews(res);
+        } catch (error) {
+          console.error("Error loading reviews:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      if (business?.id) fetchReviews();
+  }, [business?.id]);
 
   const handleDelete = async (id) => {
     try {

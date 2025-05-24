@@ -80,7 +80,6 @@ export default function Page() {
     try {
       const response = await apiPut(`/users/${id}/profile`, updatedData);
       console.log("Response after update:", response);
-  
       toast.success("User updated successfully");
   
       setUsers((prevUsers) => prevUsers.map((user) => user.id === id ? { ...user, ...response } : user));
@@ -115,19 +114,22 @@ export default function Page() {
     }
   };
 
-  const handleStatusToggle = async (userId, currentStatus) => {
-    const newStatus = currentStatus === 1 ? 0 : 1;
+  // const handleStatusToggle = async (userId, currentStatus) => {
+  //   const const newStatus = currentStatus === 1 || currentStatus === true ? 0 : 1;
   
-    try {
-      const updatedUser = await apiPut(`/users/${userId}/profile`, { is_active: newStatus });
-      console.log('User status updated:', updatedUser);
+  //   try {
+  //     const updatedUser = await apiPut(`/users/${userId}/profile`, { is_active: newStatus });
+  //     console.log('User status updated:', updatedUser);
   
-      setUsers(prevUsers => prevUsers.map(user => (user._id === userId ? { ...user, is_active: newStatus } : user)));
-    } catch (error) {
-      console.error('Error updating user status:', error);
-      toast.error('Failed to update user status');
-    }
-  };
+  //     setUsers(prevUsers => prevUsers.map(user => user.id === userId ? { ...user, is_active: newStatus } : user )
+  //     );
+  
+  //     toast.success("User status updated successfully");
+  //   } catch (error) {
+  //     console.error('Error updating user status:', error);
+  //     toast.error('Failed to update user status');
+  //   }
+  // };
 
   // Pagination Logic
   const totalPages = Math.ceil(users.length / usersPerPage);
@@ -161,26 +163,18 @@ export default function Page() {
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
 
                   <button
-                    onClick={() => handleStatusToggle(user._id, user.is_active)}
-                    className={`h-8 px-3 rounded-md text-sm font-semibold ${
-                      user.is_active ? 'bg-gray-500 hover:bg-gray-400' : 'bg-orange-500 hover:bg-orange-400'
-                    } text-white`}
-                  >
+                    // onClick={() => handleStatusToggle(user._id, user.is_active)}
+                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ user.is_active ? 'bg-gray-500 hover:bg-gray-400' : 'bg-orange-500 hover:bg-orange-400' } text-white`}>
                     {user.is_active ? 'Inactive' : 'Active'}
                   </button>
 
                   <button
                     onClick={() => handleEditOpen(user)}
-                    className="h-8 bg-blue-600 hover:bg-blue-500 text-white px-3 rounded text-sm flex items-center justify-center"
-                  >
+                    className="h-8 bg-blue-600 hover:bg-blue-500 text-white px-3 rounded text-sm flex items-center justify-center">
                     <FaUserEdit/>
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={()=>handleAddBusinessClick(user.id)}
-                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
-                  >
+                  <button type="button" onClick={()=>handleAddBusinessClick(user.id)} className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs">
                     Add Business
                   </button>
 

@@ -31,14 +31,26 @@ export default function UsersndMsg({ setReviews }) {
   const handleMessageSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
-
+  
     setSubmitting(true);
     try {
       const response = await apiPost('/reviews', {
         rating,
         comment: message,
       });
-      console.log('Backend response:', response);
+  
+      // Update reviews list immediately
+      setReviews(prev => [
+        {
+          user: "You", 
+          avatar: "/image.png", 
+          rating,
+          comment: message,
+          date: new Date().toISOString()
+        },
+        ...prev
+      ]);
+  
       setMessage('');
       setSuccessMsg('Message sent successfully!');
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -48,7 +60,7 @@ export default function UsersndMsg({ setReviews }) {
       setSubmitting(false);
     }
   };
-
+  
   const handleFeedbackClick = () => {
     if (!isLoggedIn) {
       setShowLoginPopup(true);

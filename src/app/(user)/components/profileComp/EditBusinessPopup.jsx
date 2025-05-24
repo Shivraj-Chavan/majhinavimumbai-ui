@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Input from "../businessRegistercomp/Input";
 import FileUpload from "../profileComp/FileUpload";
+import { Editor, EditorProvider } from "react-simple-wysiwyg";
 
 export default function EditBusinessPopup({ business, onClose, onSave }) {
   const [formData, setFormData] = useState({
@@ -65,7 +66,12 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         }
       });
 
-    //   const res = await apiPut(`/MyBussiness/${business.id}`, form);
+      const res = await apiPut(`/businesses/${business.id}`, form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
       onSave(res.data);
     } catch (err) {
       console.error("Update failed:", err);
@@ -103,11 +109,13 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} placeholder="Bussiness Name" />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} rows="4" className="w-full border border-gray-300 rounded-lg px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Describe your business"/>
-          </div>
-
+             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+               <div>
+               <EditorProvider>
+                 <Editor value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })}/>
+                 </EditorProvider>
+                </div>
+                
           <Input label="Business Hours" name="hours" value={formData.hours} onChange={handleChange} placeholder="e.g. 9am - 6pm" />
           <Input label="Website URL" name="website" value={formData.website} onChange={handleChange} placeholder="https://cncwebworld.com" />
           <Input label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} placeholder="e.g., 9898676545" />
@@ -128,7 +136,6 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
           {formData.photos.length > 0 && (
             <p className="text-xs text-gray-500">{formData.photos.length} photo(s) selected</p>
           )}
-          <FileUpload label="Upload Menu (PDF or Image)" name="menu" onChange={handleChange} accept=".pdf,image/*" />
 
           {/* Menu Upload (File) */}
             <FileUpload label="Upload Menu (PDF or Image)" name="menu" onChange={handleChange} accept=".pdf,image/*"/>
@@ -161,6 +168,7 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
 
         </form>
       </div>
+
     </div>
   );
 }
