@@ -181,7 +181,7 @@ export default function ListingInfo() {
     
         {/* Enquiry Section */}
         <div className="mt-12">
-        <UsersndMsg setReviews={setReviews} />
+        <UsersndMsg setReviews={setReviews} businessId={business.id} />
         </div>
       </div>
 

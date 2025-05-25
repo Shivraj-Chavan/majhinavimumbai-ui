@@ -43,7 +43,7 @@ export default function BusinessRegister({ ownerId }) {
     }
 
   const [formData, setFormData] = useState({
-    owner_id: "",
+    owner_id: null,
     name: "",
     category_id: "",
     subcategory_id: "",

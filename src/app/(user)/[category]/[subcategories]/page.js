@@ -13,16 +13,20 @@ import FilterBar from "../../components/categorylisting/Filterbar";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoIosCall } from "react-icons/io";
 import { ImMail4 } from "react-icons/im";
+import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination";
 
 export default function Page({ params }) {
   const { category, subcategories } = params;
   const dispatch = useDispatch();
   const [sortOrder, setSortOrder] = useState("asc"); // default A to Z
+   const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
   const { categories = [], loading, error } = useSelector((state) => state.categories);
   const { businesses, loading: businessesLoading, error: businessesError } = useSelector(
     (state) => state.businesses
   );
+  const limit = 10;
 
   useEffect(() => {
     if (category && subcategories) {
@@ -53,6 +57,11 @@ export default function Page({ params }) {
       </div>
     );
   }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page); 
+  };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -171,6 +180,10 @@ export default function Page({ params }) {
             <div className="text-center text-gray-500 font-semibold py-10"> No Businesses Found.</div>
           )}
         </div>
+
+
+           {/* Pagination Component */}
+           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
           </div>
   );
 }

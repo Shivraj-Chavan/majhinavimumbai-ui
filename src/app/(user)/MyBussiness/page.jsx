@@ -14,19 +14,20 @@ export default function MyBusinessPage() {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [loading, setLoading] = useState(true); 
   const router = useRouter();
- 
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     setToken(storedToken);
 
     if (!storedToken) {
-      router.push("/login"); 
+      router.push("/login");
       return;
     }
+
     const fetchBusiness = async () => {
       try {
         const res = await apiGet("/businesses");
-        console.log("Fetched business of owner",res);
+        console.log("Fetched business of owner", res);
         setBusiness(res);
       } catch (err) {
         console.error("Failed to load business:", err);
@@ -34,7 +35,7 @@ export default function MyBusinessPage() {
         setLoading(false);
       }
     };
-  
+
     fetchBusiness();
   }, []);
 
@@ -43,26 +44,19 @@ export default function MyBusinessPage() {
     if (newToken) {
       setToken(newToken);
     }
+  }; 
+
+  const handleSubmit = async (updatedBusinessData) => {
+    try {
+      const res = await apiPut(`/businesses/${business.id}`, updatedBusinessData);
+      console.log('Updating Business',res.business);
+      onSave(formData);
+      handleUpdate(res.business);
+    } catch (error) {
+      console.error("Update failed", error);
+      alert("Failed to update business info.");
+    }
   };
-
-  if (loading) return null;
-
-  if (!token) {
-    return <PopUp onClose={handleLoginSuccess} />;
-  }
-  
-
-// const handleSubmit = async (updatedBusinessData) => {
-//   try {
-//     const res = await apiPut(`/businesses/${business.id}`, updatedBusinessData);
-//     console.log('Updating Business',res.business);
-//     // onSave(res);
-//     handleUpdate(res.business);
-//   } catch (error) {
-//     console.error("Update failed", error);
-//     alert("Failed to update business info.");
-//   }
-// };
 
   const handleUpdate = (updatedData) => {
     console.log("Updated :", updatedData); 
@@ -71,34 +65,31 @@ export default function MyBusinessPage() {
   };
 
   if (loading) return <p className="text-center mt-10 text-gray-500">Loading your business profiles...</p>;
-  if (!business.length) return <p className="text-center mt-10 text-gray-500">No businesses found.</p>;
+  if (!token) return <PopUp onClose={handleLoginSuccess} />;
+  if (!business) return <p className="text-center mt-10 text-gray-500">No businesses found.</p>;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
-        My Bussiness Profile
+        My Business Profile
       </h1>
 
       <div className="bg-white max-w-sm rounded-2xl shadow-lg p-6 md:p-8 space-y-10">
         <div className="flex flex-col items-center text-center space-y-4">
-          {/* Logo */}
           <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
-            <img
-              src={business.logoUrl || "/image.png"}
-              alt="Business Logo"
-              className="object-contain w-full h-full"
+            <img src={business.logoUrl || "/image.png"} alt="Business Logo" className="object-contain w-full h-full"/>
+          </div>
+
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800">{business.name}</h2>
+            <div
+              className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: business.description || "<p>No description provided.</p>",
+              }}
             />
           </div>
 
-          {/* Name & Description */}
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800">{business.name}</h2>
-            <div className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none" 
-              dangerouslySetInnerHTML={{ __html: business.description || "<p>No description provided.</p>", }}/>
-
-          </div>
-
-          {/* Verified/Unverified Badge */}
           <div>
             {business.isVerified ? (
               <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-1.5 rounded-full border border-green-300">
@@ -112,9 +103,9 @@ export default function MyBusinessPage() {
           </div>
         </div>
 
-        <hr className="border-gray-200 mb-5"/>
+        <hr className="border-gray-200 mb-5" />
 
-        {/* Photos */}
+          {/* Photos */}
         {/* {business.photos?.length > 0 && (
           <div>
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Photo Gallery</h3>
@@ -145,53 +136,44 @@ export default function MyBusinessPage() {
           <InfoCard label="Business Hours" value={business.hours} />
         </div> */}
 
-         {/* View Details */}
-         <div className="flex justify-end gap-3">
-         <Link href={`/listinginfo/${business.slug}`}>
-             <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-xs shadow flex items-center">
-               <FcFinePrint className="text-xl mr-1" />
-                  View Details
-             </button>
-        </Link>
+        <div className="flex justify-end gap-3">
+          <Link href={`/listinginfo/${business.slug}`}>
+            <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-xs shadow flex items-center">
+              <FcFinePrint className="text-xl mr-1" />
+              View Details
+            </button>
+          </Link>
 
-        {/* Edit Button */}
-        <div >
-          <button onClick={() => setShowEditPopup(true)} className="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg shadow transition" >
+          <button
+            onClick={() => setShowEditPopup(true)}
+            className="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg shadow transition"
+          >
             Edit Business Info
           </button>
         </div>
       </div>
-      </div>
 
-      {/* Sticky Edit Button on Small Screens */}
       <div className="fixed bottom-4 right-4 md:hidden z-50">
-        <button onClick={() => setShowEditPopup(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg">
+        <button
+          onClick={() => setShowEditPopup(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg"
+        >
           Edit
         </button>
       </div>
 
       {/* Edit Popup */}
-      {selectedBusiness && (
-  <EditBusinessPopup
-    business={selectedBusiness}
-    onClose={() => setSelectedBusiness(null)}
-    onSave={(updatedBusiness) => {
-      setBusinesses((prev) =>
-        prev.map((b) => (b.id === updatedBusiness.id ? updatedBusiness : b))
-      );
-      setSelectedBusiness(null);
-    }}
-  />
-)}
-
+      {showEditPopup && business && (
+        <EditBusinessPopup business={business} onClose={() => setShowEditPopup(false)} onSave={handleSubmit}/>
+        )}
     </div>
   );
 }
 
-// InfoCard Component
-const InfoCard = ({ label, value }) => (
-  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-    <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
-    <p className="text-gray-800">{value || "-"}</p>
-  </div>
-);
+// InfoCard 
+// const InfoCard = ({ label, value }) => (
+//   <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+//     <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
+//     <p className="text-gray-800">{value || "-"}</p>
+//   </div>
+// );

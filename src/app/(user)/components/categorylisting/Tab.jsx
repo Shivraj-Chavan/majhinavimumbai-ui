@@ -13,15 +13,11 @@ const Tab = ({ business, renderStars }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        
         setLoading(true);
-        // const res = await apiGet(`/reviews/?businessId=${business.id}`);
-        const res = await apiGet(`reviews/${business.id}`)
+        const res = await apiGet(`/reviews/${business.id}`);
         console.log("Fetching reviews for business:", business?.id);
-        // if (!res.ok) throw new Error("Failed to fetch reviews");
-        // const data = await res.json();
-        console.log(res);
-        
+        console.log('reviews',res);
+  
         setReviews(res);
       } catch (error) {
         console.error("Error loading reviews:", error);
@@ -29,7 +25,7 @@ const Tab = ({ business, renderStars }) => {
         setLoading(false);
       }
     };
-
+  
     if (business?.id) fetchReviews();
   }, [business?.id]);
 

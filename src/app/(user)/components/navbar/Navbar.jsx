@@ -17,6 +17,8 @@ import { CiSquareQuestion } from 'react-icons/ci';
 import { useRouter } from 'next/navigation';
 
 export function handleLoginSuccess (user, token) {
+  
+  const dispatch = useDispatch();
   localStorage.setItem("token", token);
   // localStorage.setItem("authRole", user.role);
   // localStorage.setItem("authUser", JSON.stringify(user));

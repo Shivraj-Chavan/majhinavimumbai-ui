@@ -6,7 +6,7 @@ import PopUp from '../home/popUp';
 import { apiPost } from '@/lib/apiClient';
 import Star from '@/app/(user)/components/categorylisting/Star'
 
-export default function UsersndMsg({ setReviews }) {
+export default function UsersndMsg({ setReviews ,businessId}) {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -37,7 +37,9 @@ export default function UsersndMsg({ setReviews }) {
       const response = await apiPost('/reviews', {
         rating,
         comment: message,
+        business_id:businessId,
       });
+      console.log(response);
   
       // Update reviews list immediately
       setReviews(prev => [

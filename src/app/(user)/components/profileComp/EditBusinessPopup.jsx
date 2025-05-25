@@ -4,6 +4,7 @@ import { useState } from "react";
 import Input from "../businessRegistercomp/Input";
 import FileUpload from "../profileComp/FileUpload";
 import { Editor, EditorProvider } from "react-simple-wysiwyg";
+import { apiPost } from "@/lib/apiClient";
 
 export default function EditBusinessPopup({ business, onClose, onSave }) {
   const [formData, setFormData] = useState({
@@ -66,11 +67,8 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         }
       });
 
-      const res = await apiPut(`/businesses/${business.id}`, form, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const res = await apiPut(`/businesses/${business.id}`, form);
+      console.log(form);
   
       onSave(res.data);
     } catch (err) {
@@ -94,6 +92,47 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
     updatedItems.splice(index, 1);
     setFormData((prev) => ({ ...prev, menuItems: updatedItems }));
   };
+
+  // Converts a File object to a base64 string
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result); 
+    reader.onerror = reject;
+    reader.readAsDataURL(file); // converts to base64 format
+  });
+}
+
+  const handleUploadPhotos = async () => {
+    if (!formData.photos || formData.photos.length === 0) {
+      alert("Please select photos to upload.");
+      return;
+    }
+  
+    try {
+      const base64Images = await Promise.all(
+        formData.photos.map(file => fileToBase64(file))
+      );
+  
+      const payload = {
+        user_id: currentUser.id, // make sure this is defined
+        images: base64Images,
+      };
+  
+      const res = await apiPost(`/businesses/${business.id}`, payload);
+  
+      if (response?.success) {
+        alert("Photos uploaded successfully");
+        console.log("Saved images:", res.images);
+      } else {
+        console.error(res);
+        alert(response?.msg || "Photo upload failed.");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Something went wrong during image upload.");
+    }
+  };
   
   return (
     <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4">
@@ -109,8 +148,8 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} placeholder="Bussiness Name" />
 
-             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-               <div>
+           <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <div>
                <EditorProvider>
                  <Editor value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })}/>
                  </EditorProvider>
@@ -118,8 +157,11 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
                 
           <Input label="Business Hours" name="hours" value={formData.hours} onChange={handleChange} placeholder="e.g. 9am - 6pm" />
           <Input label="Website URL" name="website" value={formData.website} onChange={handleChange} placeholder="https://cncwebworld.com" />
+           
+           <div className="flex gap-4">
           <Input label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} placeholder="e.g., 9898676545" />
           <Input label="WhatsApp Number" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} placeholder="e.g., 8476509632" />
+          </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-700">Bussiness Location</label>
@@ -131,14 +173,20 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
             </div>
           </div>
 
-          <FileUpload label="Upload Logo" name="logo" onChange={handleChange} accept="image/*" />
-          <FileUpload label="Upload Photos (max 20)" name="photos" multiple onChange={handleChange} accept="image/*" />
-          {formData.photos.length > 0 && (
-            <p className="text-xs text-gray-500">{formData.photos.length} photo(s) selected</p>
-          )}
+          <div className="flex gap-4 items-end">
+          <FileUpload label="Upload Photos (max 20)" name="photos" onChange={handleChange} accept="image/*" multiple={true}/>
+          
+          <button type="button" onClick={handleUploadPhotos} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">
+            Upload Selected Photos
+          </button>
+        </div>
 
-          {/* Menu Upload (File) */}
-            <FileUpload label="Upload Menu (PDF or Image)" name="menu" onChange={handleChange} accept=".pdf,image/*"/>
+          {/* {formData.photos.length > 0 && (
+            <p className="text-xs text-gray-500">{formData.photos.length} photo(s) selected</p>
+          )} */}
+
+           {/* Menu Upload (File) */}
+            {/* <FileUpload label="Upload Menu (PDF or Image)" name="menu" onChange={handleChange} accept=".pdf,image/*"/>  */}
 
             {/* Typed Menu Items */}
             <div className="mt-4">
