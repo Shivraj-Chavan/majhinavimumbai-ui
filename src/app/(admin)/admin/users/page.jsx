@@ -93,26 +93,26 @@ export default function Page() {
   router.push(`users/businessRegister?ownerId=${userId}`);
   };
 
-  const handleBlock = async (id) => {
-    if (!id) {
-      alert('User ID is required');
-      return;
-    }
-    setIsLoading(true);
+  // const handleBlock = async (id) => {
+  //   if (!id) {
+  //     alert('User ID is required');
+  //     return;
+  //   }
+  //   setIsLoading(true);
   
-    try {
-      console.log('Blocking user with ID:', id);
-      const response = await apiPut(`/users/block/${id}`); 
-      console.log(response);
-      alert('User blocked successfully');
-    } catch (error) {
-      console.log('Error occurred while blocking the user:', error);
-      const message = error.response?.data?.message || 'Failed to block user';
-      alert(message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   try {
+  //     console.log('Blocking user with ID:', id);
+  //     const response = await apiPut(`/users/block/${id}`); 
+  //     console.log(response);
+  //     alert('User blocked successfully');
+  //   } catch (error) {
+  //     console.log('Error occurred while blocking the user:', error);
+  //     const message = error.response?.data?.message || 'Failed to block user';
+  //     alert(message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // const handleStatusToggle = async (userId, currentStatus) => {
   //   const const newStatus = currentStatus === 1 || currentStatus === true ? 0 : 1;
@@ -178,10 +178,10 @@ export default function Page() {
                     Add Business
                   </button>
 
-                  <button type="button" className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-xs"
+                  {/* <button type="button" className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-xs"
                     onClick={() => handleBlock(user.id)} disabled={isLoading} >
                     {isLoading ? 'Blocking...' : 'Block'}
-                  </button>
+                  </button> */}
   
                 </td>
                 </tr>
