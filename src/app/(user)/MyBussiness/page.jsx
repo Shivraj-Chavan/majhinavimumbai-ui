@@ -9,10 +9,11 @@ import { FcFinePrint } from "react-icons/fc";
 import { apiGet, apiPut } from "@/lib/apiClient";
 
 export default function MyBusinessPage() {
-  const [business, setBusiness] = useState(null);
+  const [businesses, setBusinesses] = useState(null); 
+  const [businessToEdit, setBusinessToEdit] = useState(null);
   const [token, setToken] = useState(null);
   const [showEditPopup, setShowEditPopup] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,10 +28,10 @@ export default function MyBusinessPage() {
     const fetchBusiness = async () => {
       try {
         const res = await apiGet("/businesses");
-        console.log("Fetched business of owner", res);
-        setBusiness(res);
+        console.log("Fetched businesses of owner", res);
+        setBusinesses(res);
       } catch (err) {
-        console.error("Failed to load business:", err);
+        console.error("Failed to load businesses:", err);
       } finally {
         setLoading(false);
       }
@@ -44,13 +45,13 @@ export default function MyBusinessPage() {
     if (newToken) {
       setToken(newToken);
     }
-  }; 
+  };
 
   const handleSubmit = async (updatedBusinessData) => {
     try {
-      const res = await apiPut(`/businesses/${business.id}`, updatedBusinessData);
-      console.log('Updating Business',res.business);
-      onSave(formData);
+      const res = await apiPut(`/businesses/${businessToEdit.id}`, updatedBusinessData);
+      console.log("Updating Business", res.business);
+
       handleUpdate(res.business);
     } catch (error) {
       console.error("Update failed", error);
@@ -59,103 +60,92 @@ export default function MyBusinessPage() {
   };
 
   const handleUpdate = (updatedData) => {
-    console.log("Updated :", updatedData); 
-    setBusiness(updatedData);
+    console.log("Updated:", updatedData);
+
+    setBusinesses((prev) =>
+      prev.map((b) => (b.id === updatedData.id ? updatedData : b))
+    );
+
     setShowEditPopup(false);
+    setBusinessToEdit(null);
   };
 
   if (loading) return <p className="text-center mt-10 text-gray-500">Loading your business profiles...</p>;
   if (!token) return <PopUp onClose={handleLoginSuccess} />;
-  if (!business) return <p className="text-center mt-10 text-gray-500">No businesses found.</p>;
+  if (!businesses || businesses.length === 0) return <p className="text-center mt-10 text-gray-500">No businesses found.</p>;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
-        My Business Profile
+        My Business Profiles
       </h1>
 
-      <div className="bg-white max-w-sm rounded-2xl shadow-lg p-6 md:p-8 space-y-10">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
-            <img src={business.logoUrl || "/image.png"} alt="Business Logo" className="object-contain w-full h-full"/>
-          </div>
+      {businesses.map((business) => (
+        <div key={business.id} className="bg-white max-w-sm rounded-2xl shadow-lg p-6 md:p-8 space-y-10 mb-10">
+          <div className="flex flex-col items-center text-center space-y-4">
+            <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
+              <img
+                src={business.logoUrl || "/image.png"}
+                alt="Business Logo"
+                className="object-contain w-full h-full"
+              />
+            </div>
 
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800">{business.name}</h2>
-            <div
-              className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{
-                __html: business.description || "<p>No description provided.</p>",
-              }}
-            />
-          </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-800">{business.name}</h2>
+              <div
+                className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{
+                  __html: business.description || "<p>No description provided.</p>",
+                }}
+              />
+            </div>
 
-          <div>
-            {business.isVerified ? (
-              <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-1.5 rounded-full border border-green-300">
-                Verified
-              </span>
-            ) : (
-              <span className="text-red-600 font-semibold text-sm bg-red-100 px-4 py-1.5 rounded-full border border-red-300">
-                Unverified
-              </span>
-            )}
-          </div>
-        </div>
-
-        <hr className="border-gray-200 mb-5" />
-
-          {/* Photos */}
-        {/* {business.photos?.length > 0 && (
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Photo Gallery</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {business.photos.map((url, index) => (
-                <img key={index} src={url} alt={`Photo ${index + 1}`} className="w-full h-30 sm:h-40 object-cover rounded-xl border border-gray-300"/>
-              ))}
+            <div>
+              {business.isVerified ? (
+                <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-1.5 rounded-full border border-green-300">
+                  Verified
+                </span>
+              ) : (
+                <span className="text-red-600 font-semibold text-sm bg-red-100 px-4 py-1.5 rounded-full border border-red-300">
+                  Unverified
+                </span>
+              )}
             </div>
           </div>
-        )} */}
 
-        {/* Info Grid */}
-        {/* <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <InfoCard label="Area" value={business.area} />
-          <InfoCard label="Pin Code" value={business.pincode} />
-          <InfoCard label="WhatsApp Number" value={business.whatsapp} />
-          <InfoCard label="Email" value={business.email} />
-          <InfoCard label="Website" value={ business.website ? (
-                <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline" >
-                  {business.website}
-                </a>
-              ) : (
-                "-"
-              )
-            }
-          />
-          <InfoCard label="Location" value={business.location} />
-          <InfoCard label="Business Hours" value={business.hours} />
-        </div> */}
+          <hr className="border-gray-200 mb-5" />
 
-        <div className="flex justify-end gap-3">
-          <Link href={`/listinginfo/${business.slug}`}>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-xs shadow flex items-center">
-              <FcFinePrint className="text-xl mr-1" />
-              View Details
+          <div className="flex justify-end gap-3">
+            <Link href={`/listinginfo/${business.slug}`}>
+              <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-xs shadow flex items-center">
+                <FcFinePrint className="text-xl mr-1" />
+                View Details
+              </button>
+            </Link>
+
+            <button
+              onClick={() => {
+                setBusinessToEdit(business);
+                setShowEditPopup(true);
+              }}
+              className="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg shadow transition"
+            >
+              Edit Business Info
             </button>
-          </Link>
-
-          <button
-            onClick={() => setShowEditPopup(true)}
-            className="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg shadow transition"
-          >
-            Edit Business Info
-          </button>
+          </div>
         </div>
-      </div>
+      ))}
 
+      {/* Mobile floating edit button to edit first business */}
       <div className="fixed bottom-4 right-4 md:hidden z-50">
         <button
-          onClick={() => setShowEditPopup(true)}
+          onClick={() => {
+            if (businesses.length > 0) {
+              setBusinessToEdit(businesses[0]);
+              setShowEditPopup(true);
+            }
+          }}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg"
         >
           Edit
@@ -163,17 +153,16 @@ export default function MyBusinessPage() {
       </div>
 
       {/* Edit Popup */}
-      {showEditPopup && business && (
-        <EditBusinessPopup business={business} onClose={() => setShowEditPopup(false)} onSave={handleSubmit}/>
-        )}
+      {showEditPopup && businessToEdit && (
+        <EditBusinessPopup
+          business={businessToEdit}
+          onClose={() => {
+            setShowEditPopup(false);
+            setBusinessToEdit(null);
+          }}
+          onSave={handleSubmit}
+        />
+      )}
     </div>
   );
 }
-
-// InfoCard 
-// const InfoCard = ({ label, value }) => (
-//   <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-//     <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
-//     <p className="text-gray-800">{value || "-"}</p>
-//   </div>
-// );
