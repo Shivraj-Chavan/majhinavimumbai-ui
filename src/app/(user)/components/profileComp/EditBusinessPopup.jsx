@@ -63,8 +63,8 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         wp_number: formData.whatsappNumber,
         location: formData.location,
         menuItems: formData.menuItems,
-        category_id: business.category_id,      // ensure it’s passed
-        subcategory_id: business.subcategory_id // ensure it’s passed
+        category_id: business.category_id,      
+        subcategory_id: business.subcategory_id 
       };
 
       const res = await apiPut(`/businesses/${business.id}`, payload);

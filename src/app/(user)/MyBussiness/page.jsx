@@ -24,12 +24,19 @@ export default function MyBusinessPage() {
       router.push("/login");
       return;
     }
-
+    
     const fetchBusiness = async () => {
       try {
-        const res = await apiGet("/businesses");
-        console.log("Fetched businesses of owner", res);
-        setBusinesses(res.data);
+
+        const res = await apiGet(`/businesses/user`);
+        console.log("businesses:", res);
+
+        if (res.businesses) {
+          setBusinesses(res.businesses);
+        } else {
+          console.warn("Unexpected response format:", res);
+          setBusinesses([]);
+        }
       } catch (err) {
         console.error("Failed to load businesses:", err);
       } finally {
@@ -50,12 +57,10 @@ export default function MyBusinessPage() {
   const handleSubmit = async (updatedBusinessData) => {
     try {
       const res = await apiPut(`/businesses/${businessToEdit.id}`, updatedBusinessData);
-  
-      // Log the full response for debugging
       console.log("Updating Business", res);
   
       if (res.business) {
-        handleUpdate(res.business); // ✅ Now works because backend returns `business`
+        handleUpdate(res.business); 
       } else {
         alert("Update succeeded, but response format is unexpected.");
       }
@@ -65,14 +70,24 @@ export default function MyBusinessPage() {
     }
   };
   
-
   const handleUpdate = (updatedData) => {
-    console.log("Updated:", updatedData);
-
-    setBusinesses((prev) =>
-      prev.map((b) => (b.id === updatedData.id ? updatedData : b))
-    );
-
+    console.log("Updated data:", updatedData);
+    
+    setBusinesses((prev) => {
+      console.log("Before update:", prev);
+      
+      const updatedList = prev.map((b) => {
+        if (b.id === updatedData.id) {
+          console.log(`Replacing business with id ${b.id}`);
+          return updatedData;
+        }
+        return b;
+      });
+      
+      console.log("After update:", updatedList);
+      return updatedList;
+    });
+  
     setShowEditPopup(false);
     setBusinessToEdit(null);
   };
@@ -139,12 +154,7 @@ export default function MyBusinessPage() {
             </button>
           </Link>
 
-          <button onClick={() => {
-              setBusinessToEdit(business);
-              setShowEditPopup(true);
-            }}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow"
-          >
+          <button onClick={() => { setBusinessToEdit(business); setShowEditPopup(true);}} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow">
             Edit
           </button>
         </div>
@@ -152,31 +162,9 @@ export default function MyBusinessPage() {
     ))}
   </div>
 
-  {/* Mobile floating edit button */}
-  <div className="fixed bottom-4 right-4 md:hidden z-50">
-    <button
-      onClick={() => {
-        if (businesses.length > 0) {
-          setBusinessToEdit(businesses[0]);
-          setShowEditPopup(true);
-        }
-      }}
-      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg"
-    >
-      Edit
-    </button>
-  </div>
-
   {/* Edit Popup */}
   {showEditPopup && businessToEdit && (
-    <EditBusinessPopup
-      business={businessToEdit}
-      onClose={() => {
-        setShowEditPopup(false);
-        setBusinessToEdit(null);
-      }}
-      onSave={handleSubmit}
-    />
+    <EditBusinessPopup business={businessToEdit} onClose={() => { setShowEditPopup(false); setBusinessToEdit(null); }}onSave={handleSubmit}/>
   )}
 </div>
 

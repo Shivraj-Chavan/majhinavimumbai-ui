@@ -65,8 +65,6 @@ export default function Navbar() {
     };
   }, []);
 
-
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("authRole");
@@ -165,11 +163,11 @@ export default function Navbar() {
                       </li>
                       <li>
                         <button
-                          onClick={() => handleNavigate("/MyRequest")}
+                          onClick={() => handleNavigate("/MyReviews")}
                           className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
                         >
                           <CiSquareQuestion className="text-md" />
-                          My Requests
+                          My Reviews
                         </button>
                       </li>
                       <li>

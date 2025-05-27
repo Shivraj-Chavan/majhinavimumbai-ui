@@ -31,13 +31,14 @@ const Tab = ({ business, renderStars }) => {
 
   const handleDeleteReview = async (reviewId) => {
     if (!window.confirm("Are you sure you want to delete this review?")) return;
+    console.log("Attempting to delete review with ID:", reviewId);
   
     try {
       const res = await apiDelete(`/reviews/${reviewId}`);
       console.log("Deleted review:", reviewId);
       alert("Review Deleted Successfully!");
   
-      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
     } catch (err) {
       console.error("Error deleting review:", err);
       alert("Failed to delete review");
@@ -132,44 +133,52 @@ const Tab = ({ business, renderStars }) => {
       </section>
 
       {/* Reviews */}
-      <section id="reviews" className="scroll-mt-24">
-        <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
+        <section id="reviews" className="scroll-mt-24">
+          <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
 
-        {loading ? (
-          <p className="text-gray-500 text-sm">Loading reviews...</p>
-        ) : reviews.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-6">
-            {reviews.map((review) => (
-              <div
-                key={reviewId}
-                className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300"
-              >
-                {/* Delete Button */}
-                <button onClick={() => handleDeleteReview(reviewId)} className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm" title="Delete Review">
-                  ✕
-                </button>
+          {loading ? (
+            <p className="text-gray-500 text-sm">Loading reviews...</p>
+          ) : reviews.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-6">
+              {reviews.map((review) => (
+                <div key={review.id} className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
+                  {/* Three Dots Menu */}
+                  <div className="absolute top-2 right-2">
+                    <div className="relative group">
+                      <button className="text-gray-700 hover:text-gray-800 text-xl"> &#8942; </button>
 
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-gray-300">
-                    <Image src={review.avatar || "/default-avatar.png"} alt={review.user || "User"} fill className="object-cover"/>
+                      {/* Dropdown */}
+                      <div className="hidden group-hover:block absolute right-0 mt-1 w-28 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                        <button onClick={() => handleDeleteReview(review.id)} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">{review.user || "Anonymous"}</h4>
-                    <p className="text-sm text-gray-500">
-                      {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "N/A"}
-                    </p>
+
+                  {/* Review Content */}
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border border-gray-300">
+                      <Image src={review.avatar || "/image.png"} alt={review.user || "User"} fill className="object-cover"/>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{review.user || "Anonymous"}</h4>
+                      <p className="text-sm text-gray-500">
+                        {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "N/A"}
+                      </p>
+                    </div>
                   </div>
+
+                  <div className="flex gap-1 mb-2">{renderStars(review.rating)}</div>
+                  <p className="text-gray-700 text-sm">{review.comment}</p>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No reviews yet.</p>
+          )}
+        </section>
 
-                <div className="flex gap-1 mb-2">{renderStars(review.rating)}</div>
-                <p className="text-gray-700 text-sm">{review.comment}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500 text-sm">No reviews yet.</p>
-        )}
-      </section>
 
       {/* Photos */}
       <section id="photos" className="scroll-mt-24">
