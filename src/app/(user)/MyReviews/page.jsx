@@ -1,7 +1,8 @@
 'use client';
 
+import { apiGet } from '@/lib/apiClient';
 import { useEffect, useState } from 'react';
-import { apiGet, apiDelete } from '@/lib/apiClient';
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export default function AllReviews() {
   const [reviews, setReviews] = useState([]);
@@ -10,8 +11,8 @@ export default function AllReviews() {
   useEffect(() => {
     const fetchAllReviews = async () => {
       try {
-        const res = await apiGet('/reviews'); 
-        console.log(res); 
+        const res = await apiGet('/reviews');
+        console.log('All reviews',res);
         setReviews(res);
       } catch (err) {
         console.error('Failed to fetch all reviews:', err);
@@ -20,27 +21,48 @@ export default function AllReviews() {
         setLoading(false);
       }
     };
-  
+
     fetchAllReviews();
   }, []);
-  
 
   const handleDelete = async (reviewId) => {
+    console.log('reviewId:', reviewId);
     if (!window.confirm('Are you sure you want to delete this review?')) return;
-
+  
     try {
       await apiDelete(`/reviews/${reviewId}`);
+      console.log('Delete request successful for reviewId:', reviewId);
       alert('Review deleted successfully!');
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      console.log('Updated reviews after deletion:', updated);
     } catch (err) {
       console.error('Error deleting review:', err);
       alert('Failed to delete review');
     }
   };
-
+  
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+  
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FaStar key={`full-${i}`} className="text-amber-500 text-xl" />);
+    }
+  
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(<FaStarHalfAlt key="half" className="text-amber-400 text-xl" />);
+    }
+  
+    for (let i = stars.length; i < 5; i++) {
+      stars.push(<FaRegStar key={`empty-${i}`} className="text-gray-300 text-xl" />);
+    }
+  
+    return <div className="flex gap-0.5">{stars}</div>;
+  };
   return (
     <div className="p-4 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center text-blue-800">All Reviews</h2>
+      <h2 className="text-2xl font-bold mb-10 text-center text-blue-800">All Reviews</h2>
 
       {loading ? (
         <p className="text-center text-gray-500">Loading...</p>
@@ -50,12 +72,12 @@ export default function AllReviews() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {reviews.map((review) => (
             <div key={review.id} className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-yellow-500 font-bold">⭐ {review.rating}</span>
-                <button
-                  onClick={() => handleDelete(review.id)}
-                  className="text-red-500 hover:text-red-700 text-sm"
-                >
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex flex-row gap-4">
+                  <div>{renderStars(review.rating)}</div>
+                  <span className="text-sm text-gray-600 font-medium">{review.rating.toFixed(1)}</span>
+                </div>
+                <button onClick={() => handleDelete(review.id)} className="text-red-500 hover:text-red-700 text-sm">
                   Delete
                 </button>
               </div>

@@ -1,4 +1,4 @@
-export default function Input({ label, name, value, onChange }) {
+export default function Input({ label, name, value, onChange, ...props }) {
   return (
     <div>
       <label className="font-semibold text-gray-700">{label}</label>
@@ -9,6 +9,7 @@ export default function Input({ label, name, value, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={label}
+        {...props}
       />
     </div>
   );

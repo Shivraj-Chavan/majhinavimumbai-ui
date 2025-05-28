@@ -10,7 +10,7 @@ const Tab = ({ business, renderStars }) => {
 
   const sections = ["overview", "detail", "reviews", "photos"];
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchReviews = async () => {
       try {
         setLoading(true);
@@ -178,7 +178,6 @@ const Tab = ({ business, renderStars }) => {
             <p className="text-gray-500 text-sm">No reviews yet.</p>
           )}
         </section>
-
 
       {/* Photos */}
       <section id="photos" className="scroll-mt-24">

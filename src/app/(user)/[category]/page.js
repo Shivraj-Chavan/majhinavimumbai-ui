@@ -118,7 +118,6 @@ export default function Page({ params }) {
                   <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-gray-100">
                     <Image src={business?.images?.[0] || "/image.png"} alt={business?.name || "Business Image"} fill className="object-cover" />
                   </div>
-
                 
                   {/* Business Info */}
                   <div className="flex flex-col gap-2 flex-grow">
@@ -143,10 +142,7 @@ export default function Page({ params }) {
                         {business.phone || "Phone number"}
                       </a>
                     </div>
-
-                    
                       </div>
-
                 
                     {/* Email */}
                     {/* {business.email && (
