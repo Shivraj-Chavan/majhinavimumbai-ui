@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Input from "../businessRegistercomp/Input";
-import ImgUpload from '@/app/(user)/components/profileComp/ImgUpload'
-import { apiPost, apiPut } from "@/lib/apiClient";
 import TextEditor from "./TextEditor";
+import { apiPost, apiPut } from "@/lib/apiClient";
+import { MdDelete } from "react-icons/md";
+import axios from "axios";
 
-export default function EditBusinessPopup({ business, onClose, onSave }) {
+export default function EditBusinessPopup({ business, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -15,10 +16,9 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
     contactNumber: "",
     whatsappNumber: "",
     location: "",
-    photos: [],
-    logo: null,
-    menuItems: [{ name: "", price: "" }],
   });
+
+  const [selectedPhotos, setSelectedPhotos] = useState([]);
 
   useEffect(() => {
     if (business) {
@@ -30,34 +30,27 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         contactNumber: business.contactNumber || "",
         whatsappNumber: business.whatsappNumber || "",
         location: business.location || "",
-        photos: [],
-        logo: null,
-        menuItems: business.menuItems || [{ name: "", price: "" }],
       });
     }
   }, [business]);
 
   const handleChange = (e) => {
-    const { name, type, files, value, multiple } = e?.target || {};
-    if (!name) return;
+    const { name, value, files, type, multiple } = e.target;
 
-    if (name === "photos") {
-      setSelectedPhotos(Array.from(files)); 
-    }
-  
-    if (type === "file") {
-      const selectedFiles = Array.from(files);
-      if (multiple && selectedFiles.length > 20) {
+    if (type === "file" && name === "photos") {
+      const newFiles = Array.from(files);
+      if (selectedPhotos.length + newFiles.length > 20) {
         alert("You can upload a maximum of 20 photos.");
         return;
       }
-      setFormData((prev) => ({
-        ...prev,
-        [name]: multiple ? selectedFiles : files[0],
-      }));
+      setSelectedPhotos((prev) => [...prev, ...newFiles]);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleDeletePhoto = (index) => {
+    setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleGetLocation = () => {
@@ -83,57 +76,43 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
         phone: formData.contactNumber,
         wp_number: formData.whatsappNumber,
         location: formData.location,
-        menuItems: formData.menuItems,
         category_id: business.category_id,
         subcategory_id: business.subcategory_id,
       };
 
-      if (!business?.owner_id) {
-        alert("Owner ID is missing. Cannot update business.");
-        return;
+      const updateRes = await apiPut(`/businesses/${business.id}`, payload);
+      console.log("Business updated:", updateRes);
+
+      if (selectedPhotos.length > 0) {
+        const formPhotos = new FormData();
+        selectedPhotos.forEach((file) => formPhotos.append("photos", file));
+        formPhotos.append("user_id", business.owner_id);
+
+        const token = localStorage.getItem('token');
+        const photoRes = await axios.post(`http://69.62.84.113:5005/api/businesses/${business.id}/photos`, formPhotos, {
+          headers: {
+            Authorization: `Bearer ${token}`, // only if needed
+          },
+        });
+    
+        console.log("Photos uploaded:", photoRes.data);
+
+        // const photoRes = await apiPost(`/businesses/${business.id}/photos`, formPhotos);
+        // console.log("Photos uploaded:", photoRes);
       }
 
-      const res = await apiPut(`/businesses/${business.id}`, payload);
-      console.log("Updated business:", res);
-      // onSave(res);
+      alert("Business updated successfully!");
+      onClose();
     } catch (err) {
       console.error("Update failed:", err);
       alert("Something went wrong while updating. Please try again.");
     }
   };
 
-  // const handleMenuItemChange = (index, field, value) => {
-  //   const updatedItems = [...formData.menuItems];
-  //   updatedItems[index][field] = value;
-  //   setFormData((prev) => ({ ...prev, menuItems: updatedItems }));
-  // };
-
-  // const addMenuItem = () => {
-  //   setFormData((prev) => ({ ...prev, menuItems: [...prev.menuItems, { name: "", price: "" }],}));
-  // };
-
-  // const removeMenuItem = (index) => {
-  //   const updatedItems = [...formData.menuItems];
-  //   updatedItems.splice(index, 1);
-  //   setFormData((prev) => ({ ...prev, menuItems: updatedItems }));
-  // };
-
-  // const fileToBase64 = (file) =>
-  //   new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => resolve(reader.result);
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(file);
-  //   });
-    
-
   return (
     <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-6 md:p-8 relative overflow-y-auto max-h-[95vh]">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl"
-        >
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
           &times;
         </button>
 
@@ -141,15 +120,9 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
-          
-          <TextEditor
-          label="Description"
-          value={formData.description}
-          onChange={(val) => setFormData((prev) => ({ ...prev, description: val }))}
-        />
+          <TextEditor label="Description" value={formData.description} onChange={(val) => setFormData((prev) => ({ ...prev, description: val }))} />
           <Input label="Hours" name="hours" value={formData.hours} onChange={handleChange} />
           <Input label="Website" name="website" value={formData.website} onChange={handleChange} />
-
           <div className="flex gap-4">
             <Input label="Contact" name="contactNumber" value={formData.contactNumber} onChange={handleChange} />
             <Input label="WhatsApp" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} />
@@ -158,61 +131,35 @@ export default function EditBusinessPopup({ business, onClose, onSave }) {
           <div>
             <label className="block mb-1 text-sm">Location</label>
             <div className="flex gap-2">
-              <input
-                type="text"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                className="flex-1 border px-4 py-2 rounded"
-              />
-              <button
-                type="button"
-                onClick={handleGetLocation}
-                className="px-3 py-2 bg-blue-500 text-white rounded text-sm"
-              >
+              <input type="text" name="location" value={formData.location} onChange={handleChange} className="flex-1 border px-4 py-2 rounded" />
+              <button type="button" onClick={handleGetLocation} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">
                 Get Location
               </button>
             </div>
           </div>
 
-          {/* Upload Images */}
-          <ImgUpload businessId={business.id}/>
+          {/* Photo Upload Section */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Photos (max 20)</label>
+            <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block" />
 
-          {/* <div>
-            <h3 className="font-semibold text-sm mb-2">Menu Items</h3>
-            {formData.menuItems.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 mb-2">
-                <input
-                  type="text"
-                  placeholder="Item"
-                  value={item.name}
-                  onChange={(e) => handleMenuItemChange(index, "name", e.target.value)}
-                  className="flex-1 border px-2 py-1 rounded"
-                />
-                <input
-                  type="number"
-                  placeholder="Price"
-                  value={item.price}
-                  onChange={(e) => handleMenuItemChange(index, "price", e.target.value)}
-                  className="w-24 border px-2 py-1 rounded"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeMenuItem(index)}
-                  className="text-red-600 text-xl font-bold px-2"
-                >
-                  &times;
-                </button>
+            {selectedPhotos.length > 0 && (
+              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 mt-4">
+                {selectedPhotos.map((file, idx) => (
+                  <div key={idx} className="relative group w-28 h-28">
+                    <img src={URL.createObjectURL(file)} alt={`preview-${idx}`} className="object-cover w-full h-full rounded border border-gray-200" />
+                    <button
+                      type="button"
+                      onClick={() => handleDeletePhoto(idx)}
+                      className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <MdDelete size={14} />
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-            <button
-              type="button"
-              onClick={addMenuItem}
-              className="text-blue-600 hover:underline text-sm"
-            >
-              + Add Menu Item
-            </button>
-          </div> */}
+            )}
+          </div>
 
           <button type="submit" className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">
             Update Business

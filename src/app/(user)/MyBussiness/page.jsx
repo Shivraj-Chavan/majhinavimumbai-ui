@@ -29,7 +29,6 @@ export default function MyBusinessPage() {
     
     const fetchBusiness = async () => {
       try {
-
         const res = await apiGet(`/businesses/user`);
         console.log("businesses:", res);
 
