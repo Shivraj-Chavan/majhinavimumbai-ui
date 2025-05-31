@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Input from "../businessRegistercomp/Input";
 import TextEditor from "./TextEditor";
-import { apiPost, apiPut } from "@/lib/apiClient";
+import { apiPut } from "@/lib/apiClient";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 
@@ -19,6 +19,13 @@ export default function EditBusinessPopup({ business, onClose }) {
   });
 
   const [selectedPhotos, setSelectedPhotos] = useState([]);
+  const [existingPhotos, setExistingPhotos] = useState([]);
+
+  useEffect(() => {
+    return () => {
+      selectedPhotos.forEach((file) => URL.revokeObjectURL(file.preview));
+    };
+  }, [selectedPhotos]);
 
   useEffect(() => {
     if (business) {
@@ -31,16 +38,26 @@ export default function EditBusinessPopup({ business, onClose }) {
         whatsappNumber: business.whatsappNumber || "",
         location: business.location || "",
       });
+
+      const fullPhotoUrls = (business.images || []).map((image) =>
+        image.startsWith("http") ? image : `http://69.62.84.113:5005${image}`
+      );
+      setExistingPhotos(fullPhotoUrls);
+      setSelectedPhotos([]);
     }
   }, [business]);
 
   const handleChange = (e) => {
-    const { name, value, files, type, multiple } = e.target;
+    const { name, value, files, type } = e.target;
 
     if (type === "file" && name === "photos") {
-      const newFiles = Array.from(files);
-      if (selectedPhotos.length + newFiles.length > 20) {
-        alert("You can upload a maximum of 20 photos.");
+      const newFiles = Array.from(files).map((file) =>
+        Object.assign(file, { preview: URL.createObjectURL(file) })
+      );
+
+      if (existingPhotos.length + selectedPhotos.length + newFiles.length > 20) {
+        alert("You can upload a maximum of 20 photos total (existing + new).");
+        newFiles.forEach((file) => URL.revokeObjectURL(file.preview));
         return;
       }
       setSelectedPhotos((prev) => [...prev, ...newFiles]);
@@ -50,7 +67,29 @@ export default function EditBusinessPopup({ business, onClose }) {
   };
 
   const handleDeletePhoto = (index) => {
+    URL.revokeObjectURL(selectedPhotos[index].preview);
     setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteExistingPhoto = async (index) => {
+    if (!window.confirm("Are you sure you want to delete this photo?")) return;
+
+    try {
+      const photoToDelete = existingPhotos[index];
+      const token = localStorage.getItem("token");
+
+      await axios.delete(`http://69.62.84.113:5005/api/businesses/${business.id}/photos`, {
+        data: { photoUrl: photoToDelete },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setExistingPhotos((prev) => prev.filter((_, i) => i !== index));
+      alert("Photo deleted successfully.");
+    } catch (error) {
+      alert("Failed to delete photo. Please try again.");
+    }
   };
 
   const handleGetLocation = () => {
@@ -81,30 +120,27 @@ export default function EditBusinessPopup({ business, onClose }) {
       };
 
       const updateRes = await apiPut(`/businesses/${business.id}`, payload);
-      console.log("Business updated:", updateRes);
 
       if (selectedPhotos.length > 0) {
         const formPhotos = new FormData();
         selectedPhotos.forEach((file) => formPhotos.append("photos", file));
         formPhotos.append("user_id", business.owner_id);
 
-        const token = localStorage.getItem('token');
-        const photoRes = await axios.post(`http://69.62.84.113:5005/api/businesses/${business.id}/photos`, formPhotos, {
-          headers: {
-            Authorization: `Bearer ${token}`, // only if needed
-          },
-        });
-    
-        console.log("Photos uploaded:", photoRes.data);
-
-        // const photoRes = await apiPost(`/businesses/${business.id}/photos`, formPhotos);
-        // console.log("Photos uploaded:", photoRes);
+        const token = localStorage.getItem("token");
+        await axios.post(
+          `http://69.62.84.113:5005/api/businesses/${business.id}/photos`,
+          formPhotos,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
 
       alert("Business updated successfully!");
       onClose();
     } catch (err) {
-      console.error("Update failed:", err);
       alert("Something went wrong while updating. Please try again.");
     }
   };
@@ -112,20 +148,20 @@ export default function EditBusinessPopup({ business, onClose }) {
   return (
     <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-6 md:p-8 relative overflow-y-auto max-h-[95vh]">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl" aria-label="Close">
           &times;
         </button>
 
         <h2 className="text-2xl font-semibold mb-6 text-center">Edit Business</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
           <TextEditor label="Description" value={formData.description} onChange={(val) => setFormData((prev) => ({ ...prev, description: val }))} />
-          <Input label="Hours" name="hours" value={formData.hours} onChange={handleChange} />
+          <Input label="Hours" name="hours" type="text" value={formData.hours} onChange={handleChange} />
           <Input label="Website" name="website" value={formData.website} onChange={handleChange} />
           <div className="flex gap-4">
-            <Input label="Contact" name="contactNumber" value={formData.contactNumber} onChange={handleChange} />
-            <Input label="WhatsApp" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} />
+            <Input label="Contact" name="contactNumber" type="tel" value={formData.contactNumber} onChange={handleChange} />
+            <Input label="WhatsApp" name="whatsappNumber" type="tel" value={formData.whatsappNumber} onChange={handleChange} />
           </div>
 
           <div>
@@ -138,22 +174,32 @@ export default function EditBusinessPopup({ business, onClose }) {
             </div>
           </div>
 
-          {/* Photo Upload Section */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Photos (max 20)</label>
-            <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block" />
-
-            {selectedPhotos.length > 0 && (
-              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 mt-4">
-                {selectedPhotos.map((file, idx) => (
+          {existingPhotos.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium mb-1">Existing Photos</label>
+              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 gap-2 mb-4">
+                {existingPhotos.map((url, idx) => (
                   <div key={idx} className="relative group w-28 h-28">
-                    <img src={URL.createObjectURL(file)} alt={`preview-${idx}`} className="object-cover w-full h-full rounded border border-gray-200" />
-                    <button
-                      type="button"
-                      onClick={() => handleDeletePhoto(idx)}
-                      className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition"
-                    >
+                    <img src={url} alt={`existing-photo-${idx}`} className="object-cover w-full h-full rounded border border-gray-200" />
+                    <button type="button" onClick={() => handleDeleteExistingPhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition" aria-label="Delete existing photo">
                       <MdDelete size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Add New Photos (max total 20)</label>
+            <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+            {selectedPhotos.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
+                {selectedPhotos.map((file, idx) => (
+                  <div key={idx} className="relative w-24 h-24 rounded overflow-hidden border border-gray-300">
+                    <img src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
+                    <button type="button" onClick={() => handleDeletePhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full" aria-label="Delete selected photo">
+                      <MdDelete size={16} />
                     </button>
                   </div>
                 ))}
@@ -161,7 +207,7 @@ export default function EditBusinessPopup({ business, onClose }) {
             )}
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">
+          <button type="submit" className="block w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition">
             Update Business
           </button>
         </form>

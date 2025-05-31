@@ -58,8 +58,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       return;
     }
 
-    setErrors({}); // Clear previous errors
-    setStatusMessage({}); // Clear previous status message
+    setErrors({});
+    setStatusMessage({}); 
 
     try {
       const response = await apiPost("/otp/send", { phone });
@@ -124,10 +124,14 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
         setCountdown(0);
         setShowModal(false);
         setStatusMessage({ type: "", message: "" });
-        if (authPurpose === "business") {
-          router.push("/businessRegister");
-        } 
-      }, 1500);
+        if (role === "admin") {
+        router.push("/admin");
+      } else if (role === "user") {
+        router.push("/");
+      } else if (authPurpose === "business") {
+        router.push("/businessRegister");
+      }
+    }, 1500);
 
     } catch (error) {
       console.error("OTP Verify Error:", error);

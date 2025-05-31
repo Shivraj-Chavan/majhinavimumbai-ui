@@ -56,7 +56,7 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      await apiPut("/user/profile", user, token);
+      await apiPut(`/users/${user.id}/profile`, user);
       setIsEditing(false);
     } catch (err) {
       console.error(err);
@@ -75,7 +75,7 @@ export default function ProfilePage() {
         <div className="text-center">
           <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden border-4 border-blue-300 shadow">
             <img
-              src={previewImage || user?.profileImage || "/default-avatar.png"}
+              src={previewImage || user?.profileImage || "/person.jpg"}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -153,7 +153,7 @@ export default function ProfilePage() {
                 type="text"
                 name="phone"
                 value={user.phone}
-                onChange={handleChange}
+                // onChange={handleChange}
                 className="w-full bg-transparent border-b border-gray-300"
               />
             ) : (

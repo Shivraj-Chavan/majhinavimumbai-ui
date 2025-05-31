@@ -1,6 +1,6 @@
 'use client';
 
-import { apiGet } from '@/lib/apiClient';
+import { apiDelete, apiGet } from '@/lib/apiClient';
 import { useEffect, useState } from 'react';
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
@@ -37,7 +37,7 @@ export default function AllReviews() {
       console.log('Updated reviews after deletion:', updated);
     } catch (err) {
       console.error('Error deleting review:', err);
-      alert('Failed to delete review');
+      // alert('Failed to delete review');
     }
   };
   
@@ -73,14 +73,22 @@ export default function AllReviews() {
           {reviews.map((review) => (
             <div key={review.id} className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
               <div className="flex justify-between items-start mb-2">
+               {/* Rating */}
                 <div className="flex flex-row gap-4">
                   <div>{renderStars(review.rating)}</div>
-                  <span className="text-sm text-gray-600 font-medium">{review.rating.toFixed(1)}</span>
+                  <span className="text-sm text-gray-600 font-medium">{review.rating}/5 reviews</span>
                 </div>
                 <button onClick={() => handleDelete(review.id)} className="text-red-500 hover:text-red-700 text-sm">
                   Delete
                 </button>
               </div>
+
+               {/* Business name here */}
+              <p className="text-sm font-semibold text-blue-700 mb-1">
+                { review.name || "Unknown Business"}
+              </p>
+
+              {/* Comment and Date */}
               <p className="text-gray-700">{review.comment}</p>
               <p className="text-right text-xs text-gray-400 mt-2">
                 {new Date(review.created_at).toLocaleDateString()}

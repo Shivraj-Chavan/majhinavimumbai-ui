@@ -43,6 +43,7 @@ export default function ListingInfo() {
     const fetchBusiness = async () => {
       try {
         const data = await apiGet(`/businesses/s/${slug}`);
+        console.log(data);
         if (!data.business) throw new Error("Business not found.");
         setBusiness(data.business);
       } catch (err) {
@@ -155,7 +156,7 @@ export default function ListingInfo() {
           </div>
         </div>
 
-        <div className="mt-8 relative z-10">
+        <div className="mt-8 relative">
           <Photos business={business} />
         </div>
       </div>

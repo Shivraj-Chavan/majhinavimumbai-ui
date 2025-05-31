@@ -34,6 +34,8 @@ export default function Navbar() {
   const [authPurpose, setAuthPurpose] = useState("login");
   const [open, setOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const user = useSelector((state) => state.user.user);
+  const profileImage = user?.image || '/person.jpg';
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -88,7 +90,6 @@ export default function Navbar() {
         </Link>
 
           {/* Location & Searchbar */}
-        {/* Uncomment if needed */}
         {/* <div className="hidden md:flex flex-1 justify-center">
           <div className="flex items-center">
             <LocationDropdown 
@@ -125,13 +126,13 @@ export default function Navbar() {
               <>
                 <button
                   onClick={() => setOpen(!open)}
-                  className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-2 py-1 hover:shadow transition"
+                  className="flex items-center gap-2 bg-white border border-gray-300 rounded-full hover:shadow transition"
                 >
                   <Image
-                    src="/image.png"
+                    src={profileImage}
                     alt="User"
-                    width={32}
-                    height={32}
+                    width={38}
+                    height={38}
                     className="rounded-full object-cover"
                   />
                   {/* <span className="text-sm">User</span> */}
