@@ -72,25 +72,29 @@ export default function EditBusinessPopup({ business, onClose }) {
   };
 
   const handleDeleteExistingPhoto = async (index) => {
+    console.log("Deleting selected photo:", index);
     if (!window.confirm("Are you sure you want to delete this photo?")) return;
-
+  
     try {
-      const photoToDelete = existingPhotos[index];
+      const photoToDelete = existingPhotos[index]; 
       const token = localStorage.getItem("token");
-
+      console.log("Photo to delete:", photoToDelete);
+  
       await axios.delete(`http://69.62.84.113:5005/api/businesses/${business.id}/photos`, {
         data: { photoUrl: photoToDelete },
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+           
       setExistingPhotos((prev) => prev.filter((_, i) => i !== index));
+      console.log("Updated existing photos after deletion:", updated);
       alert("Photo deleted successfully.");
     } catch (error) {
       alert("Failed to delete photo. Please try again.");
     }
   };
+  
 
   const handleGetLocation = () => {
     navigator.geolocation?.getCurrentPosition(
