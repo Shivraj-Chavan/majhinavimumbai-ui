@@ -29,6 +29,7 @@ export default function EditBusinessPopup({ business, onClose }) {
 
   useEffect(() => {
     if (business) {
+      console.log("Business images:", business.images);
       setFormData({
         name: business.name || "",
         description: business.description || "",
@@ -40,7 +41,7 @@ export default function EditBusinessPopup({ business, onClose }) {
       });
 
       const fullPhotoUrls = (business.images || []).map((image) =>
-        image.startsWith("http") ? image : `http://69.62.84.113:5005${image}`
+        image.url.startsWith("http") ? image.url : `http://69.62.84.113:5005${image.url}`
       );
       setExistingPhotos(fullPhotoUrls);
       setSelectedPhotos([]);
