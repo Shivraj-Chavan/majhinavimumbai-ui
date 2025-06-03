@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { apiPost } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { useDispatch } from 'react-redux';
-import { login as reduxLogin } from '@/redux/slice/userSlice'; // alias to avoid confusion
+import { login as reduxLogin } from '@/redux/slice/userSlice'; 
 import { handleLoginSuccess } from "../navbar/Navbar";
 
 export default function PopUp({ showModal, setShowModal, authPurpose }) {
@@ -16,6 +16,10 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const [countdown, setCountdown] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ type: "", message: "" });
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+
+  const otpInputRef = useRef(null);
 
   const router = useRouter();
 
@@ -27,6 +31,13 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     }
     return () => clearTimeout(timer);
   }, [countdown]);
+
+  // Auto-focus OTP field
+  useEffect(() => {
+    if (otpSent && otpInputRef.current) {
+      otpInputRef.current.focus();
+    }
+  }, [otpSent]);
 
   // Auto-clear status message
   useEffect(() => {
@@ -57,10 +68,9 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setErrors({ phone: "Phone number must be 10 digits" });
       return;
     }
-
     setErrors({});
     setStatusMessage({}); 
-
+    
     try {
       const response = await apiPost("/otp/send", { phone });
       console.log("OTP Sent Response:", response.data);
@@ -73,6 +83,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
         type: "error",
         message: error.response?.data?.message || "Failed to send OTP.",
       });
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 

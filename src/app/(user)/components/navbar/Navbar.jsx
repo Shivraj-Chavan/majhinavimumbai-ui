@@ -15,6 +15,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { CiSquareQuestion } from 'react-icons/ci';
 import { useRouter } from 'next/navigation';
+import Payment from '../payment/payment';
 
 export function handleLoginSuccess (user, token) {
   
@@ -105,6 +106,10 @@ export default function Navbar() {
 
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
+
+          {/* Payment btn */}
+            <Payment/>
+
           {/* Business Listing Button */}
           <Button
             onClick={() => {
@@ -335,7 +340,6 @@ export default function Navbar() {
           </div>
         )}
         
-
       {/* Login / OTP Popup */}
       <PopUp
         showModal={showModal}
