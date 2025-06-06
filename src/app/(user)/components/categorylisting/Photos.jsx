@@ -25,7 +25,7 @@ export default function Photos({ business, setTab }) {
       {/* Main Featured Image */}
       <div className="relative w-full h-40 rounded-xl overflow-hidden bg-gray-100">
         <Image
-          src={business.images?.[0] || imagecopy}
+         src={business.images?.[0]?.url || imagecopy}
           alt="Business Image"
           fill
           className="object-cover"

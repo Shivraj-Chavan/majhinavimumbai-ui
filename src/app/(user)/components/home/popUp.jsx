@@ -10,6 +10,7 @@ import { handleLoginSuccess } from "../navbar/Navbar";
 
 export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState({});
@@ -20,8 +21,6 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
   const otpInputRef = useRef(null);
-
-  const router = useRouter();
 
   // Countdown timer
   useEffect(() => {
@@ -107,6 +106,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       // const { token, role } = data;
       // const user = response?.data?.user;
       const { token,role, msg } = data;
+      console.log("Extracted Role:", role);
 
       // Create a minimal user object yourself if needed
       const user = { phone }; 
@@ -124,8 +124,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       // Redux login
       dispatch(reduxLogin({ user, token }));
 
-      handleLoginSuccess(user, token); // Callback to parent (like Navbar)
-
+      // handleLoginSuccess(user, token); // Callback to parent (like Navbar)
+  
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
 
       // Clear form and close modal 
@@ -134,15 +134,21 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
         setOtp("");
         setOtpSent(false);
         setCountdown(0);
-        setShowModal(false);
         setStatusMessage({ type: "", message: "" });
+        console.log("Redirecting based on role:", role);
+        setShowModal(false);
         if (role === "admin") {
-        router.push("/admin");
-      } else if (role === "user") {
-        router.push("/");
-      } else if (authPurpose === "business") {
-        router.push("/businessRegister");
-      }
+          console.log("Going to /admin");
+          router.push("/admin");
+        } else if (role === "user") {
+          router.push("/");
+        } else {
+          if (authPurpose === "business") {
+            router.push("/businessRegister");
+          } else {
+            router.push("/"); 
+          }
+        }
     }, 1500);
 
     } catch (error) {

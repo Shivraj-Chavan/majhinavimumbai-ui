@@ -60,16 +60,34 @@ export default function AllReviews() {
   
     return <div className="flex gap-0.5">{stars}</div>;
   };
+
+  
+  // Skeleton
+  const renderSkeletons = () => {
+    return Array.from({ length: 6 }).map((_, i) => (
+      <div key={i} className="bg-white p-5 rounded-xl shadow animate-pulse space-y-4">
+        <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-3 bg-gray-100 rounded w-1/3 mt-2"></div>
+      </div>
+    ));
+  };
+
   return (
     <div className="p-4 max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-10 text-center text-blue-800">All Reviews</h2>
 
       {loading ? (
-        <p className="text-center text-gray-500">Loading...</p>
+       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+       {renderSkeletons()}
+     </div>
       ) : reviews.length === 0 ? (
         <p className="text-center text-gray-500">No reviews found.</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
           {reviews.map((review) => (
             <div key={review.id} className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
               <div className="flex justify-between items-start mb-2">

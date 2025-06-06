@@ -325,9 +325,7 @@ export default function Navbar() {
                   )}
                 </>
               ) : (
-                <Button
-                  onClick={() => setShowModal(true)}
-                  className="bg-green-500 hover:bg-green-600 text-sm uppercase"
+                <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase"
                 >
                   Login / Sign Up
                 </Button>

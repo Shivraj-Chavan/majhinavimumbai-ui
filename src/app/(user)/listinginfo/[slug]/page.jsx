@@ -8,7 +8,6 @@ import Tab from "../../components/categorylisting/Tab";
 import Photos from "../../components/categorylisting/Photos";
 import { TbBrandWhatsapp } from "react-icons/tb";
 import { TfiShare } from "react-icons/tfi";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { FcGlobe, FcDownRight, FcCallback, FcBookmark } from "react-icons/fc";
 import { PiChatText } from "react-icons/pi";
 import { apiGet } from "@/lib/apiClient";
@@ -16,6 +15,7 @@ import UsersndMsg from "../../components/categorylisting/UsersndMsg";
 import Enquirymsg from "../../components/categorylisting/Enquirymsg";
 import Link from "next/link";
 import { IoIosCall } from "react-icons/io";
+import { FaRegStar } from "react-icons/fa";
 
 const hours = {
   Monday: "10 AM - 10 PM",
@@ -26,6 +26,44 @@ const hours = {
   Saturday: "9 AM - 11 PM",
   Sunday: "9 AM - 9 PM",
 };
+
+// skeleton
+function SkeletonLoader() {
+  return (
+    <div className="max-w-7xl mx-auto px-4 pt-10 animate-pulse">
+      {/* Breadcrumb */}
+      <div className="h-4 w-40 bg-gray-300 rounded mb-6"></div>
+
+      {/* Hero Card Skeleton */}
+      <div className="bg-blue-100 rounded-3xl p-8 mb-10 relative overflow-hidden">
+        <div className="flex gap-5 mb-6">
+          <div className="w-20 h-20 bg-gray-300 rounded-full"></div>
+          <div className="flex-1 space-y-3 py-1">
+            <div className="h-8 bg-gray-300 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+          </div>
+        </div>
+        <div className="h-48 bg-gray-300 rounded"></div>
+      </div>
+
+      {/* Action Buttons Skeleton */}
+      <div className="flex justify-center gap-6 mb-9">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="w-20 h-12 bg-gray-300 rounded-full"></div>
+        ))}
+      </div>
+
+      {/* Info & Tabs Skeleton */}
+      <div className="bg-white rounded-3xl shadow-xl p-8 space-y-6">
+        <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+        <div className="h-6 bg-gray-300 rounded w-full"></div>
+        <div className="h-6 bg-gray-300 rounded w-5/6"></div>
+        <div className="h-48 bg-gray-300 rounded"></div>
+      </div>
+    </div>
+  );
+}
 
 export default function ListingInfo() {
   const params = useParams();
@@ -43,7 +81,6 @@ export default function ListingInfo() {
     const fetchBusiness = async () => {
       try {
         const data = await apiGet(`/businesses/s/${slug}`);
-        console.log(data);
         if (!data.business) throw new Error("Business not found.");
         setBusiness(data.business);
       } catch (err) {
@@ -70,148 +107,176 @@ export default function ListingInfo() {
   }, []);
 
   const renderStars = (rating) => {
-    const full = Math.floor(rating);
-    const half = rating % 1 >= 0.5;
-    const empty = 5 - full - (half ? 1 : 0);
+    const safeRating = typeof rating === "number" && !isNaN(rating) ? rating : 0;
+  
+    const full = Math.max(0, Math.floor(safeRating));
+    const half = safeRating - full >= 0.5 ? 1 : 0;
+    const empty = 5 - full - half;
+  
     return (
       <>
-        {/* {[...Array(full)].map((_, i) => (<FaStar key={`f-${i}`} className="text-yellow-400" />))}
-        {half && <FaStarHalfAlt className="text-yellow-400" />}
-        {[...Array(empty)].map((_, i) => (<FaRegStar key={`e-${i}`} className="text-yellow-400" />))} */}
+        {[...Array(full)].map((_, i) => (
+          <FaStar key={`full-${i}`} className="text-yellow-400" />
+        ))}
+        {half === 1 && <FaStarHalfAlt className="text-yellow-400" />}
+        {[...Array(empty)].map((_, i) => (
+          <FaRegStar key={`empty-${i}`} className="text-yellow-400" />
+        ))}
       </>
     );
   };
+  
 
-  if (loading) return <div className="text-center py-10 text-lg text-gray-600">Loading...</div>;
+  if (loading) return <SkeletonLoader />;
   if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
 
   return (
     <div>
       {/* breadcrumb */}
-    {business?.category && business?.subcategory && (
-      <div className="relative z-30 text-sm text-black ">
-        <nav className="flex items-center space-x-2">
-          <Link href="/" className="hover:underline text-black font-semibold">Home</Link>
-          <span>/</span>
-          <Link href={`/category/${business.categorySlug || business.category}`} className="hover:underline text-black capitalize">
-            {business.category.replace(/-/g, " ")}
-          </Link>
-          <span>/</span>
-          <span className="text-gray-800 capitalize">
-            {business.subcategory.replace(/-/g, " ")}
-          </span>
-        </nav>
-      </div>
-    )}
-    <div className="max-w-7xl mx-auto px-4 pt-10">
-    
-      {/* Hero Card */}
-      <div id="hero-section" className="relative bg-gradient-to-tr from-blue-50 to-blue-100 shadow-xl sm:p-8 rounded-3xl mt-4 mb-10 overflow-hidden">
-        <div className="absolute  bg-blue-300 opacity-20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-300 opacity-20 rounded-full blur-3xl animate-pulse" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="flex items-start gap-5">
-            {/* logo */}
-            <div className="w-20 h-20 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-2xl font-extrabold text-blue-700 shadow-lg">
-              {business.name?.[0]}
-            </div>
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-1">
-                {business.name}
-              </h1>
-              <p className="text-base sm:text-lg text-gray-600 mb-2">
-                {business.category} · {business.address}
-              </p>
-              <div className="flex items-center gap-2">
-                {renderStars(business.rating)}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <button className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105" onClick={() => setShowEnquiryPopup(true)}>
-              <PiChatText className="text-xl" /> Enquiry
-            </button>
-
-            {showEnquiryPopup && (
-              <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 animate-fadeIn">
-                  <button className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg" onClick={() => setShowEnquiryPopup(false)}>
-                    &times;
-                  </button>
-                  <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} />
-                </div>
-              </div>
-            )}
-
-            <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105">
-              <TbBrandWhatsapp className="text-xl" />
-              WhatsApp
-            </a>
-            <button className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105">
-              <TfiShare className="text-lg" />
-              Share
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-8 relative">
-          <Photos business={business} />
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-center gap-6 mb-9">
-        <Actionbtn href={business.website} icon={<FcGlobe />} label="Website" ringColor="blue" />
-        <Actionbtn href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent( business.mapLink || business.name || "Your Business Location")}`}
-          icon={<FcDownRight />}
-          label="Directions"
-          ringColor="gray"
-        />
-        <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
-        <Actionbtn icon={<FcBookmark/>} label="Save" ringColor="orange" isButton />
-      </div>
-
-      {/* Info & Tabs */}
-      <div className="bg-white rounded-3xl shadow-xl p-8">
-        <Info business={business} hours={hours} />
-        <div className="mt-8">
-        <Tab business={business} renderStars={renderStars} />
-        </div>
-    
-        {/* Enquiry Section */}
-        <div className="mt-12">
-        <UsersndMsg setReviews={setReviews} businessId={business.id} />
-        </div>
-      </div>
-
-      {/* Sticky Bottom Hero Bar */}
-      {showStickyHero && (
-        <div className="fixed bottom-0 left-0 w-full bg-gradient-to-tr from-blue-50 to-blue-300 border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50 px-4 py-3">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-15 h-15 bg-white border-2 border-blue-300 rounded-full flex items-center justify-center text-lg font-bold text-blue-700 shadow">
-                {business.name?.[0]}
-              </div>
-              <div className="text-lg">
-                <div className="font-semibold text-blue-900">{business.name}</div>
-                <div className="text-gray-500 text-xs">{business.category}</div>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-            <a href={`tel:${business.phone}`} className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow hover:bg-blue-600 transition">
-             <IoIosCall className="text-lg" /> Call
-               </a>
-              <button className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105" onClick={() => setShowEnquiryPopup(true)}>
-               <PiChatText className="text-xl" /> Enquiry
-                </button>
-            </div>
-          </div>
+      {business?.category && business?.subcategory && (
+        <div className="relative z-30 text-sm text-black ">
+          <nav className="flex items-center space-x-2">
+            <Link href="/" className="hover:underline text-black font-semibold">Home</Link>
+            <span>/</span>
+            <Link
+              href={`/category/${business.categorySlug || business.category}`}
+              className="hover:underline text-black capitalize"
+            >
+              {business.category.replace(/-/g, " ")}
+            </Link>
+            <span>/</span>
+            <span className="text-gray-800 capitalize">{business.subcategory.replace(/-/g, " ")}</span>
+          </nav>
         </div>
       )}
-    </div>
+
+      <div className="max-w-7xl mx-auto px-4 pt-10">
+        {/* Hero Card */}
+        <div
+          id="hero-section"
+          className="relative bg-gradient-to-tr from-blue-50 to-blue-100 shadow-xl sm:p-8 rounded-3xl mt-4 mb-10 overflow-hidden"
+        >
+          <div className="absolute bg-blue-300 opacity-20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-300 opacity-20 rounded-full blur-3xl animate-pulse" />
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex items-start gap-5">
+              {/* logo */}
+              <div className="w-20 h-20 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-2xl font-extrabold text-blue-700 shadow-lg">
+                {business.name?.[0]}
+              </div>
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-1">{business.name}</h1>
+                <p className="text-base sm:text-lg text-gray-600 mb-2">
+                  {business.category} · {business.address}
+                </p>
+                <div className="flex items-center gap-2">{renderStars(business.rating)}</div>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
+                onClick={() => setShowEnquiryPopup(true)}
+              >
+                <PiChatText className="text-xl" /> Enquiry
+              </button>
+
+              {showEnquiryPopup && (
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 animate-fadeIn">
+                    <button
+                      className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
+                      onClick={() => setShowEnquiryPopup(false)}
+                    >
+                      &times;
+                    </button>
+                    <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} />
+                  </div>
+                </div>
+              )}
+
+              <a
+                href={`https://wa.me/+91${business.wp_number}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
+              >
+                <TbBrandWhatsapp className="text-xl" />
+                WhatsApp
+              </a>
+              <button className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105">
+                <TfiShare className="text-lg" />
+                Share
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-8 relative">
+            <Photos business={business} />
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-center gap-6 mb-9">
+          <Actionbtn href={business.website} icon={<FcGlobe />} label="Website" ringColor="blue" />
+          <Actionbtn
+            href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(
+              business.mapLink || business.name || "Your Business Location"
+            )}`}
+            icon={<FcDownRight />}
+            label="Directions"
+            ringColor="gray"
+          />
+          <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
+          <Actionbtn icon={<FcBookmark />} label="Save" ringColor="orange" isButton />
+        </div>
+
+        {/* Info & Tabs */}
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <Info business={business} hours={hours} />
+          <div className="mt-8">
+            <Tab business={business} renderStars={renderStars} />
+          </div>
+
+          {/* Enquiry Section */}
+          <div className="mt-12">
+            <UsersndMsg setReviews={setReviews} businessId={business.id} />
+          </div>
+        </div>
+
+        {/* Sticky Bottom Hero Bar */}
+        {showStickyHero && (
+          <div className="fixed bottom-0 left-0 w-full bg-gradient-to-tr from-blue-50 to-blue-300 border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50 px-4 py-3">
+            <div className="flex items-center justify-between max-w-7xl mx-auto">
+              <div className="flex items-center gap-3">
+                <div className="w-15 h-15 bg-white border-2 border-blue-300 rounded-full flex items-center justify-center text-lg font-bold text-blue-700 shadow">
+                  {business.name?.[0]}
+                </div>
+                <div className="text-lg">
+                  <div className="font-semibold text-blue-900">{business.name}</div>
+                  <div className="text-gray-500 text-xs">{business.category}</div>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <a
+                  href={`tel:${business.phone}`}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow hover:bg-blue-600 transition"
+                >
+                  <IoIosCall className="text-lg" /> Call
+                </a>
+                <button
+                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
+                  onClick={() => setShowEnquiryPopup(true)}
+                >
+                  <PiChatText className="text-xl" /> Enquiry
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

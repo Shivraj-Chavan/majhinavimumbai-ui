@@ -9,7 +9,6 @@ import { FcFinePrint } from "react-icons/fc";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { GrEdit } from "react-icons/gr";
 
-
 export default function MyBusinessPage() {
   const [businesses, setBusinesses] = useState([]); 
   const [businessToEdit, setBusinessToEdit] = useState(null);
@@ -26,7 +25,7 @@ export default function MyBusinessPage() {
       router.push("/login");
       return;
     }
-    
+
     const fetchBusiness = async () => {
       try {
         const res = await apiGet(`/businesses/user`);
@@ -59,7 +58,7 @@ export default function MyBusinessPage() {
     try {
       const res = await apiPut(`/businesses/${businessToEdit.id}`, updatedBusinessData);
       console.log("Updating Business", res);
-            
+
       if (res.business) {
         handleUpdate(res.business); 
       } else {
@@ -70,36 +69,37 @@ export default function MyBusinessPage() {
       alert("Failed to update business info.");
     }
   };
-  
+
   const handleUpdate = (updatedData) => {
-    console.log("Updated data:", updatedData);
-    
-    setBusinesses((prev) => {
-      console.log("Before update:", prev);
-      
-      const updatedList = prev.map((b) => {
-        if (b.id === updatedData.id) {
-          console.log(`Replacing business with id ${b.id}`);
-          return updatedData;
-        }
-        return b;
-      });
-      
-      console.log("After update:", updatedList);
-      return updatedList;
-    });
-  
+    setBusinesses((prev) =>
+      prev.map((b) => (b.id === updatedData.id ? updatedData : b))
+    );
     setShowEditPopup(false);
     setBusinessToEdit(null);
   };
 
-  if (loading) return <p className="text-center mt-10 text-gray-500">Loading your business profiles...</p>;
   if (!token) return <PopUp onClose={handleLoginSuccess} />;
-  if (!Array.isArray(businesses)) {
-    return <p className="text-center mt-10 text-red-500">Invalid response format.</p>;
-  }
-  
-  if (businesses.length === 0) {return <p>No businesses found.</p>;}
+
+  // Skeleton
+  const renderSkeletons = () => {
+    return Array.from({ length: 6 }).map((_, i) => (
+      <div key={i} className="bg-white rounded-2xl shadow-lg p-6 space-y-6 animate-pulse flex flex-col justify-between">
+        <div className="flex flex-col items-center text-center space-y-4">
+          <div className="w-32 h-32 bg-gray-200 rounded-full shadow-md" />
+          <div className="space-y-2">
+            <div className="h-5 bg-gray-200 rounded w-40 mx-auto" />
+            <div className="h-3 bg-gray-100 rounded w-52 mx-auto" />
+          </div>
+          <div className="h-6 w-24 bg-gray-100 rounded-full mx-auto" />
+        </div>
+        <hr className="border-gray-100" />
+        <div className="flex justify-center gap-3">
+          <div className="h-9 w-24 bg-gray-200 rounded-lg" />
+          <div className="h-9 w-20 bg-gray-200 rounded-lg" />
+        </div>
+      </div>
+    ));
+  };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -107,64 +107,82 @@ export default function MyBusinessPage() {
         My Business Profiles
       </h1>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {businesses.map((business) => (
-      <div key={business.id} className="bg-white rounded-2xl shadow-lg p-6 space-y-6 flex flex-col justify-between">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
-            <img
-              src={business.logoUrl || "/image.png"}
-              alt="Business Logo"
-              className="object-contain w-full h-full"
-            />
-          </div>
-
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800">{business.name}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading ? (
+          renderSkeletons()
+        ) : businesses.length === 0 ? (
+          <p className="text-center col-span-full text-gray-500">
+            No businesses found.
+          </p>
+        ) : (
+          businesses.map((business) => (
             <div
-              className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{
-                __html: business.description || "<p>No description provided.</p>",
-              }}
-            />
-          </div>
+              key={business.id}
+              className="bg-white rounded-2xl shadow-lg p-6 space-y-6 flex flex-col justify-between"
+            >
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
+                  <img
+                    src={business.logoUrl || "/image.png"}
+                    alt="Business Logo"
+                    className="object-contain w-full h-full"
+                  />
+                </div>
 
-          <div>
-            {business.isVerified ? (
-              <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-1.5 rounded-full border border-green-300">
-                Verified
-              </span>
-            ) : (
-              <span className="text-red-600 font-semibold text-sm bg-red-100 px-4 py-1.5 rounded-full border border-red-300">
-                Unverified
-              </span>
-            )}
-          </div>
-        </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-800">
+                    {business.name}
+                  </h2>
+                  <div className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: business.description || "<p>No description provided.</p>",}}/>
+                </div>
 
-        <hr className="border-gray-200" />
+                <div>
+                    {(() => {
+                      console.log("Business Name:", business.name);
+                      console.log("Verification Status:", business.isVerified);
 
-        <div className="flex justify-center gap-3">
-          <Link href={`/listinginfo/${business.slug}`}>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm shadow flex items-center">
-              <FcFinePrint className="text-xl mr-1" />
-              View Details
-            </button>
-          </Link>
+                      return business.isVerified ? (
+                        <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-1.5 rounded-full border border-green-300">
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="text-red-600 font-semibold text-sm bg-red-100 px-4 py-1.5 rounded-full border border-red-300">
+                          Unverified
+                        </span>
+                      );
+                    })()}
+                  </div>
+              </div>
 
-          <button onClick={() => { setBusinessToEdit(business); setShowEditPopup(true);}} className="bg-green-600 hover:bg-green-700 text-white flex items-center px-4 py-2 rounded-lg text-sm shadow">
-          <GrEdit className="text-md mr-1" /> Edit
-          </button>
-        </div>
+              <hr className="border-gray-200" />
+
+              <div className="flex justify-center gap-3">
+                <Link href={`/listinginfo/${business.slug}`}>
+                  <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm shadow flex items-center">
+                    <FcFinePrint className="text-xl mr-1" />
+                    View Details
+                  </button>
+                </Link>
+
+                <button
+                  onClick={() => {
+                    setBusinessToEdit(business);
+                    setShowEditPopup(true);
+                  }}
+                  className="bg-green-600 hover:bg-green-700 text-white flex items-center px-4 py-2 rounded-lg text-sm shadow"
+                >
+                  <GrEdit className="text-md mr-1" /> Edit
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
-    ))}
-  </div>
 
-  {/* Edit Popup */}
-  {showEditPopup && businessToEdit && (
-    <EditBusinessPopup business={businessToEdit} onClose={() => { setShowEditPopup(false); setBusinessToEdit(null); }}onSave={handleSubmit}/>
-  )}
-</div>
-
+      {/* Edit Popup */}
+      {showEditPopup && businessToEdit && (
+        <EditBusinessPopup business={businessToEdit} onClose={() => { setShowEditPopup(false); setBusinessToEdit(null);}} onSave={handleSubmit}/>
+      )}
+    </div>
   );
 }
