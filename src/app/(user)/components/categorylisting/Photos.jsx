@@ -44,7 +44,7 @@ export default function Photos({ business, setTab }) {
             onClick={() => isLast && setTab && setTab("photos")}
           >
             <Image
-              src={img}
+              src={img || '/image.png'}
               alt={`Image ${i + 1}`}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"

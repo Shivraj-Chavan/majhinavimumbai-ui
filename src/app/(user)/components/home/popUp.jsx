@@ -149,7 +149,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
             router.push("/"); 
           }
         }
-    }, 1500);
+    }, 1000);
 
     } catch (error) {
       console.error("OTP Verify Error:", error);

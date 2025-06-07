@@ -72,11 +72,11 @@ export default function MyBusinessPage() {
 
   const handleUpdate = (updatedData) => {
     setBusinesses((prev) =>
-      prev.map((b) => (b.id === updatedData.id ? updatedData : b))
-    );
+      prev.map((b) => b.id === updatedData.id ? { ...b, ...updatedData, is_verified: b.is_verified }: b));
     setShowEditPopup(false);
     setBusinessToEdit(null);
   };
+  
 
   if (!token) return <PopUp onClose={handleLoginSuccess} />;
 
@@ -138,10 +138,10 @@ export default function MyBusinessPage() {
 
                 <div>
                     {(() => {
-                      console.log("Business Name:", business.name);
-                      console.log("Verification Status:", business.isVerified);
+                      console.log("Businesses:", business);
+                      console.log("Verification Status:", business.is_verified);
 
-                      return business.isVerified ? (
+                      return business.is_verified? (
                         <span className="text-green-600 font-semibold text-sm bg-green-100 px-4 py-1.5 rounded-full border border-green-300">
                           Verified
                         </span>

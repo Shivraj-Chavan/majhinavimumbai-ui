@@ -16,6 +16,8 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { CiSquareQuestion } from 'react-icons/ci';
 import { useRouter } from 'next/navigation';
 import Payment from '../payment/payment';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export function handleLoginSuccess (user, token) {
   
@@ -33,6 +35,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [authPurpose, setAuthPurpose] = useState("login");
+  const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const user = useSelector((state) => state.user.user);
@@ -54,6 +57,7 @@ export default function Navbar() {
       const user = { phone: "unknown" };
       dispatch(login({ user, token }));
     }
+    setTimeout(() => setIsLoading(false), 1000); //loading
   }, [dispatch]);
 
   useEffect(() => {
@@ -84,122 +88,108 @@ export default function Navbar() {
   return (
     <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-
         {/* Logo */}
         <Link href='/' className="flex items-center">
           <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
         </Link>
-
-          {/* Location & Searchbar */}
-        {/* <div className="hidden md:flex flex-1 justify-center">
-          <div className="flex items-center">
-            <LocationDropdown 
-              location={location}
-              setLocation={setLocation}
-              showDropdown={showDropdown}
-              setShowDropdown={setShowDropdown}
-              dropdownRef={dropdownRef}
-            />
-            <SearchBar />
-          </div>
-        </div> */}
-
+  
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
-
-          {/* Payment btn */}
-            <Payment/>
-
-          {/* Business Listing Button */}
-          <Button
-            onClick={() => {
-              if (isLoggedIn) {
-                router.push("/businessRegister");
-              } else {
-                setAuthPurpose("business");
-                setShowModal(true);
-              }
-            }}
-            className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"
-          >
-            Business Listing
-          </Button>
-
-          {/* User Avatar or Login Button */}
-          <div className="relative" ref={dropdownRef}>
-            {isLoggedIn ? (
-              <>
-                <button
-                  onClick={() => setOpen(!open)}
-                  className="flex items-center gap-2 bg-white border border-gray-300 rounded-full hover:shadow transition"
-                >
-                  <Image
-                    src={profileImage}
-                    alt="User"
-                    width={38}
-                    height={38}
-                    className="rounded-full object-cover"
-                  />
-                  {/* <span className="text-sm">User</span> */}
-                  {/* <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg> */}
-                </button>
-
-                {open && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-50">
-                    <ul className="py-1 text-sm text-gray-700">
-                      <li>
-                        <button
-                          onClick={() => handleNavigate("/MyBussiness")}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
-                        >
-                          <IoBusinessSharp className="text-md" />
-                          My Business
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => handleNavigate('/Profile')}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
-                        >
-                          <FaUserCircle className="text-md" />
-                          My Profile
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => handleNavigate("/MyReviews")}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
-                        >
-                          <CiSquareQuestion className="text-md" />
-                          My Reviews
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
-                        >
-                          <RiLogoutBoxLine className="text-md" />
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </>
-            ) : (
+          <Payment />
+  
+          {isLoading ? (
+            <div className="flex items-center gap-4">
+              <Skeleton width={130} height={36} borderRadius={8} />
+              <Skeleton circle width={40} height={40} />
+            </div>
+          ) : (
+            <>
               <Button
-                onClick={() => setShowModal(true)}
-                className="bg-green-500 hover:bg-green-600 text-sm uppercase"
+                onClick={() => {
+                  if (isLoggedIn) {
+                    router.push("/businessRegister");
+                  } else {
+                    setAuthPurpose("business");
+                    setShowModal(true);
+                  }
+                }}
+                className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"
               >
-                Login / Sign Up
+                Business Listing
               </Button>
-            )}
-          </div>
+                {/* User Avatar or Login Button */}
+              <div className="relative" ref={dropdownRef}>
+                {isLoggedIn ? (
+                  <>
+                    <button
+                      onClick={() => setOpen(!open)}
+                      className="flex items-center gap-2 bg-white border border-gray-300 rounded-full hover:shadow transition"
+                    >
+                      <Image
+                        src={profileImage}
+                        alt="User"
+                        width={38}
+                        height={38}
+                        className="rounded-full object-cover"
+                      />
+                    </button>
+  
+                    {open && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-50">
+                        <ul className="py-1 text-sm text-gray-700">
+                          <li>
+                            <button
+                              onClick={() => handleNavigate("/myBussiness")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <IoBusinessSharp className="text-md" />
+                              My Business
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => handleNavigate('/profile')}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <FaUserCircle className="text-md" />
+                              My Profile
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => handleNavigate("/myReviews")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <CiSquareQuestion className="text-md" />
+                              My Reviews
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
+                            >
+                              <RiLogoutBoxLine className="text-md" />
+                              Logout
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => setShowModal(true)}
+                    className="bg-green-500 hover:bg-green-600 text-sm uppercase"
+                  >
+                    Login / Sign Up
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
         </div>
-
+  
         {/* Mobile Menu Toggle */}
         <Button
           className="block md:hidden text-2xl text-blue-600"
@@ -208,136 +198,133 @@ export default function Navbar() {
           {isMenuOpen ? <FiX /> : <FiMenu />}
         </Button>
       </div>
-
-     {/* Mobile Menu */}
+  
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="w-full mt-5 md:hidden flex flex-col gap-5 px-4 pb-4">
-          
-          {/* Location & Search */}
+       <div className="w-full mt-5 md:hidden flex flex-col gap-5 px-4 pb-4">
+         {/* Location & Search */}
           <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex rounded-lg">
-            <div className="w-1/2">
-              <LocationDropdown
-                location={location}
-                setLocation={setLocation}
-                showDropdown={showDropdown}
-                setShowDropdown={setShowDropdown}
-                dropdownRef={dropdownRef}
-                className="w-full border border-gray-300 px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
-            <div className="w-1/2">
-              <SearchBar
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full border-l-0 border border-gray-300 px-4 py-2 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-              />
+            <div className="flex rounded-lg">
+              <div className="w-1/2">
+                <LocationDropdown
+                  location={location}
+                  setLocation={setLocation}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  dropdownRef={dropdownRef}
+                  className="w-full border border-gray-300 px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              </div>
+              <div className="w-1/2">
+                <SearchBar
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  className="w-full border-l-0 border border-gray-300 px-4 py-2 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              </div>
             </div>
           </div>
-          </div>
-
+  
           {/* Buttons */}
-      <div className="w-full flex justify-center">
-        <div className="flex gap-3 items-center">
-          
-          {/* Business Listing Button */}
-          <Button
-            onClick={() => {
-              if (isLoggedIn) {
-                router.push("/businessRegister");
-              } else {
-                setAuthPurpose("business");
-                setShowModal(true);
-              }
-            }}
-            className="bg-orange-500 hover:bg-orange-600 text-sm uppercase"
-          >
-            Business Listing
-          </Button>
-
-      {/* User Avatar or Login Button */}
-      <div className="relative" ref={dropdownRef}>
-        {isLoggedIn ? (
-          <>
-          <button
-            onClick={() => setOpen(!open)}
-            className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-2 hover:shadow transition"
-          >
-            <Image
-              src="resto.jpg"
-              // alt="User"
-              width={24}
-              height={24}
-              className="rounded-full object-cover"
-            />
-            <span className="text-sm">User</span>
-            <svg
-              className="w-4 h-4 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {open && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
-              <ul className="py-1 text-sm text-gray-700">
-                      <li>
-                        <button
-                          onClick={() => handleNavigate("/my-business")}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
-                        >
-                          <IoBusinessSharp className="text-md" />
-                          My Business
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => handleNavigate("/profile")}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
-                        >
-                          <FaUserCircle className="text-md" />
-                          My Profile
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => handleNavigate("/requests")}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
-                        >
-                          <CiSquareQuestion className="text-md" />
-                          My Requests
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
-                        >
-                          <RiLogoutBoxLine className="text-md" />
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <Button onClick={() => setShowModal(true)} className="bg-green-500 hover:bg-green-600 text-sm uppercase"
-                >
-                  Login / Sign Up
-                </Button>
-              )}
+          <div className="w-full flex justify-center">
+            <div className="flex gap-3 items-center">
+              {/* Business Listing Button */}
+              <Button
+                onClick={() => {
+                  if (isLoggedIn) {
+                    router.push("/businessRegister");
+                  } else {
+                    setAuthPurpose("business");
+                    setShowModal(true);
+                  }
+                }}
+                className="bg-orange-500 hover:bg-orange-600 text-sm uppercase"
+              >
+                Business Listing
+              </Button>
+                {/* User Avatar or Login Button */}
+              <div className="relative" ref={dropdownRef}>
+                {isLoggedIn ? (
+                  <>
+                    <button
+                      onClick={() => setOpen(!open)}
+                      className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-2 hover:shadow transition"
+                    >
+                      <Image
+                        src="resto.jpg"
+                        // alt="User"
+                        width={24}
+                        height={24}
+                        className="rounded-full object-cover"
+                      />
+                      <span className="text-sm">User</span>
+                      <svg
+                        className="w-4 h-4 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+  
+                    {open && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+                        <ul className="py-1 text-sm text-gray-700">
+                          <li>
+                            <button
+                              onClick={() => handleNavigate("/my-business")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <IoBusinessSharp className="text-md" />
+                              My Business
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => handleNavigate("/profile")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <FaUserCircle className="text-md" />
+                              My Profile
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => handleNavigate("/requests")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <CiSquareQuestion className="text-md" />
+                              My Requests
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
+                            >
+                              <RiLogoutBoxLine className="text-md" />
+                              Logout
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => setShowModal(true)}
+                    className="bg-green-500 hover:bg-green-600 text-sm uppercase"
+                  >
+                    Login / Sign Up
+                  </Button>
+                )}
+              </div>
             </div>
-
           </div>
         </div>
-
-          </div>
-        )}
-        
+      )}
+  
       {/* Login / OTP Popup */}
       <PopUp
         showModal={showModal}
@@ -346,4 +333,5 @@ export default function Navbar() {
       />
     </nav>
   );
+  
 }
