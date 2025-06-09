@@ -187,7 +187,8 @@ const Tab = ({ business, renderStars }) => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {business.images?.length > 0 ? (
-            business.images.map((img, i) => (
+            business.images.filter((img) => img) // Filter out empty, null, or undefined strings
+            .map((img, i) => (
               <div key={i} className="relative h-40 rounded-lg overflow-hidden">
                 <Image src={img} alt={`Photo ${i + 1}`} fill className="object-cover" />
               </div>

@@ -15,7 +15,7 @@ import UsersndMsg from "../../components/categorylisting/UsersndMsg";
 import Enquirymsg from "../../components/categorylisting/Enquirymsg";
 import Link from "next/link";
 import { IoIosCall } from "react-icons/io";
-import { FaRegStar } from "react-icons/fa";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 const hours = {
   Monday: "10 AM - 10 PM",
@@ -191,7 +191,7 @@ export default function ListingInfo() {
                     >
                       &times;
                     </button>
-                    <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} />
+                    <Enquirymsg closePopup={() => setShowEnquiryPopup(false)} businessId={business.id} />
                   </div>
                 </div>
               )}

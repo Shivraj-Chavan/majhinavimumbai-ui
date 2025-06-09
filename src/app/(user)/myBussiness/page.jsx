@@ -77,7 +77,6 @@ export default function MyBusinessPage() {
     setBusinessToEdit(null);
   };
   
-
   if (!token) return <PopUp onClose={handleLoginSuccess} />;
 
   // Skeleton

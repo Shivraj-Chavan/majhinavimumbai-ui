@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import Payment from '../payment/payment';
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { VscFeedback } from 'react-icons/vsc';
 
 export function handleLoginSuccess (user, token) {
   
@@ -166,6 +167,15 @@ export default function Navbar() {
                           </li>
                           <li>
                             <button
+                              onClick={() => handleNavigate("/myEnquiries")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <VscFeedback className="text-md" />
+                              My Enquiries
+                            </button>
+                          </li>
+                          <li>
+                            <button
                               onClick={handleLogout}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
                             >
@@ -295,7 +305,16 @@ export default function Navbar() {
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
                             >
                               <CiSquareQuestion className="text-md" />
-                              My Requests
+                              My Reviews
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => handleNavigate("/myEnquiries")}
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                            >
+                              <VscFeedback className="text-md" />
+                              My Enquiries
                             </button>
                           </li>
                           <li>

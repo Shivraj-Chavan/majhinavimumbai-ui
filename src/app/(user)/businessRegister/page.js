@@ -72,7 +72,7 @@ export default function BusinessRegister({ ownerId }) {
     }
   }, [router]);
   
-  const handleInputChange = (label, value) => {
+  const handleInputChange = (label,value) => {
     setFormData((prev) => ({ ...prev, [label]: value }));
   };
 
@@ -196,7 +196,7 @@ export default function BusinessRegister({ ownerId }) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Business Name */}
         <div className="md:col-span-6">
-          <Input label="Business Name" value={formData.name} onChange={(value) => handleInputChange("name", value)} />
+          <Input label="Business Name" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
         </div>
 
         {/* Category */}
@@ -243,39 +243,39 @@ export default function BusinessRegister({ ownerId }) {
 
         {/* Other Fields */}
         <div className="md:col-span-6">
-          <Input label="Pincode" value={formData.pin_code} onChange={(value) => handleInputChange("pin_code", value)} />
+          <Input label="Pincode" value={formData.pin_code} onChange={(e) => handleInputChange("pin_code", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Address" value={formData.address} onChange={(value) => handleInputChange("address", value)} />
+          <Input label="Address" value={formData.address} onChange={(e) => handleInputChange("address", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Landmark" value={formData.landmark} onChange={(value) => handleInputChange("landmark", value)} />
+          <Input label="Landmark" value={formData.landmark} onChange={(e) => handleInputChange("landmark", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Sector" value={formData.sector} onChange={(value) => handleInputChange("sector", value)} />
+          <Input label="Sector" value={formData.sector} onChange={(e) => handleInputChange("sector", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Area" value={formData.area} onChange={(value) => handleInputChange("area", value)} />
+          <Input label="Area" value={formData.area} onChange={(e) => handleInputChange("area", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Phone" value={formData.phone} onChange={(value) => handleInputChange("phone", value)} />
+          <Input label="Phone" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="WhatsApp Number" value={formData.wp_number} onChange={(value) => handleInputChange("wp_number", value)} />
+          <Input label="WhatsApp Number" value={formData.wp_number} onChange={(e) => handleInputChange("wp_number", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Email" value={formData.email} onChange={(value) => handleInputChange("email", value)} />
+          <Input label="Email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
-          <Input label="Website" value={formData.website} onChange={(value) => handleInputChange("website", value)} />
+          <Input label="Website" value={formData.website} onChange={(e) => handleInputChange("website", e.target.value)} />
         </div>
 
         {/* Business Timings */}
