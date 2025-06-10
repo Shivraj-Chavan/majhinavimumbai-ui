@@ -49,7 +49,7 @@ export default function Services() {
                 key={index}
                 className="p-6 rounded-lg shadow bg-white hover:shadow-md transition"
               >
-                <div className="flex items-center space-x-3 mb-3">
+                <div className="flex items-center space-x-0 mb-3">
                   <p className="text-2xl">{category.icons}</p>
                   <h3 className="text-xl font-semibold text-gray-900">
                     {category.name}

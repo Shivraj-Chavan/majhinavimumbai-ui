@@ -15,6 +15,8 @@ export default function MyBusinessPage() {
   const [token, setToken] = useState(null);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,9 +24,13 @@ export default function MyBusinessPage() {
     setToken(storedToken);
 
     if (!storedToken) {
-      router.push("/login");
+      setShowPopup(true);
+      setIsAuthenticated(false);
+      setLoading(false); 
       return;
     }
+
+    setIsAuthenticated(true);
 
     const fetchBusiness = async () => {
       try {
@@ -46,6 +52,12 @@ export default function MyBusinessPage() {
 
     fetchBusiness();
   }, []);
+
+  if (!isAuthenticated) {
+    console.log("Rendering popup...");
+    return <>{showPopup && <PopUp onClose={() => setShowPopup(false)} />}</>;
+  }
+
 
   const handleLoginSuccess = () => {
     const newToken = localStorage.getItem("token");

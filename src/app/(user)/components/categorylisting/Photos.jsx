@@ -59,7 +59,7 @@ export default function Photos({ business, setTab }) {
         />
       ) : (
         <div className="w-full h-full bg-gray-300 flex items-center justify-center text-sm text-white">
-          No Image Available
+          No Images Available
         </div>
       )}
 

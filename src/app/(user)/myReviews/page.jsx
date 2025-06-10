@@ -37,7 +37,7 @@ export default function AllReviews() {
       console.log('Updated reviews after deletion:', updated);
     } catch (err) {
       console.error('Error deleting review:', err);
-      // alert('Failed to delete review');
+      alert('Failed to delete review');
     }
   };
   

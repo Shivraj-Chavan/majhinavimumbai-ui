@@ -5,9 +5,6 @@ import { useSelector } from "react-redux";
 import PopUp from "@/app/(user)/components/home/popUp";
 import { apiGet, apiPut } from "@/lib/apiClient";
 
-// Skeleton Component
-
-
 export default function ProfilePage() {
   const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
   const [user, setUser] = useState(null);
@@ -16,6 +13,8 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [token, setToken] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -24,7 +23,9 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!token) {
-      setLoading(false);
+      setShowPopup(true);
+      setIsAuthenticated(false);
+      setLoading(false); 
       return;
     }
 
@@ -32,9 +33,12 @@ export default function ProfilePage() {
       try {
         const res = await apiGet("/users/me");
         setUser(res);
+        setIsAuthenticated(true); 
       } catch (err) {
         console.error(err);
         setError("Could not load profile.");
+        setIsAuthenticated(false); 
+        setShowPopup(true);       
       } finally {
         setLoading(false);
       }
@@ -42,6 +46,13 @@ export default function ProfilePage() {
 
     fetchUser();
   }, [token]);
+
+  if (!isAuthenticated) {
+    console.log("Rendering popup...");
+    return <>{showPopup && <PopUp onClose={() => setShowPopup(false)} />}</>;
+  }
+
+  if (!token || !isLoggedIn) return <PopUp onClose={() => location.reload()} />;
 
   const handleChange = (e) => {
     const { name, value } = e.target;

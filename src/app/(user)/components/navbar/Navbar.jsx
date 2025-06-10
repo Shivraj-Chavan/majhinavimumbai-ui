@@ -93,6 +93,31 @@ export default function Navbar() {
         <Link href='/' className="flex items-center">
           <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
         </Link>
+
+        {/* Location and searchbar */}
+
+              {/* Location */}
+              {/* <div className="flex flex-col sm:flex-row gap-0 border border-gray-100 shadow rounded-lg">
+                <div className="flex-1">
+                  <LocationDropdown
+                    location={location}
+                    setLocation={setLocation}
+                    showDropdown={showDropdown}
+                    setShowDropdown={setShowDropdown}
+                    dropdownRef={dropdownRef}
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div> */}
+        
+                {/* Search */}
+                {/* <div className="flex-2">
+                  <SearchBar
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
+              </div> */}
   
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
