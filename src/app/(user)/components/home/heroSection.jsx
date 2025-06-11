@@ -8,6 +8,7 @@ import Button from "../form/Button";
 import CategoryDropdown from "./categoryDropdown";
 import { CiLocationArrow1 } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
+import { FcInternal } from "react-icons/fc";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -25,7 +26,7 @@ export default function HeroSection() {
 
   if (loading) {
     return (
-      <div className="relative w-full h-[600px] md:h-[550px] max-w-8xl mx-auto shadow-xl overflow-hidden">
+      <div className="relative w-full h-[450px] md:h-[550px] max-w-8xl mx-auto shadow-xl overflow-hidden">
         {/* Skeleton Background */}
         <div className="absolute inset-0 bg-gray-300 animate-pulse" />
 
@@ -58,7 +59,7 @@ export default function HeroSection() {
 
   // Normal render when not loading
   return (
-    <div className="relative w-full h-[600px] md:h-[550px] overflow-hidden shadow-xl max-w-8xl mx-auto ">
+    <div className="relative w-full h-[450px] md:h-[550px] overflow-hidden shadow-xl max-w-8xl mx-auto ">
       {/* Background Image */}
       <Image
         src="/palika.jpg"
@@ -103,7 +104,7 @@ export default function HeroSection() {
 
             {/* Location  */}
             <div
-              className="w-full mt-10 md:hidden flex items-center gap-2 px-4"
+              className="w-full mt-6 md:hidden flex items-center gap-2 px-4"
               ref={dropdownRef}
             >
               <button
@@ -136,6 +137,10 @@ export default function HeroSection() {
             <CategoryDropdown />
           </div>
         </div>
+
+        {/* Bouncing arrow */}
+        <div className=" justify-end text-4xl p-2 bg-gray-500/10 rounded-full animate-bounce block md:hidden fixed bottom-4 right-5 z-50"> <FcInternal /></div>
+
       </div>
 
       {/* Contact Popup */}

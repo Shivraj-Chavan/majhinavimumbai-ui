@@ -7,10 +7,9 @@ export default function PopUp({showContact, setShowContact}) {
 
   return (
     <div>
-     
       {/* Contact Modal */}
       {showContact && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-white/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 mt-15 flex justify-center items-center bg-white/20 backdrop-blur-sm">
           <div className="bg-white p-8 rounded-2xl shadow-xl w-11/12 max-w-md relative">
 
             {/* Close Button */}

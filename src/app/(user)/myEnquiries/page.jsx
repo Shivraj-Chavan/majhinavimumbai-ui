@@ -1,7 +1,9 @@
 "use client";
 
 import { apiGet } from '@/lib/apiClient';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 function SkeletonCard() {
   return (
@@ -21,16 +23,31 @@ function SkeletonCard() {
 export default function OwnerEnquiriesPage() {
   const [groupedEnquiries, setGroupedEnquiries] = useState({});
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
+  const router = useRouter();
+
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      router.push("/");
+    } else {
+      setToken(storedToken);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (!token) return;
+
     const fetchEnquiries = async () => {
-        console.log("Fetching enquiries for owner...");
+      console.log("Fetching enquiries for owner...");
       try {
-        const res = await apiGet('/owner');
-        console.log("API Response:", res.data);
-        setGroupedEnquiries(res.data);
+        const res = await apiGet('/owner');  
+        console.log("API Response:", res);
+        setGroupedEnquiries(res);
       } catch (error) {
         console.error(error);
+        toast.error("Failed to load enquiries");
       } finally {
         setLoading(false);
       }
@@ -48,7 +65,6 @@ export default function OwnerEnquiriesPage() {
       </h1>
 
       {loading ? (
-        // Show skeleton loaders (3 columns grid with 3 skeleton cards)
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
             <SkeletonCard key={i} />

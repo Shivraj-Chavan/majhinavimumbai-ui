@@ -1,14 +1,28 @@
 'use client';
 
 import { apiDelete, apiGet } from '@/lib/apiClient';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export default function AllReviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+   const [token, setToken] = useState(null);
+    const router = useRouter();
+  
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      router.push("/");
+    } else {
+      setToken(storedToken);
+    }
+  }, [router]);
 
   useEffect(() => {
+    if (!token) return;
+
     const fetchAllReviews = async () => {
       try {
         const res = await apiGet('/reviews');

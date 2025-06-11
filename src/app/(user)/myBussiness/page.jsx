@@ -23,13 +23,11 @@ export default function MyBusinessPage() {
     const storedToken = localStorage.getItem("token");
     setToken(storedToken);
 
-    if (!storedToken) {
-      setShowPopup(true);
-      setIsAuthenticated(false);
-      setLoading(false); 
-      return;
-    }
-
+      if (!storedToken) {
+        router.push("/");
+        return;
+      } 
+  
     setIsAuthenticated(true);
 
     const fetchBusiness = async () => {

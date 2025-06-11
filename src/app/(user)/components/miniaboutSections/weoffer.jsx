@@ -39,9 +39,9 @@ export default function WeOffer() {
           <>
             <h1 className="font-bold text-2xl md:text-3xl text-blue-800 mb-2">What We Offer</h1>
             {offers.map((item, index) => (
-              <div key={index} className="flex items-start">
-                <FaCheckSquare className="text-green-600 text-lg mt-1.5" />
-                <p className="text-md text-gray-700 leading-relaxed ml-2">{item}</p>
+              <div key={index} className="flex items-start px-3">
+                <FaCheckSquare className="text-green-600 text-lg mt-1.5 " />
+                <p className="text-md text-gray-700 leading-relaxed ml-2 ">{item}</p>
               </div>
             ))}
           </>
@@ -49,7 +49,7 @@ export default function WeOffer() {
       </div>
 
       {/* Image */}
-      <div className="w-full md:w-1/3 flex justify-center">
+      <div className="w-full md:w-1/3 flex justify-center px-4">
         {loading ? (
           <div className="w-full md:w-[400px] h-[250px] bg-gray-300 rounded-xl animate-pulse" />
         ) : (

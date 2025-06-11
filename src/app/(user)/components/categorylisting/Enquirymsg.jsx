@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PopUp from '../home/popUp';
 import { apiPost } from '@/lib/apiClient'; 
+import { toast } from 'react-toastify';
 
 export default function Enquirymsg({ businessId }) {
   const [message, setMessage] = useState("");
@@ -30,8 +31,10 @@ export default function Enquirymsg({ businessId }) {
 
     try {
       console.log("Sending enquiry with data:", { businessId, message });
-      await apiPost('/enquiries', {businessId, message});
-      console.log("Enquiry submitted successfully:", response.data);
+
+      const response = await apiPost('/enquiries', {businessId, message}); 
+      toast.success("Message sent successfully!");
+      console.log("Enquiry submitted successfully:", response);
       setSuccessMsg("Message sent successfully!");
       setMessage("");
     } catch (error) {
@@ -40,7 +43,7 @@ export default function Enquirymsg({ businessId }) {
     } finally {
       setSubmitting(false);
     }
-  };
+};
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-xl p-6 max-w-2xl mx-auto">

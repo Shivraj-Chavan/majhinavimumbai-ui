@@ -139,7 +139,7 @@ export default function Navbar() {
                     setShowModal(true);
                   }
                 }}
-                className="bg-orange-400 hover:bg-orange-500 text-sm uppercase"
+                className="bg-orange-400 hover:bg-orange-500 text-sm uppercase cursor-pointer"
               >
                 Business Listing
               </Button>
@@ -166,7 +166,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/myBussiness")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <IoBusinessSharp className="text-md" />
                               My Business
@@ -175,7 +175,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate('/profile')}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <FaUserCircle className="text-md" />
                               My Profile
@@ -184,7 +184,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/myReviews")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <CiSquareQuestion className="text-md" />
                               My Reviews
@@ -193,7 +193,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/myEnquiries")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <VscFeedback className="text-md" />
                               My Enquiries
@@ -202,7 +202,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 cursor-pointer"
                             >
                               <RiLogoutBoxLine className="text-md" />
                               Logout
@@ -215,7 +215,7 @@ export default function Navbar() {
                 ) : (
                   <Button
                     onClick={() => setShowModal(true)}
-                    className="bg-green-500 hover:bg-green-600 text-sm uppercase"
+                    className="bg-green-500 hover:bg-green-600 text-sm uppercase cursor-pointer"
                   >
                     Login / Sign Up
                   </Button>
@@ -227,7 +227,7 @@ export default function Navbar() {
   
         {/* Mobile Menu Toggle */}
         <Button
-          className="block md:hidden text-2xl text-blue-600"
+          className="block md:hidden text-2xl text-black"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? <FiX /> : <FiMenu />}
@@ -273,7 +273,7 @@ export default function Navbar() {
                     setShowModal(true);
                   }
                 }}
-                className="bg-orange-500 hover:bg-orange-600 text-sm uppercase"
+                className="bg-orange-500 hover:bg-orange-600 text-sm uppercase cursor-pointer"
               >
                 Business Listing
               </Button>
@@ -309,7 +309,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/my-business")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <IoBusinessSharp className="text-md" />
                               My Business
@@ -318,7 +318,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/profile")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <FaUserCircle className="text-md" />
                               My Profile
@@ -327,7 +327,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/requests")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <CiSquareQuestion className="text-md" />
                               My Reviews
@@ -336,7 +336,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={() => handleNavigate("/myEnquiries")}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <VscFeedback className="text-md" />
                               My Enquiries
@@ -345,7 +345,7 @@ export default function Navbar() {
                           <li>
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
+                              className="flex items-center gap-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 cursor-pointer"
                             >
                               <RiLogoutBoxLine className="text-md" />
                               Logout
@@ -358,7 +358,7 @@ export default function Navbar() {
                 ) : (
                   <Button
                     onClick={() => setShowModal(true)}
-                    className="bg-green-500 hover:bg-green-600 text-sm uppercase"
+                    className="bg-green-500 hover:bg-green-600 text-sm uppercase cursor-pointer"
                   >
                     Login / Sign Up
                   </Button>
@@ -370,11 +370,7 @@ export default function Navbar() {
       )}
   
       {/* Login / OTP Popup */}
-      <PopUp
-        showModal={showModal}
-        setShowModal={setShowModal}
-        authPurpose={authPurpose}
-      />
+      <PopUp showModal={showModal} setShowModal={setShowModal} authPurpose={authPurpose}/>
     </nav>
   );
   

@@ -105,7 +105,7 @@ export default function Footer() {
               <>
                 <li><Link href="#" className="hover:text-green-600 transition">Privacy Policy</Link></li>
                 <li><Link href="#" className="hover:text-green-600 transition">Terms & Conditions</Link></li>
-                <li><Link href="#" className="hover:text-green-600 transition">Infringement Policy</Link></li>
+                {/* <li><Link href="#" className="hover:text-green-600 transition">Infringement Policy</Link></li> */}
               </>
             )}
           </ul>

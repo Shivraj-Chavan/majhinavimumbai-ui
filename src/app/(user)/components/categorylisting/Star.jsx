@@ -16,7 +16,7 @@ export default function Star({ rating, setRating }) {
           <button
             key={star}
             type="button"
-            className={`text-3xl transition-transform duration-200 ${
+            className={`text-3xl transition-transform  cursor-pointer duration-200 ${
               (hover || rating) >= star
                 ? "text-yellow-400 scale-110"
                 : "text-gray-300 hover:text-yellow-300 hover:scale-105"

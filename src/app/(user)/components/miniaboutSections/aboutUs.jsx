@@ -46,7 +46,7 @@ export default function About() {
         ) : (
           <>
             <h1 className="font-bold text-3xl md:text-3xl text-orange-400 mb-4">ABOUT US</h1>
-            <p className="text-sm md:text-md text-gray-700 leading-relaxed">
+            <p className="text-sm md:text-md text-gray-700 leading-relaxed px-3 md:px-0">
               <span className="font-bold">Navi Mumbai Local Search (Majhi Navi Mumbai)</span> is Navi
               Mumbai’s dedicated local discovery platform. Our mission is to connect users with the
               best businesses, services, and solutions available exclusively in Navi Mumbai. Whether

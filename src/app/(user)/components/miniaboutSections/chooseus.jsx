@@ -66,13 +66,13 @@ export default function ChooseUs() {
           </>
         ) : (
           <>
-            <h1 className="font-bold text-2xl md:text-3xl text-green-600 mb-4">
+            <h1 className="font-bold text-2xl md:text-3xl text-green-600 mb-4 px-3">
               WHY CHOOSE US?
             </h1>
             {points.map((point, index) => (
-              <div key={index} className="flex items-start">
-                <span className="w-2 h-2 mt-2.5 rounded-full bg-green-600 flex-shrink-0"></span>
-                <p className="ml-3 text-gray-700 text-md leading-relaxed">
+              <div key={index} className="flex items-start px-4">
+                <span className="w-2 h-2 mt-2.5 rounded-full bg-green-600 flex-shrink-0 "></span>
+                <p className="ml-3 text-gray-700 text-md leading-relaxed ">
                   <span className="font-medium">{point.title}</span> {point.text}
                 </p>
               </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import PopUp from "@/app/(user)/components/home/popUp";
 import { apiGet, apiPut } from "@/lib/apiClient";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
@@ -15,6 +16,7 @@ export default function ProfilePage() {
   const [previewImage, setPreviewImage] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -23,9 +25,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!token) {
-      setShowPopup(true);
-      setIsAuthenticated(false);
-      setLoading(false); 
+      router.push("/");
       return;
     }
 
@@ -46,13 +46,6 @@ export default function ProfilePage() {
 
     fetchUser();
   }, [token]);
-
-  if (!isAuthenticated) {
-    console.log("Rendering popup...");
-    return <>{showPopup && <PopUp onClose={() => setShowPopup(false)} />}</>;
-  }
-
-  if (!token || !isLoggedIn) return <PopUp onClose={() => location.reload()} />;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
