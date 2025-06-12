@@ -31,7 +31,6 @@ export default function Enquirymsg({ businessId }) {
 
     try {
       console.log("Sending enquiry with data:", { businessId, message });
-
       const response = await apiPost('/enquiries', {businessId, message}); 
       toast.success("Message sent successfully!");
       console.log("Enquiry submitted successfully:", response);

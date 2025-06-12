@@ -94,30 +94,41 @@ export default function Navbar() {
           <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
         </Link>
 
-        {/* Location and searchbar */}
 
-              {/* Location */}
-              {/* <div className="flex flex-col sm:flex-row gap-0 border border-gray-100 shadow rounded-lg">
-                <div className="flex-1">
-                  <LocationDropdown
-                    location={location}
-                    setLocation={setLocation}
-                    showDropdown={showDropdown}
-                    setShowDropdown={setShowDropdown}
-                    dropdownRef={dropdownRef}
-                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-                  />
-                </div> */}
-        
-                {/* Search */}
-                {/* <div className="flex-2">
-                  <SearchBar
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-                  />
-                </div>
-              </div> */}
+        {isLoading ? (
+            <div className="flex items-center gap-4">
+              <Skeleton width={130} height={36} borderRadius={8} />
+              <Skeleton circle width={40} height={40} />
+            </div>
+          ) :(
+            <>
+        {/* Location and searchbar */}
+        <div className="hidden sm:flex items-center gap-2 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto">
+          <div className="flex items-center gap-2 border-r border-gray-300">
+            <LocationDropdown
+              location={location}
+              setLocation={setLocation}
+              showDropdown={showDropdown}
+              setShowDropdown={setShowDropdown}
+              dropdownRef={dropdownRef}
+              className="focus:outline-none"
+            />
+          </div>
+
+          {/* Search Input */}
+          <div className="flex-1">
+            <SearchBar
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full px-3 py-2 focus:outline-none"
+              placeholder="Search for services..."
+            />
+            
+          </div>
+          
+        </div>
+        </>
+          
   
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
@@ -286,7 +297,7 @@ export default function Navbar() {
                       className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-2 hover:shadow transition"
                     >
                       <Image
-                        src="resto.jpg"
+                        src="/resto.jpg"
                         // alt="User"
                         width={24}
                         height={24}

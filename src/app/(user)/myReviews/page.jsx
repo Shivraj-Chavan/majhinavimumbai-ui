@@ -4,6 +4,7 @@ import { apiDelete, apiGet } from '@/lib/apiClient';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { toast } from 'react-toastify';
 
 export default function AllReviews() {
   const [reviews, setReviews] = useState([]);
@@ -46,12 +47,12 @@ export default function AllReviews() {
     try {
       await apiDelete(`/reviews/${reviewId}`);
       console.log('Delete request successful for reviewId:', reviewId);
-      alert('Review deleted successfully!');
+      toast.success('Review deleted successfully!');
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
       console.log('Updated reviews after deletion:', updated);
     } catch (err) {
       console.error('Error deleting review:', err);
-      alert('Failed to delete review');
+      toast.error('Failed to delete review');
     }
   };
   

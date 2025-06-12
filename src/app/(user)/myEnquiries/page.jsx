@@ -26,35 +26,27 @@ export default function OwnerEnquiriesPage() {
   const [token, setToken] = useState(null);
   const router = useRouter();
 
-
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
       router.push("/");
     } else {
-      setToken(storedToken);
+      const fetchEnquiries = async () => {
+        try {
+          const res = await apiGet('/enquiries/owner');  
+          console.log('Api get owner response:',res);
+          setGroupedEnquiries(res);
+        } catch (error) {
+          console.error(error);
+          toast.error("Failed to load enquiries");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchEnquiries();
     }
   }, [router]);
-
-  useEffect(() => {
-    if (!token) return;
-
-    const fetchEnquiries = async () => {
-      console.log("Fetching enquiries for owner...");
-      try {
-        const res = await apiGet('/owner');  
-        console.log("API Response:", res);
-        setGroupedEnquiries(res);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load enquiries");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEnquiries();
-  }, []);
+  
 
   const businessIds = Object.keys(groupedEnquiries);
 

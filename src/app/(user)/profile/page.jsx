@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import PopUp from "@/app/(user)/components/home/popUp";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ProfilePage() {
   const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
@@ -64,9 +65,10 @@ export default function ProfilePage() {
     try {
       await apiPut(`/users/${user.id}/profile`, user);
       setIsEditing(false);
+      toast.success("Profile Updated !")
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile.");
+      toast.error("Failed to update profile.");
     }
   };
 

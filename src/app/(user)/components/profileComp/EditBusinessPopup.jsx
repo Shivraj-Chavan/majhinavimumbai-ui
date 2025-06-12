@@ -6,6 +6,7 @@ import TextEditor from "./TextEditor";
 import { apiPut } from "@/lib/apiClient";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function EditBusinessPopup({ business, onClose }) {
   const [formData, setFormData] = useState({
@@ -57,7 +58,7 @@ export default function EditBusinessPopup({ business, onClose }) {
       );
 
       if (existingPhotos.length + selectedPhotos.length + newFiles.length > 20) {
-        alert("You can upload a maximum of 20 photos total (existing + new).");
+        toast.alert("You can upload a maximum of 20 photos total (existing + new).");
         newFiles.forEach((file) => URL.revokeObjectURL(file.preview));
         return;
       }
@@ -90,9 +91,9 @@ export default function EditBusinessPopup({ business, onClose }) {
            
       setExistingPhotos((prev) => prev.filter((_, i) => i !== index));
       console.log("Updated existing photos after deletion:", updated);
-      alert("Photo deleted successfully.");
+      toast.success("Photo deleted successfully.");
     } catch (error) {
-      alert("Failed to delete photo. Please try again.");
+      toast.error("Failed to delete photo. Please try again.");
     }
   };
   
@@ -103,7 +104,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         const coords = `${position.coords.latitude}, ${position.coords.longitude}`;
         setFormData((prev) => ({ ...prev, location: coords }));
       },
-      () => alert("Unable to fetch location.")
+      () => toast.error("Unable to fetch location.")
     );
   };
 
@@ -143,10 +144,10 @@ export default function EditBusinessPopup({ business, onClose }) {
         );
       }
 
-      alert("Business updated successfully!");
+      toast.success("Business updated successfully!");
       onClose();
     } catch (err) {
-      alert("Something went wrong while updating. Please try again.");
+      toast.error("Something went wrong while updating. Please try again.");
     }
   };
 

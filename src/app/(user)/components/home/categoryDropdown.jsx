@@ -154,6 +154,7 @@ export default function CategoryDropdown() {
               </option>
             ))}
           </select>
+        
           {showWarning && (
             <p className="text-red-500 text-sm mt-1">Please select a category first.</p>
           )}

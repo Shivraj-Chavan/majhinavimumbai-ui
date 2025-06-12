@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FcFinePrint } from "react-icons/fc";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { GrEdit } from "react-icons/gr";
+import { toast } from "react-toastify";
 
 export default function MyBusinessPage() {
   const [businesses, setBusinesses] = useState([]); 
@@ -76,7 +77,7 @@ export default function MyBusinessPage() {
       }
     } catch (error) {
       console.error("Update failed", error);
-      alert("Failed to update business info.");
+      toast.error("Failed to update business info.");
     }
   };
 
