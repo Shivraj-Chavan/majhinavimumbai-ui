@@ -41,10 +41,25 @@ export default function Navbar() {
   const [searchInput, setSearchInput] = useState("");
   const user = useSelector((state) => state.user.user);
   const profileImage = user?.image || '/person.jpg';
+  const [showSearch, setShowSearch] = useState(false);  
 
   const dispatch = useDispatch();
   const router = useRouter();
   const dropdownRef = useRef(null);
+
+  // location and searchbar scroll logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowSearch(true);
+      } else {
+        setShowSearch(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
@@ -94,41 +109,31 @@ export default function Navbar() {
           <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
         </Link>
 
-
-        {isLoading ? (
-            <div className="flex items-center gap-4">
-              <Skeleton width={130} height={36} borderRadius={8} />
-              <Skeleton circle width={40} height={40} />
+      {/* location and searchbar scroll */}
+        {showSearch && (
+          <div className="hidden sm:flex items-center gap-2 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto">
+            <div className="flex items-center gap-2 border-r border-gray-300">
+              <LocationDropdown
+                location={location}
+                setLocation={setLocation}
+                showDropdown={showDropdown}
+                setShowDropdown={setShowDropdown}
+                dropdownRef={dropdownRef}
+                className="focus:outline-none"
+              />
             </div>
-          ) :(
-            <>
-        {/* Location and searchbar */}
-        <div className="hidden sm:flex items-center gap-2 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto">
-          <div className="flex items-center gap-2 border-r border-gray-300">
-            <LocationDropdown
-              location={location}
-              setLocation={setLocation}
-              showDropdown={showDropdown}
-              setShowDropdown={setShowDropdown}
-              dropdownRef={dropdownRef}
-              className="focus:outline-none"
-            />
-          </div>
 
-          {/* Search Input */}
-          <div className="flex-1">
-            <SearchBar
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full px-3 py-2 focus:outline-none"
-              placeholder="Search for services..."
-            />
-            
+            <div className="flex-1">
+              <SearchBar
+                value={""}
+                onChange={() => {}}
+                className="w-full focus:outline-none "
+                placeholder="Search for services..."
+              />
+            </div>
           </div>
-          
-        </div>
-        </>
-          
+        )}
+    
   
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
@@ -160,7 +165,7 @@ export default function Navbar() {
                   <>
                     <button
                       onClick={() => setOpen(!open)}
-                      className="flex items-center gap-2 bg-white border border-gray-300 rounded-full hover:shadow transition"
+                      className="flex items-center gap-2 bg-white border border-gray-300 rounded-full hover:shadow transition cursor-pointer"
                     >
                       <Image
                         src={profileImage}
@@ -176,7 +181,7 @@ export default function Navbar() {
                         <ul className="py-1 text-sm text-gray-700">
                           <li>
                             <button
-                              onClick={() => handleNavigate("/myBussiness")}
+                              onClick={() => handleNavigate("/mybussiness")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <IoBusinessSharp className="text-md" />
@@ -194,7 +199,7 @@ export default function Navbar() {
                           </li>
                           <li>
                             <button
-                              onClick={() => handleNavigate("/myReviews")}
+                              onClick={() => handleNavigate("/myreviews")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <CiSquareQuestion className="text-md" />
@@ -203,7 +208,7 @@ export default function Navbar() {
                           </li>
                           <li>
                             <button
-                              onClick={() => handleNavigate("/myEnquiries")}
+                              onClick={() => handleNavigate("/myenquiries")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <VscFeedback className="text-md" />
@@ -265,7 +270,7 @@ export default function Navbar() {
                 <SearchBar
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className="w-full border-l-0 border border-gray-300 px-4 py-2 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full border-l-0 border border-gray-300 px-4 py-2 rounded-r-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
             </div>
@@ -319,7 +324,7 @@ export default function Navbar() {
                         <ul className="py-1 text-sm text-gray-700">
                           <li>
                             <button
-                              onClick={() => handleNavigate("/my-business")}
+                              onClick={() => handleNavigate("/mybusiness")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <IoBusinessSharp className="text-md" />
@@ -337,7 +342,7 @@ export default function Navbar() {
                           </li>
                           <li>
                             <button
-                              onClick={() => handleNavigate("/requests")}
+                              onClick={() => handleNavigate("/myreviews")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <CiSquareQuestion className="text-md" />
@@ -346,7 +351,7 @@ export default function Navbar() {
                           </li>
                           <li>
                             <button
-                              onClick={() => handleNavigate("/myEnquiries")}
+                              onClick={() => handleNavigate("/myenquiries")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <VscFeedback className="text-md" />

@@ -59,7 +59,7 @@ export default React.memo(function SearchBar() {
         className="outline-none px-3 py-5 h-12 w-full bg-white text-gray-700 rounded-l-lg"
       />
 
-      <Button onClick={handleSearch} className="bg-blue-500 max-w-1/5 text-center hover:bg-blue-600 text-white text-lg px-4 py-3 rounded-r-lg">
+      <Button onClick={handleSearch} className="bg-blue-500 max-w-1/5 text-center hover:bg-blue-600 text-white text-lg cursor-pointer px-4 py-3 rounded-r-lg">
         <FiSearch />
       </Button>
 

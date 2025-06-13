@@ -9,6 +9,8 @@ import CategoryDropdown from "./categoryDropdown";
 import { CiLocationArrow1 } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
 import { FcInternal } from "react-icons/fc";
+import LocationDropdown from "./locationDropdown";
+import SearchBar from "./searchBar";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -16,7 +18,8 @@ export default function HeroSection() {
   const dropdownRef = useRef(null);
   const [searchInput, setSearchInput] = useState("");
   const [showContact, setShowContact] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
+  
   // Simulate loading state 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -72,7 +75,43 @@ export default function HeroSection() {
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-10 bg-white/60 backdrop-blur-md h-full ">
         {/* Left Section */}
         <div className="w-full md:w-1/2 m-4 sm:m-10 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
-          <h1 className="space-y-3 font-bold italic">
+        
+        {loading ? (
+          <div className="hidden sm:flex items-center gap-2 mb-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto p-2">
+            {/* Location skeleton */}
+            <div className="w-40 h-10 bg-gray-200 rounded animate-pulse"></div>
+
+            {/* Search bar skeleton */}
+            <div className="flex-1">
+              <div className="w-full h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        ) : (
+          <div className="hidden sm:flex items-center gap-2 ms-7 mb-22 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto">
+            <div className="flex items-center gap-2 border-r border-gray-300">
+              <LocationDropdown
+                location={location}
+                setLocation={setLocation}
+                showDropdown={showDropdown}
+                setShowDropdown={setShowDropdown}
+                dropdownRef={dropdownRef}
+                className="focus:outline-none"
+              />
+            </div>
+
+            <div className="flex-1">
+              <SearchBar
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="w-full px-3 py-2 focus:outline-none"
+                placeholder="Search for services..."
+              />
+            </div>
+          </div>
+        )}
+
+
+          <h1 className="space-y-3 font-bold italic ">
             <span className="text-orange-500 text-5xl sm:text-6xl md:text-7xl font-mukta block">
               माझी
             </span>
@@ -93,7 +132,7 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-green-700 opacity-0 group-hover:opacity-10 transition duration-300 rounded-full"></div>
               <div className="flex items-center gap-2 relative z-10">
                 <IoIosContact className="text-xl sm:text-2xl" />
-                <span className="text-base sm:text-lg font-semibold">
+                <span className="text-base sm:text-lg font-semibold cursor-pointer">
                   Contact Us
                 </span>
                 <span className="text-lg sm:text-xl font-bold transform group-hover:translate-x-1 transition duration-200">

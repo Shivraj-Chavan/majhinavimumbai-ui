@@ -62,8 +62,8 @@ export default function PopUp({ showContact, setShowContact }) {
   return (
     <div>
       {showContact && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-white/20 backdrop-blur-sm overflow-y-auto px-4 py-8">
-          <div className="relative bg-white mt-10 rounded-lg shadow-lg w-full max-w-lg p-6 sm:p-8">
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-white/20 backdrop-blur-sm overflow-y-auto px-4 py-8 ">
+          <div className="relative bg-white mt-10 rounded-lg shadow-lg w-full max-w-lg p-6 sm:p-8 ">
             
             <button 
               onClick={() => setShowContact(false)} 
