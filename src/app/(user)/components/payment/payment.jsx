@@ -1,6 +1,6 @@
-import axios from "axios";
+import { apiPost } from "@/lib/apiClient";
 
-const RazorpayButton = ({ amount }) => {
+const RazorpayButton = ({ amount=100 }) => {
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -18,7 +18,9 @@ const RazorpayButton = ({ amount }) => {
       return;
     }
 
-    // const { data: order } = await axios.post("/api/razorpay/order", { amount });
+    console.log("Creating order on backend with amount:", amount);
+    const { data: order } = await apiPost("/payments/initiate", {plan:"normal", amount });
+    console.log("Order created:", order);
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -26,14 +28,15 @@ const RazorpayButton = ({ amount }) => {
       currency: "INR",
       name: "Test Company",
       description: "Test Transaction",
-    //   order_id: "fhenjdSDF3|9ui3nd3dk3e3",
+      // order_id: ,
       handler: async function (response) {
-        // const verifyRes = await axios.post("/api/razorpay/verify", response);
-        // if (verifyRes.data.success) {
-        //   alert("Payment Successful");
-        // } else {
-        //   alert("Payment verification failed");
-        // }
+        const res = await apiPost("/payments/verify", response);
+        console.log("Verification response from server:", res.data);
+        if (res.data.success) {
+          alert("Payment Successful");
+        } else {
+          alert("Payment verification failed");
+        }
       },
       prefill: {
         name: "Your Name",

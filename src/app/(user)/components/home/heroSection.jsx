@@ -76,13 +76,13 @@ export default function HeroSection() {
         {/* Left Section */}
         <div className="w-full md:w-1/2 m-4 sm:m-10 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
         
-        {loading ? (
-          <div className="hidden sm:flex items-center gap-2 mb-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto p-2">
+        {/* {loading ? (
+          <div className="hidden sm:flex items-center gap-2 mb-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto p-2"> */}
             {/* Location skeleton */}
-            <div className="w-40 h-10 bg-gray-200 rounded animate-pulse"></div>
+            {/* <div className="w-40 h-10 bg-gray-200 rounded animate-pulse"></div> */}
 
             {/* Search bar skeleton */}
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <div className="w-full h-10 bg-gray-200 rounded animate-pulse"></div>
             </div>
           </div>
@@ -108,8 +108,7 @@ export default function HeroSection() {
               />
             </div>
           </div>
-        )}
-
+        )} */}
 
           <h1 className="space-y-3 font-bold italic ">
             <span className="text-orange-500 text-5xl sm:text-6xl md:text-7xl font-mukta block">

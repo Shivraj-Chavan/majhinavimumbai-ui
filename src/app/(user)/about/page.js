@@ -173,9 +173,10 @@ export default function AboutUs() {
         ) : (
           <>
             <p className="mt-2 text-lg">List your business today and connect with thousands of potential customers.</p>
-            <Button className="mt-6 px-6 py-3 bg-white text-green-500 shadow-md hover:bg-gray-100">
+            <Button className="mt-6 px-6 py-3 bg-white text-green-600 shadow-md hover:bg-green-600 hover:text-white ">
               Get Started
             </Button>
+
           </>
         )}
       </div>

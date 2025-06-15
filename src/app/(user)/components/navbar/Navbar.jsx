@@ -50,7 +50,7 @@ export default function Navbar() {
   // location and searchbar scroll logic
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 200) {
+      if (window.scrollY > 300) {
         setShowSearch(true);
       } else {
         setShowSearch(false);
