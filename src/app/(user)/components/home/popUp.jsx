@@ -174,7 +174,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
           </button>
 
           <p className="italic text-lg text-center font-bold text-blue-700">Welcome</p>
-          <h1 className="text-2xl font-semibold mb-4 text-center">Verify your Number</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-center">Verify Your Number</h1>
 
           {/* Status Message */}
           {statusMessage.message && (
@@ -201,7 +201,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                   className="w-full px-4 py-2 outline-none"
                   value={phone}
                   onChange={handlePhoneChange}
-                  placeholder="Enter your Phone Number"
+                  placeholder="Enter Your Phone Number"
                 />
                 {phone.length === 10 && <FaCheckCircle className="text-green-500 mx-2" />}
               </div>
@@ -224,7 +224,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                   <label className="block text-lg font-medium">OTP</label>
                   <input type="text" value={otp} onChange={handleOtpChange}
                     className={`w-full mt-2 px-4 py-2 border ${ errors.otp ? "border-red-500" : "border-gray-300" } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
-                    placeholder="Enter your OTP"
+                    placeholder="Enter Your OTP"
                   />
                   {errors.otp && <p className="text-red-500 text-sm mt-1">{errors.otp}</p>}
                 </div>

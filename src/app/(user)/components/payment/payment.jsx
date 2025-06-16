@@ -1,6 +1,6 @@
 import { apiPost } from "@/lib/apiClient";
 
-const RazorpayButton = ({ amount=100 }) => {
+const RazorpayButton = ({ amount=100, businessId,  }) => {
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -14,12 +14,12 @@ const RazorpayButton = ({ amount=100 }) => {
   const handlePayment = async () => {
     const isLoaded = await loadRazorpayScript();
     if (!isLoaded) {
-      alert("Razorpay SDK failed to load. Are you online?");
+      alert("Razorpay SDK failed to load. Are you online?"); 
       return;
     }
 
     console.log("Creating order on backend with amount:", amount);
-    const { data: order } = await apiPost("/payments/initiate", {plan:"normal", amount });
+    const { data: order } = await apiPost("/payments/initiate", {plan:"normal", amount,  businessId });
     console.log("Order created:", order);
 
     const options = {
@@ -28,9 +28,9 @@ const RazorpayButton = ({ amount=100 }) => {
       currency: "INR",
       name: "Test Company",
       description: "Test Transaction",
-      // order_id: ,
+      order_id: order.id ,
       handler: async function (response) {
-        const res = await apiPost("/payments/verify", response);
+        const res = await apiPost("/payments/verify", response, businessId );
         console.log("Verification response from server:", res.data);
         if (res.data.success) {
           alert("Payment Successful");

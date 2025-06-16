@@ -42,6 +42,7 @@ export default function Navbar() {
   const user = useSelector((state) => state.user.user);
   const profileImage = user?.image || '/person.jpg';
   const [showSearch, setShowSearch] = useState(false);  
+  const [businessId, setBusinessId] = useState(null);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -137,7 +138,7 @@ export default function Navbar() {
   
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
-          <Payment />
+          <Payment amount={1000} businessId={businessId}  />
   
           {isLoading ? (
             <div className="flex items-center gap-4">
