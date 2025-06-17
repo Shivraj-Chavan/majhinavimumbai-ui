@@ -20,7 +20,7 @@ function SkeletonCard() {
   );
 }
 
-export default function OwnerEnquiriesPage() {
+export default function Enquiries() {
   const [groupedEnquiries, setGroupedEnquiries] = useState({});
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
