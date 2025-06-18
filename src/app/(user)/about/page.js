@@ -31,7 +31,7 @@ export default function AboutUs() {
               objectFit="cover"
               className="opacity-90"
             />
-            <div className="absolute inset-0 flex flex-col justify-center items-center bg-black/75 text-white px-4 text-center">
+            <div className="absolute inset-0 flex flex-col justify-center items-center bg-black/70 text-white px-4 text-center">
               <Image src="/logo.png" alt="logo" width={550} height={130} />
             </div>
           </>
@@ -39,7 +39,7 @@ export default function AboutUs() {
       </div>
 
       {/* About Us Section */}
-      <div className="max-w-6xl mx-auto px-6 py-4">
+      <div className="max-w-6xl mx-auto px-6 py-4 mb-8">
         <h1 className="text-orange-500 font-bold text-5xl italic text-center">ABOUT US</h1>
         {loading ? (
           <div className="mt-6"><Skeleton count={5} /></div>
@@ -173,9 +173,10 @@ export default function AboutUs() {
         ) : (
           <>
             <p className="mt-2 text-lg">List your business today and connect with thousands of potential customers.</p>
-            <Button className="mt-6 px-6 py-3 bg-white text-green-600 shadow-md hover:bg-green-600 hover:text-white ">
+            <Button className="mt-6 px-6 py-3 bg-white text-green-500 shadow-md hover:bg-green-600 hover:text-white">
               Get Started
             </Button>
+
 
           </>
         )}

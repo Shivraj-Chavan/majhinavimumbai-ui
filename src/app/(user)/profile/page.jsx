@@ -184,7 +184,7 @@ export default function ProfilePage() {
                 <input
                   type="text"
                   name="fullName"
-                  value={user.fullName}
+                  value={user.name}
                   onChange={handleChange}
                   className="w-full bg-transparent border-b border-gray-300"
                 />

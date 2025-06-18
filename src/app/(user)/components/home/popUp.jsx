@@ -46,9 +46,18 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
   }, [statusMessage]);
 
   const handleNameChange = (e) => {
-    setName(e.target.value);
-    setErrors((prev) => ({ ...prev, name: "" }));
-  };
+    const value = e.target.value;
+  
+    // Allow only letters and spaces
+    const regex = /^[a-zA-Z\s]*$/;
+  
+    if (regex.test(value)) {
+      setName(value);
+      setErrors((prev) => ({ ...prev, name: "" }));
+    } else {
+      setErrors((prev) => ({ ...prev, name: "Only letters and spaces are allowed." }));
+    }
+  };  
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
@@ -70,15 +79,15 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     const lower = msg?.toLowerCase();
     if (!lower) return "Something went wrong. Please try again.";
 
-    if (lower.includes("invalid otp")) return "The OTP entered is incorrect.";
-    if (lower.includes("expired")) return "OTP has expired. Please request a new one.";
-    if (lower.includes("too many attempts")) return "Too many attempts. Try again after some time.";
-    if (lower.includes("already verified")) return "Your number is already verified.";
-    if (lower.includes("wait")) return "Please wait before requesting a new OTP.";
-    if (lower.includes("not registered")) return "This number is not registered.";
-    if (lower.includes("too many requests")) return "Too many requests. Try again later.";
-    if (lower.includes("token not found")) return "Authentication failed. Please try again.";
-    if (lower.includes("invalid phone")) return "Please enter a valid 10-digit phone number.";
+    // if (lower.includes("invalid otp")) return "The OTP entered is incorrect.";
+    // if (lower.includes("expired")) return "OTP has expired. Please request a new one.";
+    // if (lower.includes("too many attempts")) return "Too many attempts. Try again after some time.";
+    // if (lower.includes("already verified")) return "Your number is already verified.";
+    // if (lower.includes("wait")) return "Please wait before requesting a new OTP.";
+    // if (lower.includes("not registered")) return "This number is not registered.";
+    // if (lower.includes("too many requests")) return "Too many requests. Try again later.";
+    // if (lower.includes("token not found")) return "Authentication failed. Please try again.";
+    // if (lower.includes("invalid phone")) return "Please enter a valid 10-digit phone number.";
 
     return "OTP verification failed. Please try again.";
   };
@@ -104,7 +113,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setStatusMessage({
         type: "error",
         // message: error.response?.data?.message || "Failed to send OTP.",
-        message: getFriendlyMessage(backendMsg),
+        message: backendMsg || "Failed to send OTP.",
       });
     } finally {
       setIsSendingOtp(false);
@@ -113,8 +122,15 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let newErrors = {};
+  //   if (!errors && name.trim() !== '') {
+  //     console.log('Form submitted:', name);
+  //   } else {
+  //     setErrors('Please enter a valid name.');
+  //   }
+  // };
 
+    let newErrors = {};
+   
     if (!name.trim()) newErrors.name = "Name is required";
     if (phone.length !== 10) newErrors.phone = "Phone number must be 10 digits";
     if (!otp || otp.length !== 6) newErrors.otp = "OTP must be 6 digits";
@@ -180,7 +196,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setStatusMessage({
         type: "error",
         // message: error?.response?.data?.message || error.message || "OTP verification failed.",
-        message: getFriendlyMessage(backendMsg),
+        message: backendMsg || "OTP verification failed.",
       });
       setOtp("");
     }
@@ -193,7 +209,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
           
           <button
             onClick={() => setShowModal(false)}
-            className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-orange-600 font-bold"
+            className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-orange-600 font-bold cursor-pointer"
           >
             &times;
           </button>
@@ -212,13 +228,13 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
           <form className="space-y-6 mt-5" onSubmit={handleSubmit}>
           <div>
-              <label className="block text-lg font-medium">Your Name</label>
+              <label className="block text-lg font-medium">Your Full Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={handleNameChange}
-                placeholder="Enter your name"
-                className={`w-full mt-2 px-4 py-2 border ${
+                placeholder="Enter Your Full Name"
+                className={`w-full mt-2 px-4 py-2 border cursor-pointer ${
                   errors.name ? "border-red-500" : "border-gray-300"
                 } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
               />
@@ -227,13 +243,13 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
             <div>
               <label className="block text-lg font-medium">Phone Number</label>
-              <div className={`flex items-center mt-2 border ${
+              <div className={`flex items-center mt-2 border cursor-pointer ${
                   errors.phone ? "border-red-500" : "border-gray-300"
                 } rounded-lg overflow-hidden w-full focus-within:ring-2 focus-within:ring-orange-500`}>
                 <span className="px-3 text-gray-500 border-r border-gray-300 bg-white">+91</span>
                 <input
                   type="tel"
-                  className="w-full px-4 py-2 outline-none"
+                  className="w-full px-4 py-2 outline-none cursor-pointer"
                   value={phone}
                   onChange={handlePhoneChange}
                   placeholder="Enter Your Phone Number"
@@ -266,7 +282,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                     ref={otpInputRef}
                     value={otp}
                     onChange={handleOtpChange}
-                    className={`w-full mt-2 px-4 py-2 border ${
+                    className={`w-full mt-2 px-4 py-2 border cursor-pointer ${
                       errors.otp ? "border-red-500" : "border-gray-300"
                     } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
                     placeholder="Enter Your OTP"

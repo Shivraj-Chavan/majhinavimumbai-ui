@@ -2,10 +2,14 @@
 
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import ContactPopup from "../home/contactPopup"
+import PopUp from '../home/popUp';
 
 export default function Footer() {
   const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [authPurpose, setAuthPurpose] = useState("login");
 
   useEffect(() => {
     // Simulate loading delay, e.g. fetching config or something async
@@ -15,10 +19,7 @@ export default function Footer() {
 
   // Skeleton block helper
   const SkeletonBlock = ({ width = "full", height = "4" }) => (
-    <div
-      className={`bg-gray-300 animate-pulse rounded`}
-      style={{ width: width === "full" ? "100%" : width, height: `${height}px` }}
-    />
+    <div className={`bg-gray-300 animate-pulse rounded`} style={{ width: width === "full" ? "100%" : width, height: `${height}px`}} />
   );
 
   return (
@@ -41,7 +42,7 @@ export default function Footer() {
               <>
                 <li><Link href="/" className="hover:text-orange-500 transition">Home</Link></li>
                 <li><Link href="/about" className="hover:text-orange-500 transition">About Us</Link></li>
-                <li><span onClick={() => setShowContact(true)} className="hover:text-orange-500 transition cursor-pointer">Contact Us</span></li>
+                <li><span onClick={() => setShowContact(true)} className="hover:text-orange-500 transition cursor-pointer"> Contact Us </span></li>
               </>
             )}
           </ul>
@@ -61,8 +62,8 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <li><Link href="/business-listing" className="hover:text-blue-700 transition">Business Listing</Link></li>
-                <li><Link href="/categories" className="hover:text-blue-700 transition">Categories</Link></li>
+                <li><Link href="/businessRegister" className="hover:text-blue-700 transition">Business Listing</Link></li>
+                <li><Link href="/" className="hover:text-blue-700 transition">Categories</Link></li>
                 <li><Link href="/subcategories" className="hover:text-blue-700 transition">Subcategories</Link></li>
               </>
             )}
@@ -82,8 +83,8 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <li><Link href="/login" className="hover:text-blue-700 transition">Login</Link></li>
-                <li><Link href="/signup" className="hover:text-blue-700 transition">Signup</Link></li>
+                <li><span onClick={() => setShowModal(true)} className="hover:text-blue-700 transition cursor-pointer"> Login </span></li>
+                {/* <li><Link href="/signup" className="hover:text-blue-700 transition">Signup</Link></li> */}
               </>
             )}
           </ul>
@@ -121,7 +122,8 @@ export default function Footer() {
         )}
       </div>
 
-      {/* <ContactPopup showContact={showContact} setShowContact={setShowContact} /> */}
+      <ContactPopup showContact={showContact} setShowContact={setShowContact} />
+      <PopUp showModal={showModal} setShowModal={setShowModal} authPurpose={authPurpose}/>
     </footer>
   );
 }

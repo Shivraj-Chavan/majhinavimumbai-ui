@@ -158,7 +158,7 @@ export default function Navbar() {
                 }}
                 className="bg-orange-400 hover:bg-orange-500 text-sm uppercase cursor-pointer"
               >
-                Business Listing
+                Add Your Bussiness
               </Button>
                 {/* User Avatar or Login Button */}
               <div className="relative" ref={dropdownRef}>
@@ -292,7 +292,7 @@ export default function Navbar() {
                 }}
                 className="bg-orange-500 hover:bg-orange-600 text-sm uppercase cursor-pointer"
               >
-                Business Listing
+                Add Your Bussiness
               </Button>
                 {/* User Avatar or Login Button */}
               <div className="relative" ref={dropdownRef}>
