@@ -102,7 +102,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     setIsSendingOtp(true);
     
     try {
-      const response = await apiPost("/otp/send", { phone });
+      const response = await apiPost("/otp/send", {name, phone });
       console.log("OTP Sent Response:", response.data);
       setStatusMessage({ type: "success", message: "OTP sent successfully!" });
       setCountdown(30);

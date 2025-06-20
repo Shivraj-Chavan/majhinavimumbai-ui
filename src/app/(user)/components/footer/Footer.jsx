@@ -63,8 +63,8 @@ export default function Footer() {
             ) : (
               <>
                 <li><Link href="/businessRegister" className="hover:text-blue-700 transition">Business Listing</Link></li>
-                <li><Link href="/" className="hover:text-blue-700 transition">Categories</Link></li>
-                <li><Link href="/subcategories" className="hover:text-blue-700 transition">Subcategories</Link></li>
+                <li><Link href="#categories" className="hover:text-blue-700 transition">Categories</Link></li>
+                <li><Link href="#subcategories" className="hover:text-blue-700 transition">Subcategories</Link></li>
               </>
             )}
           </ul>

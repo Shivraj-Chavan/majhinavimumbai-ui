@@ -7,7 +7,10 @@ import SidebarMenu from "./components/SidebarMenu"
 import './../../globals.css'
 import { LuChevronDown, LuChevronRight, LuMenu, LuX, LuHome, LuBarChart2, LuUsers, LuSettings, LuBell, LuSearch, LuUser, LuLogOut, LuHelpCircle, LuMail } from "react-icons/lu"
 import { ReduxProvider } from "@/redux/provider"
-
+import { userAgent } from "next/server"
+import { useDispatch } from "react-redux"
+import { logout, signout } from '@/redux/slice/userSlice';
+import PopUp from "@/app/(user)/components/home/contactPopup"
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
@@ -16,6 +19,7 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const [authPurpose, setAuthPurpose] = useState("login");
   const router = useRouter();
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,6 +37,42 @@ export default function DashboardLayout({ children }) {
     }
   }, [pathname])
 
+  
+  const handleLogout = () => {
+    const dispatch = useDispatch(); 
+    localStorage.removeItem("token");
+    localStorage.removeItem("authRole"); // Important!
+    dispatch(logout()); // this should match your Redux slice
+    router.push("/");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("authRole");
+  
+    if (token && role === "admin") {
+      setIsLoggedIn(true);
+      setShowLoginPopup(false);
+    } else {
+      setIsLoggedIn(false);
+      setShowLoginPopup(true);
+    }
+  }, []);
+
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>; // Avoid flicker
+  }
+  
+  if (!isLoggedIn) {
+    return (
+      <PopUp 
+        showModal={showLoginPopup} 
+        setShowModal={setShowLoginPopup} 
+        authPurpose={authPurpose} 
+      />
+    );
+  }
+  
   // useEffect(() => {
   //   // Check if admin is logged in by checking localStorage token & role
   //   const token = localStorage.getItem("token");
@@ -89,8 +129,8 @@ export default function DashboardLayout({ children }) {
             <div className="flex items-center">
               <div className="h-8 w-8 rounded-full bg-gray-300" />
               <div className="ml-2">
-                <p className="text-sm font-medium">John Doe</p>
-                <p className="text-xs text-gray-500">john@example.com</p>
+                <p className="text-sm font-medium">Admin</p>
+                {/* <p className="text-xs text-gray-500">{user.email}</p> */}
               </div>
             </div>
           </div>
@@ -134,7 +174,7 @@ export default function DashboardLayout({ children }) {
                     <p className="text-sm text-gray-500">john@example.com</p>
                   </div>
                   <div className="py-1">
-                    <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
+                    {/* <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
                       <LuUser className="mr-3 h-4 w-4" />
                       Your Profile
                     </Link>
@@ -145,12 +185,12 @@ export default function DashboardLayout({ children }) {
                     <Link href="/help" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
                       <LuLogOut className="mr-3 h-4 w-4" />
                       Help Center
-                    </Link>
+                    </Link> */}
                   </div>
                   <div className="border-t py-1">
-                    <button className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                    <button onClick={handleLogout} className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                       <LuLogOut className="mr-3 h-4 w-4" />
-                      Sign out
+                      Logout
                     </button>
                   </div>
                 </div>

@@ -11,6 +11,7 @@ import { FiSearch } from "react-icons/fi";
 import { FcInternal } from "react-icons/fc";
 import LocationDropdown from "./locationDropdown";
 import SearchBar from "./searchBar";
+import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -72,9 +73,10 @@ export default function HeroSection() {
         priority
       />
 
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-10 bg-white/60 backdrop-blur-md h-full ">
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/60 backdrop-blur-md h-full">    
+
         {/* Left Section */}
-        <div className="w-full md:w-1/2 m-4 sm:m-10 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
+        <div className="w-full md:w-1/2 m-4 sm:m-6 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
         
         {/* {loading ? (
           <div className="hidden sm:flex items-center gap-2 mb-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto p-2"> */}
@@ -110,17 +112,17 @@ export default function HeroSection() {
           </div>
         )} */}
 
-          <h1 className="space-y-3 font-bold italic ">
-            <span className="text-orange-500 text-5xl sm:text-6xl md:text-7xl font-mukta block">
-              माझी
-            </span>
-            <span className="text-blue-800 text-5xl sm:text-6xl md:text-7xl font-montserrat block">
-              Navi Mumbai{" "}
-            </span>
-            <span className="text-blue-800 text-base sm:text-lg font-medium block mt-2 md:ms-60 sm:ms-10">
-              Local Search, Made Simple!
-            </span>
-          </h1>
+        <h1 className="font-bold italic leading-tight">
+          <span className="text-orange-500 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-mukta block">
+            माझी
+          </span>
+          <span className="text-blue-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-montserrat block">
+            Navi Mumbai
+          </span>
+          <span className="text-blue-800 text-sm sm:text-base md:text-lg lg:text-xl font-medium block mt-2 text-center md:text-left">
+            Local Search, Made Simple!
+          </span>
+        </h1>
 
           {/* Contact Us */}
           <div className="flex flex-col md:flex-row items-center gap-4 mt-6 w-full">
@@ -142,7 +144,7 @@ export default function HeroSection() {
 
             {/* Location  */}
             <div
-              className="w-full mt-6 md:hidden flex items-center gap-2 px-4"
+              className="w-full mt-6 md:hidden flex items-center gap-2 px-2 sm:px-4"
               ref={dropdownRef}
             >
               <button
@@ -170,15 +172,19 @@ export default function HeroSection() {
         </div>
 
         {/* Category Dropdown  */}
-        <div className="hidden md:flex w-full md:w-1/2 justify-center items-center mt-10 md:mt-0">
-          <div className="w-full max-w-lg">
+        <div className="hidden md:flex w-full md:w-1/2 justify-center items-center mt-10 md:mt-0 px-4 md:px-10">
+          <div className="w-full max-w-md lg:max-w-lg">
             <CategoryDropdown />
           </div>
         </div>
 
         {/* Bouncing arrow */}
-        <div className=" justify-end text-4xl p-2 bg-gray-500/10 rounded-full animate-bounce block md:hidden fixed bottom-4 right-5 z-50"> <FcInternal /></div>
-
+        <div className="flex flex-col items-center fixed bottom-4 right-4 z-50 animate-bounce md:hidden">
+          <span className="text-xs sm:text-sm mb-1 text-gray-600">Scroll Down</span>
+          <div className="text-xl sm:text-2xl text-gray-700 p-2 bg-gray-500/10 rounded-full">
+            <MdOutlineKeyboardDoubleArrowDown />
+          </div>
+        </div>
       </div>
 
       {/* Contact Popup */}

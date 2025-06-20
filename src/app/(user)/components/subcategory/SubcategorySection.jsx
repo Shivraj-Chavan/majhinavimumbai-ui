@@ -51,7 +51,7 @@ export default function SubcategoryCard() {
   }
 
   return (
-    <div className="bg-orange-50">
+    <div id="subcategories" className="bg-orange-50">
       <div className="max-w-7xl mx-auto px-4 py-10 sm:py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {loading

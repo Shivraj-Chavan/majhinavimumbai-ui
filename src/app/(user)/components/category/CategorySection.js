@@ -37,7 +37,7 @@ export default function CategoryCards() {
   }
 
   return (
-    <div className="p-2 sm:p-4 max-w-6xl xl:max-w-7xl mx-auto mt-6">
+    <div id="categories" className="p-2 sm:p-4 max-w-6xl xl:max-w-7xl mx-auto mt-6">
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 font-poppins">
         {loading ?  Array.from({ length: 19 }).map((_, idx) => <SkeletonCard key={idx} />)
           : categories.map((categoryItem) => (

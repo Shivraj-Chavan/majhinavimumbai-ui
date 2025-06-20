@@ -12,11 +12,11 @@ export default function ContactListPage() {
     const fetchContacts = async () => {
       try {
         const res = await apiGet("/contact");
-        console.log('contact List:', res);
+        console.log('Contact List:', res);
         setContacts(res);
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch contacts");
         setLoading(false);
       }
     };
@@ -24,45 +24,62 @@ export default function ContactListPage() {
     fetchContacts();
   }, []);
 
-  if (loading) {
-    // Skeleton Loader
-    return (
-      <div className="max-w-5xl mx-auto py-10 px-4">
-        <h1 className="text-3xl font-bold mb-6 text-center">Contact Submissions</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow animate-pulse">
-              <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-              <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-              <div className="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
-              <div className="h-4 bg-gray-300 rounded w-2/3 mb-2"></div>
-              <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (error) return <p className="text-center py-10 text-red-500">{error}</p>;
-
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Contact List</h1>
+    <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800 text-center">Contact Submissions</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {contacts.map((contact) => (
-          <div key={contact.id} className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold italic mb-2">{contact.company_name}</h2>
-            <p><strong>Name:</strong> {contact.user_name}</p>
-            <p><strong>Phone:</strong> {contact.phone}</p>
-            <p><strong>Enquiry:</strong> {contact.enquiry}</p>
-            <p className="text-sm text-gray-500 mt-2">
-              Created At: {new Date(contact.createdAt).toLocaleString()}
-            </p>
+      {loading ? (
+        <div className="text-center text-gray-600">Loading...</div>
+      ) : error ? (
+        <div className="text-center text-red-500">{error}</div>
+      ) : contacts.length === 0 ? (
+        <div className="text-center text-gray-500">No contacts found.</div>
+      ) : (
+        <div className="w-full overflow-x-auto">
+          {/* Desktop View */}
+          <div className="hidden md:block">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-white/60 text-gray-700 uppercase text-md rounded-t-lg">
+                <tr>
+                  <th className="px-4 py-3">Sr. No</th>
+                  <th className="px-4 py-3">Company</th>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Phone</th>
+                  <th className="px-4 py-3">Enquiry</th>
+                  <th className="px-4 py-3">Submitted At</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white/30 backdrop-blur-md">
+                {contacts.map((contact, index) => (
+                  <tr key={contact.id} className="hover:bg-white/50 transition-all duration-300">
+                    <td className="px-4 py-3 font-medium text-gray-800">{index + 1}</td>
+                    <td className="px-4 py-3">{contact.company_name}</td>
+                    <td className="px-4 py-3">{contact.user_name}</td>
+                    <td className="px-4 py-3">{contact.phone}</td>
+                    <td className="px-4 py-3">{contact.enquiry}</td>
+                    <td className="px-4 py-3">{new Date(contact.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
-      </div>
+
+          {/* Mobile View */}
+          <div className="md:hidden">
+            {contacts.map((contact, index) => (
+              <div key={contact.id} className="mb-4 p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold">{contact.company_name}</h3>
+                <p className="text-sm text-gray-600 mt-1"><strong>Name:</strong> {contact.user_name}</p>
+                <p className="text-sm text-gray-600 mt-1"><strong>Phone:</strong> {contact.phone}</p>
+                <p className="text-sm text-gray-600 mt-1"><strong>Enquiry:</strong> {contact.enquiry}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  <strong>Submitted:</strong> {new Date(contact.createdAt).toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
