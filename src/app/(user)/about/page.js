@@ -176,8 +176,6 @@ export default function AboutUs() {
             <Button className="mt-6 px-6 py-3 bg-white text-green-500 shadow-md hover:bg-green-600 hover:text-white">
               Get Started
             </Button>
-
-
           </>
         )}
       </div>

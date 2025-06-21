@@ -104,21 +104,72 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <li><Link href="#" className="hover:text-green-600 transition">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-green-600 transition">Terms & Conditions</Link></li>
+                <li><Link href="/privacypolicy" className="hover:text-green-600 transition">Privacy Policy</Link></li>
+                <li><Link href="/terms&conditions" className="hover:text-green-600 transition">Terms & Conditions</Link></li>
                 {/* <li><Link href="#" className="hover:text-green-600 transition">Infringement Policy</Link></li> */}
               </>
             )}
           </ul>
         </div>
+        
+     <div>
+        <h3 className="font-semibold text-lg mb-3">Contact Info</h3>
+
+    {/* email/contact  */}
+    <div className="flex flex-col md:flex-row md:space-x-6">
+      
+      <div className="mb-4 md:mb-0 md:w-1/2 space-y-3">
+        <div>
+          <p className="font-semibold text-sm text-gray-700">📧 Mail ID:</p>
+          <p className="text-sm text-gray-600">majhinavimumbai@gmail.com</p>
+        </div>
+        <div>
+          <p className="font-semibold text-sm text-gray-700">📞 Contact:</p>
+          <p className="text-sm text-gray-600">+91 91524 18196</p>
+        </div>
       </div>
+    </div>
+   </div>
+
+      {/* Column 5 - Address */}
+      <div className="md:row-span-2 lg:row-span-1">
+        <h3 className="font-semibold text-lg mb-3 ">Address</h3>
+        
+        <a
+          href="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-start space-x-2 hover:text-blue-600 transition"
+        >
+          <span className="text-xl ">📍</span>
+          <span className="text-sm text-gray-700 leading-relaxed group-hover:underline">
+            F113, Railway Station Complex, <br />
+            Nerul West, Navi Mumbai – 400706
+          </span>
+        </a>
+
+        {/*  Map  */}
+        <div className="mt-4 rounded-md overflow-hidden shadow-sm border border-gray-200">
+          <iframe
+            title="Google Maps Location"
+            src="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706&output=embed"
+            width="30%"
+            height="70"
+            allowFullScreen
+            loading="lazy"
+            className="w-full h-[180px] border-0"
+          ></iframe>
+        </div>
+      </div>
+      </div>
+      
 
       {/* Bottom */}
-      <div className="bg-gray-200 text-center py-4 text-sm text-gray-600">
+      <div className="bg-gray-200 text-center py-2 text-sm text-gray-600">
         {loading ? (
           <SkeletonBlock width={160} height={16} className="mx-auto" />
         ) : (
-          <> &copy; {new Date().getFullYear()} माझी Navi Mumbai. All Rights Reserved.</>
+          <> &copy; {new Date().getFullYear()} माझी Navi Mumbai. All Rights Reserved.Owned and operated by <strong>Ekagrata LLP</strong>.</>
         )}
       </div>
 

@@ -82,7 +82,7 @@ export default function BusinessUsersPage({business}) {
                 <tr>
                   <th className="px-4 py-3">SR. NO</th>
                   <th className="px-4 py-3">Business Name</th>
-                  <th className="px-4 py-3">Phone</th>
+                  <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3 text-center">Action</th>
                 </tr> 
               </thead> 
@@ -91,7 +91,7 @@ export default function BusinessUsersPage({business}) {
                   <tr key={index} className="hover:bg-white/50 transition-all duration-300 gap-3">
                     <td className="px-4 py-3 font-medium text-gray-800">{(currentPage - 1) * limit + (index + 1)}</td>
                     <td className="px-4 py-3">{user.name}</td>
-                    <td className="px-4 py-3">{user.phone}</td>
+                    <td className="px-4 py-3">{user.email}</td>
                     <td className="px-4 py-3 text-center">
                       <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
                         <FaRegEye />
@@ -109,7 +109,7 @@ export default function BusinessUsersPage({business}) {
             {businessUsers.map((user, index) => (
               <div key={index} className="mb-4 p-4 bg-white rounded-lg shadow-md">
                 <h3 className="text-lg font-semibold">{user.name}</h3>
-                <p className="text-sm text-gray-600 mt-1">Phone: {user.phone}</p>
+                <p className="text-sm text-gray-600 mt-1">Email: {user.email}</p>
                 <div className="mt-4 flex justify-end">
                   <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
                     <FaRegEye />

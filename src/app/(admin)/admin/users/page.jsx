@@ -148,7 +148,7 @@ export default function Page() {
               <tr>
                 <th className="px-4 py-3">ID</th>
                 <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Phone</th>
+                <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3 text-center">Action</th>
               </tr>
             </thead>
@@ -159,7 +159,7 @@ export default function Page() {
                     {(currentPage - 1) * usersPerPage + index + 1}
                   </td>
                   <td className="px-4 py-3">{user.name}</td>
-                  <td className="px-4 py-3">{user.phone}</td>
+                  <td className="px-4 py-3">{user.email}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
 
                   <button
