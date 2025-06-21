@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }) {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [authPurpose, setAuthPurpose] = useState("login");
   const [userEmail, setUserEmail] = useState("");
-
+const [token,setToken]=useState(null)
   const pathname = usePathname();
   const router = useRouter();
 
@@ -60,7 +60,6 @@ export default function DashboardLayout({ children }) {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("authRole");
     const email = localStorage.getItem("email");
-
     if (token && role === "admin") {
       setIsLoggedIn(true);
       setUserEmail(email);
@@ -68,6 +67,9 @@ export default function DashboardLayout({ children }) {
     } else {
       setIsLoggedIn(false);
       setShowLoginPopup(true);
+      localStorage.clear();
+      dispatch(logout());
+      router.push("/");
     }
   }, []);
 

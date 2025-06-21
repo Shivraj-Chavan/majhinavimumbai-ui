@@ -90,15 +90,16 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("authRole");
-    // localStorage.removeItem("authUser");
+    localStorage.clear();
     dispatch(logout());
     setOpen(false);
+    router.push("/");
+
   };
 
   const handleNavigate = (path) => {
     router.push(path);
+    console.log("HIt")
     setOpen(false);
   };
 
