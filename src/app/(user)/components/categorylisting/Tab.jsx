@@ -4,9 +4,12 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { apiDelete, apiGet } from "@/lib/apiClient";
 
-const Tab = ({ business, renderStars }) => {
+const Tab = ({ business, renderStars, businessOwnerId, currentUserId  }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleMenu, setVisibleMenu] = useState(null);
+
+  // const [currentUserId, setCurrentUserId] = useState(null);
 
   const sections = ["overview", "detail", "reviews", "photos"];
 
@@ -29,21 +32,39 @@ const Tab = ({ business, renderStars }) => {
     if (business?.id) fetchReviews();
   }, [business?.id]);
 
-  const handleDeleteReview = async (reviewId) => {
-    if (!window.confirm("Are you sure you want to delete this review?")) return;
-    console.log("Attempting to delete review with ID:", reviewId);
-  
+
+  const handleDeleteReview = async (reviewId, reviewUserId) => {
     try {
-      const res = await apiDelete(`/reviews/${reviewId}`);
-      console.log("Deleted review:", reviewId);
-      alert("Review Deleted Successfully!");
+      const isReviewer = String(reviewUserId) === String(currentUserId);
+      console.log("current user ?", isReviewer);
+
+      const res = await apiDelete(`/api/reviews/${reviewId}`);
+      console.log("Response:", res.status);
+        if (res.ok) {
+        const data = await res.json();
+        toast.success(data.message);
   
-      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
-    } catch (err) {
-      console.error("Error deleting review:", err);
-      alert("Failed to delete review");
+        // If the review was deleted update UI
+        if (isReviewer) {
+          setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+        }
+      } else {
+        console.log("Request raised by business owner");
+        const err = await res.json();
+        toast.error(err.message || "Failed to delete review");
+      }
+    } catch (error) {
+      console.error("Delete review error:", error);
+      toast.error("Server error while deleting review");
+    } finally {
+      setVisibleMenu(null);
     }
-  };  
+  };
+
+  
+  console.log("review.user_id", reviews.user_id);
+  console.log("currentUserId", currentUserId);
+  console.log("businessOwnerId", businessOwnerId);
 
   return (
     <div className="space-y-10 scroll-smooth">
@@ -133,51 +154,58 @@ const Tab = ({ business, renderStars }) => {
       </section>
 
       {/* Reviews */}
-        <section id="reviews" className="scroll-mt-24">
-          <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
+    <section id="reviews" className="scroll-mt-24">
+        <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
 
-          {loading ? (
-            <p className="text-gray-500 text-sm">Loading reviews...</p>
-          ) : reviews.length > 0 ? (
-            <div className="grid md:grid-cols-2 gap-6">
-              {reviews.map((review) => (
-                <div key={review.id} className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
+        {loading ? (
+          <p className="text-gray-500 text-sm">Loading reviews...</p>
+        ) : Array.isArray(reviews) && reviews.length > 0 ? (
+          <div className="grid md:grid-cols-2 gap-6">
+            {reviews.map((review) => {
+              const isReviewer = review.user_id=== currentUserId;
+              const isBusinessOwner = businessOwnerId === currentUserId;
+console.log({isReviewer,isBusinessOwner,currentUserId})
+              return (
+                <div key={review.id}className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
+                  {/* Review content */}
+                  <p className="text-gray-900 mb-2">{review.comment}</p>
+                  <p className="text-yellow-500 flex">{renderStars(review.rating)}</p>
+                  <p className="text-sm text-gray-500 mt-2">Date: {new Date(review.created_at).toLocaleString()}</p>
+
                   {/* Three Dots Menu */}
-                  <div className="absolute top-2 right-2">
-                    <div className="relative group">
-                      <button className="text-gray-700 hover:text-gray-800 text-xl"> &#8942; </button>
-
-                      {/* Dropdown */}
-                      <div className="hidden group-hover:block absolute right-0 mt-1 w-28 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                        <button onClick={() => handleDeleteReview(review.id)} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                          Delete
+                  {(isReviewer || isBusinessOwner) && (
+                    <div className="absolute top-2 right-2">
+                      <div className="relative">
+                        <button
+                          className="text-red-600 hover:text-red-700 text-xl focus:outline-none"
+                          onClick={() =>
+                            setVisibleMenu((prev) => (prev === review.id ? null : review.id))
+                          }
+                        >
+                          &#8942;
                         </button>
+
+                        {visibleMenu === review.id && (
+                          <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                            <button
+                              onClick={() => handleDeleteReview(review.id, review.user_id)}
+                              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                            >
+                              {isReviewer ? "Delete Review" : "Raise Delete Request"}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-
-                  {/* Review Content */}
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border border-gray-300">
-                      <Image src={review.avatar || "/image.png"} alt={review.user || "User"} fill className="object-cover"/>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-800">{review.user || "Anonymous"}</h4>
-                      <p className="text-sm text-gray-500">
-                        {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "N/A"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-1 mb-2">{renderStars(review.rating)}</div>
-                  <p className="text-gray-700 text-sm">{review.comment}</p>
+                  )}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-sm">No reviews yet.</p>
-          )}
-        </section>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">No reviews yet.</p>
+        )}
+      </section>
 
       {/* Photos */}
       <section id="photos" className="scroll-mt-24">
@@ -187,7 +215,7 @@ const Tab = ({ business, renderStars }) => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {business.images?.length > 0 ? (
-            business.images.filter((img) => img) // Filter out empty, null, or undefined strings
+            business.images.filter((img) => img) 
             .map((img, i) => (
               <div key={i} className="relative h-40 rounded-lg overflow-hidden">
                 <Image src={img} alt={`Photo ${i + 1}`} fill className="object-cover" />

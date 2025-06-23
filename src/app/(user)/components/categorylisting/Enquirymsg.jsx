@@ -11,6 +11,7 @@ export default function Enquirymsg({ businessId }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [authPurpose, setAuthPurpose] = useState("login");
+  const [enquirySent, setEnquirySent] = useState()
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -34,8 +35,9 @@ export default function Enquirymsg({ businessId }) {
       const response = await apiPost('/enquiries', {businessId, message}); 
       toast.success("Message sent successfully!");
       console.log("Enquiry submitted successfully:", response);
-      setSuccessMsg("Message sent successfully!");
+      // setSuccessMsg("Message sent successfully!");
       setMessage("");
+      setEnquirySent(true);
     } catch (error) {
       console.error(error);
       setErrorMsg(error?.response?.data?.msg || "Failed to send enquiry");

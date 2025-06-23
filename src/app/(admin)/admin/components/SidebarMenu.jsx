@@ -32,8 +32,9 @@ export default function SidebarMenu() {
             <SidebarItem title="Users" href="/admin/users" />
             <SidebarItem title="Pending Requests" href="/admin/users/pendingRequest" />
             <SidebarItem title="Contact List" href="/admin/users/contactList"/>
+            <SidebarItem title="Review List" href="/admin/users/reviewList"/>
+            <SidebarItem title="Enquiry List" href="/admin/users/enquiryList"/>
 
-        
               {/* <SidebarItem icon={<LuSettings className="h-5 w-5" />} title="Settings" href="/settings" /> */}
             </ul>
     </div>

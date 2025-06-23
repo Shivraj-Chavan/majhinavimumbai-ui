@@ -11,42 +11,38 @@ export default function ProfilePage() {
   const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [token, setToken] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [tempPhone, setTempPhone] = useState(""); // For local phone change
   const router = useRouter();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-  }, []);
+    const fetchData = async () => {
+      const storedToken = localStorage.getItem("token");
+      if (!storedToken) {
+        router.push("/");
+        return;
+      }
 
-  useEffect(() => {
-    if (!token) {
-      router.push("/");
-      return;
-    }
-
-    const fetchUser = async () => {
       try {
         const res = await apiGet("/users/me");
         setUser(res);
-        setIsAuthenticated(true); 
+        setCurrentUserId(res?.id);
+        setTempPhone(res.phone); // Set initial phone value
       } catch (err) {
         console.error(err);
         setError("Could not load profile.");
-        setIsAuthenticated(false); 
-        setShowPopup(true);       
+        setShowPopup(true);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
-  }, [token]);
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,7 +61,7 @@ export default function ProfilePage() {
     try {
       await apiPut(`/users/${user.id}/profile`, user);
       setIsEditing(false);
-      toast.success("Profile Updated !")
+      toast.success("Profile Updated!");
     } catch (err) {
       console.error(err);
       toast.error("Failed to update profile.");
@@ -80,167 +76,182 @@ export default function ProfilePage() {
         <div className="h-4 bg-gray-200 w-1/3 mx-auto rounded mb-2" />
         <div className="h-4 bg-gray-200 w-1/4 mx-auto rounded" />
       </div>
-  
-      <div className="mt-8 space-y-4">
-        {/* Full Name */}
-        <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
-          <div className="h-4 bg-gray-300 w-1/3 rounded mb-2" />
-          <div className="h-5 bg-gray-200 w-2/3 rounded" />
-        </div>
-  
-        {/* Phone Number */}
-        <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
-          <div className="h-4 bg-gray-300 w-1/3 rounded mb-2" />
-          <div className="h-5 bg-gray-200 w-1/2 rounded" />
-        </div>
-  
-        {/* Joined Date */}
-        <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
-          <div className="h-4 bg-gray-300 w-1/3 rounded mb-2" />
-          <div className="h-5 bg-gray-200 w-1/4 rounded" />
-        </div>
-      </div>
-  
-      {/* Buttons */}
-      <div className="mt-6 flex justify-end gap-4">
-        <div className="w-24 h-10 bg-gray-300 rounded-lg" />
-        <div className="w-24 h-10 bg-gray-300 rounded-lg" />
-      </div>
     </div>
   );
-  
-  if (!token || !isLoggedIn) return <PopUp onClose={() => location.reload()} />;
+
+  if (!isLoggedIn && !loading) return <PopUp onClose={() => location.reload()} />;
   if (error) return <div className="text-center text-red-600">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-blue-50 py-10 px-4 sm:px-8">
-      {loading ? (
-        <ProfileSkeleton />
-      ) : user ? (
-        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50 py-10 px-4 sm:px-8">
+    {loading ? (
+      <ProfileSkeleton />
+    ) : user ? (
+      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden">
+        {/* Header with Tiranga gradient */}
+        <div className="h-24 bg-gradient-to-r from-orange-200 via-white to-green-200 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-300/20 via-transparent to-green-300/20"></div>
+        </div>
+
+        <div className="px-8 pb-8 -mt-12 relative">
+          {/* Profile Picture */}
           <div className="text-center">
-            <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden border-4 border-blue-300 shadow">
+            <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-orange-100 to-green-100">
               <img
-                src={previewImage || user?.profileImage || "/person.jpg"}
+                src={previewImage || user?.profileImage || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
               {isEditing && (
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  onChange={handleImageChange}
-                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer group">
+                  <div className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onChange={handleImageChange}
+                  />
+                </div>
               )}
             </div>
 
+            {/* Editable User Info */}
             {isEditing ? (
-              <>
+              <div className="mt-6 space-y-3">
                 <input
                   type="text"
                   name="name"
                   value={user.name}
                   onChange={handleChange}
-                  className="mt-4 font-bold text-xl text-center border-b border-gray-300"
+                  className="text-2xl font-bold text-center border-b-2 border-orange-200 focus:border-green-400 bg-transparent outline-none px-2 py-1 text-gray-800"
+                  placeholder="Full Name"
                 />
                 <input
                   type="email"
                   name="email"
                   value={user.email}
                   onChange={handleChange}
-                  className="text-sm mt-1 text-gray-500 border-b border-gray-300"
+                  className="block mx-auto text-center border-b border-orange-200 focus:border-green-400 bg-transparent outline-none px-2 py-1 text-gray-600"
+                  placeholder="Email Address"
                 />
                 <input
                   type="url"
                   name="website"
                   value={user.website}
                   onChange={handleChange}
-                  className="text-sm text-blue-500 mt-1 border-b border-gray-300"
+                  className="block mx-auto text-center border-b border-orange-200 focus:border-green-400 bg-transparent outline-none px-2 py-1 text-green-600"
+                  placeholder="Website URL"
                 />
-              </>
+              </div>
             ) : (
-              <>
-                <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
-                <p className="text-gray-500 text-sm">{user.email}</p>
+              <div className="mt-6">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">{user.name}</h2>
+                <div className="flex items-center justify-center text-gray-600 mb-2">
+                  <div className="w-4 h-4 mr-2 text-orange-500" />
+                  <span>{user.email}</span>
+                </div>
                 {user.website && (
-                  <a
-                    href={user.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-blue-500 hover:underline mt-2"
-                  >
-                    {user.website}
-                  </a>
+                  <div className="flex items-center justify-center">
+                    <div className="w-4 h-4 mr-2 text-green-500" />
+                    <a
+                      href={user.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:text-green-700 hover:underline transition-colors"
+                    >
+                      {user.website}
+                    </a>
+                  </div>
                 )}
-              </>
+              </div>
             )}
           </div>
 
+          {/* User Details Section */}
           <div className="mt-8 space-y-4">
-            <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="text-sm font-medium text-gray-600">Full Name</h3>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="fullName"
-                  value={user.name}
-                  onChange={handleChange}
-                  className="w-full bg-transparent border-b border-gray-300"
-                />
-              ) : (
-                <p className="text-gray-800">{user.fullName}</p>
-              )}
+            <div className="bg-gradient-to-r from-orange-50 to-orange-25 rounded-xl p-5 border border-orange-100 shadow-sm">
+              <div className="flex items-center mb-2">
+                <div className="w-2 h-2 bg-orange-400 rounded-full mr-2"></div>
+                <h3 className="text-sm font-semibold text-orange-700 uppercase tracking-wide">Full Name</h3>
+              </div>
+              <p className="text-gray-800 font-medium text-lg">{user.name}</p>
             </div>
-            <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="text-sm font-medium text-gray-600">Phone Number</h3>
+
+            <div className="bg-gradient-to-r from-green-50 to-green-25 rounded-xl p-5 border border-green-100 shadow-sm">
+              <div className="flex items-center mb-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                <h3 className="text-sm font-semibold text-green-700 uppercase tracking-wide">Phone Number</h3>
+              </div>
               {isEditing ? (
                 <input
                   type="text"
                   name="phone"
-                  value={user.phone}
-                  onChange={handleChange}
-                  className="w-full bg-transparent border-b border-gray-300"
+                  value={tempPhone}
+                  onChange={(e) => setTempPhone(e.target.value)}
+                  className="w-full bg-transparent border-b border-green-200 focus:border-green-400 outline-none text-lg font-medium text-gray-800 py-1"
+                  placeholder="Phone Number"
                 />
               ) : (
-                <p className="text-gray-800">{user.phone}</p>
+                <p className="text-gray-800 font-medium text-lg">{tempPhone}</p>
               )}
             </div>
-            <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="text-sm font-medium text-gray-600">Joined On</h3>
-              <p className="text-gray-800">
-                {new Date(user.createdAt).toLocaleDateString()}
-              </p>
+
+            <div className="bg-gradient-to-r from-orange-50 via-white to-green-50 rounded-xl p-5 border border-gray-100 shadow-sm">
+              <div className="flex items-center mb-2">
+              <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Member Since</h3>
+              </div>
+              {/* <p className="text-gray-800 font-medium text-lg">
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleString("en-IN", {
+                      day: "2-digit",
+                      month: "long", 
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "Date not available"}
+              </p> */}
+              <span className="text-md text-black font-bold"> {new Date(user.created_at).toLocaleDateString()} </span>
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end">
+          {/* Action Buttons */}
+          <div className="mt-8 flex justify-end space-x-3">
             {isEditing ? (
               <>
                 <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-4 py-2 mr-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setTempPhone(user.phone);
+                    setPreviewImage(null);
+                  }}
+                  className="flex items-center px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium border border-gray-200 shadow-sm"
                 >
+                  <p className="w-4 h-4 mr-2" />
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  className="flex items-center px-5 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                 >
-                  Save
+                  <button className="w-4 h-4 mr-2" />
+                  Save Changes
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                className="flex items-center px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
               >
+                <button className="w-4 h-4 mr-2" />
                 Edit Profile
               </button>
             )}
           </div>
         </div>
-      ) : null}
-    </div>
+      </div>
+    ) : null}
+  </div>
   );
 }

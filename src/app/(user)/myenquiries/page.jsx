@@ -80,8 +80,10 @@ export default function Enquiries() {
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <p className="font-bold text-gray-800">{enq.username}</p>
+                        <p className="font-bold text-gray-800">{enq.name}</p>
                         <p className="text-sm text-gray-500">{enq.email}</p>
+                        {/* <p className="text-sm text-gray-500">{enq.phone}</p> */}
+
                       </div>
                       <span className="text-xs text-gray-400">
                         {new Date(enq.created_at).toLocaleDateString()}

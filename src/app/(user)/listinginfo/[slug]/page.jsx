@@ -67,6 +67,8 @@ export default function ListingInfo() {
   const [showEnquiryPopup, setShowEnquiryPopup] = useState(false);
   const [showStickyHero, setShowStickyHero] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [currentUserId, setCurrentUserId] = useState(null);
+
 
   useEffect(() => {
     if (!slug) return;
@@ -192,7 +194,8 @@ export default function ListingInfo() {
         <div className="bg-white rounded-3xl shadow-xl p-5 sm:p-8">
           <Info business={business} hours={hours} />
           <div className="mt-8">
-            <Tab business={business} renderStars={renderStars} />
+          <Tab business={business} renderStars={renderStars} businessOwnerId={business?.owner_id} currentUserId={currentUserId}/>
+
           </div>
           <div className="mt-12">
             <UsersndMsg setReviews={setReviews} businessId={business.id} />

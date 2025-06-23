@@ -244,12 +244,12 @@ export default function Navbar() {
         </div>
   
         {/* Mobile Menu Toggle */}
-        <Button
-          className="block md:hidden text-2xl text-black"
+        <button
+          className="block md:hidden text-2xl text-orange-700 font-bold"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? <FiX /> : <FiMenu />}
-        </Button>
+        </button>
       </div>
   
       {/* Mobile Menu */}

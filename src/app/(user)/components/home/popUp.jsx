@@ -72,7 +72,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     const value = e.target.value.trim();
     setEmail(value);
   
-    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    const gmailRegex = /^[a-zA-Z0-9](?!.*\.\.)[a-zA-Z0-9._%+-]*@gmail\.com$/;
     if (!gmailRegex.test(value)) {
       setErrors((prev) => ({ ...prev, email: "Please enter a valid @gmail.com email address." }));
     } else {
@@ -138,7 +138,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setOtpSent(true);
     } catch (error) {
       console.error("OTP Send Error:", error);
-      const backendMsg = error?.response?.data?.message || error.message;
+      const backendMsg = error?.response?.data?.msg || error.msg;
       setStatusMessage({
         type: "error",
         // message: error.response?.data?.message || "Failed to send OTP.",
@@ -223,7 +223,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
     } catch (error) {
       console.error("OTP Verify Error:", error);
-      const backendMsg = error?.response?.data?.message || error.message;
+      const backendMsg = error?.response?.data?.msg || error.msg;
       setStatusMessage({
         type: "error",
         // message: error?.response?.data?.message || error.message || "OTP verification failed.",
