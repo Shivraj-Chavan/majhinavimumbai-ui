@@ -8,7 +8,6 @@ const Tab = ({ business, renderStars, businessOwnerId, currentUserId  }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibleMenu, setVisibleMenu] = useState(null);
-
   // const [currentUserId, setCurrentUserId] = useState(null);
 
   const sections = ["overview", "detail", "reviews", "photos"];
@@ -38,7 +37,7 @@ const Tab = ({ business, renderStars, businessOwnerId, currentUserId  }) => {
       const isReviewer = String(reviewUserId) === String(currentUserId);
       console.log("current user ?", isReviewer);
 
-      const res = await apiDelete(`/api/reviews/${reviewId}`);
+      const res = await apiDelete(`/reviews/${reviewId}`);
       console.log("Response:", res.status);
         if (res.ok) {
         const data = await res.json();
@@ -164,7 +163,7 @@ const Tab = ({ business, renderStars, businessOwnerId, currentUserId  }) => {
             {reviews.map((review) => {
               const isReviewer = review.user_id=== currentUserId;
               const isBusinessOwner = businessOwnerId === currentUserId;
-console.log({isReviewer,isBusinessOwner,currentUserId})
+                console.log({isReviewer,isBusinessOwner,currentUserId})
               return (
                 <div key={review.id}className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
                   {/* Review content */}

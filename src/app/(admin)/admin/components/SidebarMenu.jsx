@@ -28,8 +28,9 @@ export default function SidebarMenu() {
                 <SidebarSubItem title="Drafts" href="/messages/drafts" />
               </SidebarItemWithSubmenu> */}
             <h1 className="ms-3 font-bold flex items-center gap-2"> <LuUsers className="h-5 w-5" /> Users</h1>
-            <SidebarItem title="Business Users" href="/admin/users/businessUsers" />
+            <SidebarItem title="Add Users " href="/admin/users/addUsers"/>
             <SidebarItem title="Users" href="/admin/users" />
+            <SidebarItem title="Business Users" href="/admin/users/businessUsers" />
             <SidebarItem title="Pending Requests" href="/admin/users/pendingRequest" />
             <SidebarItem title="Contact List" href="/admin/users/contactList"/>
             <SidebarItem title="Review List" href="/admin/users/reviewList"/>

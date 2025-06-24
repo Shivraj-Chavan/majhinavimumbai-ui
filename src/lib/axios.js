@@ -21,6 +21,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (typeof window !== 'undefined' && error.response?.status === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+    }
     console.error('API Error:', error);
     return Promise.reject(error);
   }

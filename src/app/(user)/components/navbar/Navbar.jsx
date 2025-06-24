@@ -139,7 +139,7 @@ export default function Navbar() {
   
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
-          <Payment amount={1000} businessId={businessId}  />
+          {/* <Payment amount={1000} businessId={businessId}  /> */}
   
           {isLoading ? (
             <div className="flex items-center gap-4">

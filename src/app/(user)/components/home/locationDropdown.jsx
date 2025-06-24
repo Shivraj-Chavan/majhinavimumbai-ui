@@ -3,7 +3,7 @@
 import React from "react";
 import { CiLocationArrow1 } from "react-icons/ci";
 
-const locations = ["Navi Mumbai", "Thane", "Kharghar", "Kamothe", "Vashi"];
+const locations = ["Navi Mumbai", "Panvel","Nerul","Taloja","Ulwe","Koparkhairne","Seawoods","Juinagar","Sanpada","Thane", "Kharghar", "Kamothe", "Vashi", "Airoli","Mansarovar","Khandeshwar","Belapur"];
 
 export default function LocationDropdown({ location, setLocation, showDropdown, setShowDropdown, dropdownRef }) {
   return (
