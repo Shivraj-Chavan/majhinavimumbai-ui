@@ -78,7 +78,7 @@ export default function ListingInfo() {
         if (!data.business) throw new Error("Business not found.");
         setBusiness(data.business);
       } catch (err) {
-        setError(err.message || "Error loading business");
+        setError("Oops ! Your Business is not Verified"|| "Error loading business");
       } finally {
         setLoading(false);
       }

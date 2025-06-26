@@ -11,7 +11,6 @@ export default function ProfilePage() {
   const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [currentUserId, setCurrentUserId] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -31,7 +30,8 @@ export default function ProfilePage() {
         const res = await apiGet("/users/me");
         setUser(res);
         console.log("Fetched user in parent:", res);
-        // setCurrentUserId(res?.id);
+        console.log("Current User ID:", res?.id);
+        
         setTempPhone(res.phone); // Set initial phone value
       } catch (err) {
         console.error(err);

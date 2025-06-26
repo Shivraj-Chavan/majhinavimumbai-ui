@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Input from "../businessRegistercomp/Input";
 import TextEditor from "./TextEditor";
-import { apiPut } from "@/lib/apiClient";
+import { apiGet, apiPut } from "@/lib/apiClient";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -12,15 +12,32 @@ export default function EditBusinessPopup({ business, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    hours: "",
+    timing: "",
     website: "",
     contactNumber: "",
     whatsappNumber: "",
-    location: "",
+    area: "",
+    landmark: "",
+    sector: "",
+    address: "",
+    pin_code: "",
+    wp_number: "",
   });
 
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [existingPhotos, setExistingPhotos] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const userRes = await apiGet("/users/me");
+        setCurrentUser(userRes);
+      } catch (err) {
+        toast.error("Failed to fetch user");
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -30,15 +47,19 @@ export default function EditBusinessPopup({ business, onClose }) {
 
   useEffect(() => {
     if (business) {
-      console.log("Business images:", business.images);
       setFormData({
         name: business.name || "",
         description: business.description || "",
-        hours: business.hours || "",
         website: business.website || "",
         contactNumber: business.contactNumber || "",
-        whatsappNumber: business.whatsappNumber || "",
-        location: business.location || "",
+        wp_number: business.wp_number || "",
+        timing: business.timing || "",
+        address: business.address || "",
+        area: business.area || "",
+        sector: business.sector || "",
+        landmark: business.landmark || "",
+        pin_code:business.pin_code || "",
+
       });
 
       const fullPhotoUrls = (business.images || []).map((image) =>
@@ -57,75 +78,86 @@ export default function EditBusinessPopup({ business, onClose }) {
         Object.assign(file, { preview: URL.createObjectURL(file) })
       );
 
-      if (existingPhotos.length + selectedPhotos.length + newFiles.length > 20) {
-        toast.alert("You can upload a maximum of 20 photos total (existing + new).");
+      if (existingPhotos.length + selectedPhotos.length + newFiles.length > 2) {
+        toast.error("Max 2 photos allowed (existing + new)");
         newFiles.forEach((file) => URL.revokeObjectURL(file.preview));
         return;
       }
+
       setSelectedPhotos((prev) => [...prev, ...newFiles]);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleDeletePhoto = (index) => {
-    URL.revokeObjectURL(selectedPhotos[index].preview);
+  // Delete Selected or Existing Photos
+  const handleDeletePhoto = (index) => {URL.revokeObjectURL(selectedPhotos[index].preview);
     setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleDeleteExistingPhoto = async (index) => {
-    console.log("Deleting selected photo:", index);
-    if (!window.confirm("Are you sure you want to delete this photo?")) return;
-  
+    if (!window.confirm("Delete this photo?")) return;
+
     try {
-      const photoToDelete = existingPhotos[index]; 
+      const photoToDelete = existingPhotos[index];
       const token = localStorage.getItem("token");
-      console.log("Photo to delete:", photoToDelete);
-  
-      await axios.delete(`http://69.62.84.113:5005/api/businesses/${business.id}/photos`, {
+
+      await axios.delete(`http://69.62.84.113:5005/businesses/${business.id}/photos`, {
         data: { photoUrl: photoToDelete },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-           
+
       setExistingPhotos((prev) => prev.filter((_, i) => i !== index));
-      console.log("Updated existing photos after deletion:", updated);
-      toast.success("Photo deleted successfully.");
+      toast.success("Photo deleted");
     } catch (error) {
-      toast.error("Failed to delete photo. Please try again.");
+      toast.error("Failed to delete photo");
     }
   };
-  
 
   const handleGetLocation = () => {
     navigator.geolocation?.getCurrentPosition(
-      (position) => {
-        const coords = `${position.coords.latitude}, ${position.coords.longitude}`;
+      (pos) => {
+        const coords = `${pos.coords.latitude}, ${pos.coords.longitude}`;
         setFormData((prev) => ({ ...prev, location: coords }));
       },
-      () => toast.error("Unable to fetch location.")
+      () => toast.error("Failed to get location")
     );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!currentUser) {
+      toast.error("User not loaded yet");
+      return;
+    }
+
     try {
       const payload = {
         owner_id: business.owner_id,
         name: formData.name,
         description: formData.description,
-        hours: formData.hours,
+        hours: formData.timing,
         website: formData.website,
         phone: formData.contactNumber,
         wp_number: formData.whatsappNumber,
-        location: formData.location,
+        area: formData.area,
         category_id: business.category_id,
         subcategory_id: business.subcategory_id,
+        landmark: business.landmark,
+        sector: business.sector,
+        address: business.address,
+        pin_code: business.pin_code,
+        wp_number: business.wp_number,
       };
+      console.log("Payload being submitted:", payload)
 
-      const updateRes = await apiPut(`/businesses/${business.id}`, payload);
+      const isAdmin = currentUser.role === "admin";
+      const endpoint = isAdmin ? `/businesses/${business.id}` : `/businesses/update/${business.id}`;
+      console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
+      alert('Business data submitted successfully')
+      await apiPut(endpoint, payload);
+      console.log("Business data submitted successfully");
 
       if (selectedPhotos.length > 0) {
         const formPhotos = new FormData();
@@ -133,21 +165,21 @@ export default function EditBusinessPopup({ business, onClose }) {
         formPhotos.append("user_id", business.owner_id);
 
         const token = localStorage.getItem("token");
-        await axios.post(
-          `http://69.62.84.113:5005/api/businesses/${business.id}/photos`,
-          formPhotos,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const photoUploadUrl = isAdmin ? `http://69.62.84.113:5005/businesses/${business.id}/photos` : `http://69.62.84.113:5005/businesses/update/${business.id}/photos`;
+        console.log(`Uploading to: ${photoUploadUrl}`);
+
+        await axios.post(photoUploadUrl, formPhotos, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       }
 
-      toast.success("Business updated successfully!");
+      toast.success(isAdmin ? "Business updated" : "Edit submitted for approval");
       onClose();
     } catch (err) {
-      toast.error("Something went wrong while updating. Please try again.");
+      console.error(err);
+      toast.error("Failed to update");
     }
   };
 
@@ -197,7 +229,7 @@ export default function EditBusinessPopup({ business, onClose }) {
           )}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Add New Photos (max total 20)</label>
+            <label className="block text-sm font-medium mb-1">Add New Photos (max total 2)</label>
             <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             {selectedPhotos.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">

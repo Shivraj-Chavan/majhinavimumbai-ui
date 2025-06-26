@@ -63,17 +63,19 @@ export default function HeroSection() {
 
   // Normal render when not loading
   return (
-    <div className="relative w-full h-[450px] md:h-[550px] overflow-hidden shadow-xl max-w-8xl mx-auto ">
-      {/* Background Image */}
+    <div className="relative w-full h-[450px] md:h-[550px] overflow-hidden shadow-xl max-w-8xl mx-auto">
+    {/* Background Image */}
+    <div className="absolute inset-0 z-0">
       <Image
-        src="/palika.jpg"
-        alt="Mahanagarpalika"
+        src="/nmmc.png"
+        alt="I Love Majhi Navi Mumbai"
         fill
-        className="object-cover opacity-90 z-0"
+        className="object-contain object-[center_-50px] w-full h-full blur-sm brightness-95"
         priority
       />
-
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/60 backdrop-blur-md h-full">    
+    </div>
+ 
+  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/10 backdrop-blur-md h-full">
 
         {/* Left Section */}
         <div className="w-full md:w-1/2 m-4 sm:m-6 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
@@ -113,7 +115,7 @@ export default function HeroSection() {
         )} */}
 
         <h1 className="font-bold italic leading-tight">
-          <span className="text-orange-500 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-mukta block">
+          <span className="text-orange-500 text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-mukta block">
             माझी
           </span>
           <span className="text-blue-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-montserrat block">

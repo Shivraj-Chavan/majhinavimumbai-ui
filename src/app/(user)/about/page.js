@@ -24,14 +24,15 @@ export default function AboutUs() {
           <Skeleton height="100%" />
         ) : (
           <>
-            <Image
-              src="/palika.jpg"
-              alt="Mahanagarpalika"
-              layout="fill"
-              objectFit="cover"
-              className="opacity-90"
-            />
-            <div className="absolute inset-0 flex flex-col justify-center items-center bg-black/70 text-white px-4 text-center">
+             <Image
+                    src="/nmmc.png"
+                    alt="I Love Majhi Navi Mumbai"
+                    fill
+                    className="object-contain object-[center_-50px] w-full h-full blur-sm brightness-95"
+                    priority
+                  />
+                
+            <div className="absolute inset-0 flex flex-col justify-center items-center bg-white/15 backdrop-blur-sm text-white px-4 text-center">
               <Image src="/logo.png" alt="logo" width={550} height={130} />
             </div>
           </>
@@ -173,7 +174,7 @@ export default function AboutUs() {
         ) : (
           <>
             <p className="mt-2 text-lg">List your business today and connect with thousands of potential customers.</p>
-            <button className="mt-6 px-6 py-3 bg-white rounded-xl text-green-500 shadow-md hover:bg-green-600 hover:text-white">
+            <button className="mt-6 px-6 py-3 bg-white rounded-xl font-semibold text-green-500 shadow-md hover:bg-green-700 hover:text-white">
               Get Started
             </button>
           </>

@@ -2,8 +2,16 @@
 
 import { useEffect, useState } from "react";
 import category from "@/dummy/category";
-import { FaCar } from "react-icons/fa";
-import { IoFastFoodOutline } from "react-icons/io5";
+import { FaCar, FaCity } from "react-icons/fa";
+import { IoFastFoodOutline, IoFastFoodSharp, IoLogoElectron } from "react-icons/io5";
+import { MdEmojiEvents, MdHealthAndSafety, MdHotel, MdPets, MdRealEstateAgent } from "react-icons/md";
+import { FiMonitor } from "react-icons/fi";
+import { FaPeopleGroup, FaShop, FaWheelchairMove } from "react-icons/fa6";
+import { TbShoppingCartFilled } from "react-icons/tb";
+import { GrBusinessService } from "react-icons/gr";
+import { RiGovernmentFill } from "react-icons/ri";
+import { SiElectronbuilder } from "react-icons/si";
+import { PiHairDryerFill } from "react-icons/pi";
 
 // Skeleton loader for categories
 const CategorySkeleton = () => (
@@ -93,7 +101,7 @@ export default function Services() {
         {/* Service Card 2 - Example */}
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><PiHairDryerFill /></span>
             <h3 className="text-xl font-semibold text-gray-900">Beauty & Wellness:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -103,7 +111,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><SiElectronbuilder /></span>
             <h3 className="text-xl font-semibold text-gray-900">Courier & Logistics:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -113,7 +121,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><IoLogoElectron /></span>
             <h3 className="text-xl font-semibold text-gray-900">Electronics Keywords:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -123,7 +131,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><FaWheelchairMove /></span>
             <h3 className="text-xl font-semibold text-gray-900">Entertainment & Recreation keywords :</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -134,7 +142,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><MdEmojiEvents /></span>
             <h3 className="text-xl font-semibold text-gray-900">Event Management & Wedding Services:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -145,7 +153,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><RiGovernmentFill /></span>
             <h3 className="text-xl font-semibold text-gray-900">Government Services:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -155,7 +163,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><MdHealthAndSafety /></span>
             <h3 className="text-xl font-semibold text-gray-900">Home Services:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -166,7 +174,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><MdHealthAndSafety /></span>
             <h3 className="text-xl font-semibold text-gray-900">Healthcare & Medical:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -176,7 +184,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><MdHotel /></span>
             <h3 className="text-xl font-semibold text-gray-900">Hotels & Accommodation:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -186,7 +194,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><FiMonitor /></span>
             <h3 className="text-xl font-semibold text-gray-900">IT & Software Services:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -196,7 +204,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><GrBusinessService /></span>
             <h3 className="text-xl font-semibold text-gray-900">Legal & Finance Services:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -206,7 +214,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><MdPets /></span>
             <h3 className="text-xl font-semibold text-gray-900">Pets & Pet Care:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -216,7 +224,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><FaPeopleGroup /></span>
             <h3 className="text-xl font-semibold text-gray-900">Political Parties & Politicians:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -226,7 +234,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><MdRealEstateAgent /></span>
             <h3 className="text-xl font-semibold text-gray-900">Real Estate & Rentals:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -236,7 +244,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl"><IoFastFoodOutline /></span>
+            <span className="text-2xl"><IoFastFoodSharp /></span>
             <h3 className="text-xl font-semibold text-gray-900">Restaurants & Food:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -246,7 +254,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><FaCity /></span>
             <h3 className="text-xl font-semibold text-gray-900">Shopping & Malls:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -256,7 +264,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><TbShoppingCartFilled /></span>
             <h3 className="text-xl font-semibold text-gray-900">Shopping & Retail:</h3>
           </div>
           <p className="text-gray-600 text-sm">
@@ -266,7 +274,7 @@ export default function Services() {
 
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
-            <span className="text-2xl">🏠</span>
+            <span className="text-2xl"><FaShop /></span>
             <h3 className="text-xl font-semibold text-gray-900">Pan Shops and General Stores:</h3>
           </div>
           <p className="text-gray-600 text-sm">
