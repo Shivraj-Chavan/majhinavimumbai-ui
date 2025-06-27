@@ -25,8 +25,8 @@ export default function RaisedReviewsPage() {
     if (!confirm("Are you sure you want to delete this review permanently?")) return;
     console.log(" Deletion cancelled by admin");
     try {
-      await apiDelete(`/reviews/${adminreviewId}`);
-      console.log("Review deleted successfully:", adminreviewId);
+      await apiDelete(`/reviews/${reviewId}`);
+      console.log("Review deleted successfully:", reviewId);
       toast.success("Review deleted");
       setRaisedReviews((prev) => prev.filter((r) => r.id !== reviewId));
     } catch (err) {

@@ -122,7 +122,7 @@ export default function MyBusinessPage() {
           renderSkeletons()
         ) : businesses.length === 0 ? (
           <p className="text-center col-span-full text-gray-500">
-            No businesses found.
+           You have not added any Business Yet !!
           </p>
         ) : (
           businesses.map((business) => (

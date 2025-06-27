@@ -3,14 +3,37 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { apiDelete, apiGet } from "@/lib/apiClient";
+import { toast } from "react-toastify";
 
-const Tab = ({ business, renderStars, businessOwnerId, currentUserId  }) => {
+const Tab = ({ business, renderStars}) => {
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [businessOwnerId, setBusinessOwnerId] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibleMenu, setVisibleMenu] = useState(null);
-  // const [currentUserId, setCurrentUserId] = useState(null);
 
   const sections = ["overview", "detail", "reviews", "photos"];
+
+    // Fetch current user ID
+    useEffect(() => {
+      const fetchCurrentUser = async () => {
+        try {
+          const res = await apiGet("/users/me");
+          console.log("Fetched user:", res);
+  
+          if (res && res.id) {
+            setCurrentUserId(res.id);
+          } else {
+            console.warn("User ID missing from /users/me response");
+          }
+        } catch (err) {
+          console.error("Failed to fetch current user:", err);
+        }
+      };
+  
+      fetchCurrentUser();
+    }, []);
+  
 
   useEffect(() => { 
     const fetchReviews = async () => {
@@ -33,33 +56,30 @@ const Tab = ({ business, renderStars, businessOwnerId, currentUserId  }) => {
 
 
   const handleDeleteReview = async (reviewId, reviewUserId) => {
-    try {
-      const isReviewer = String(reviewUserId) === String(currentUserId);
-      console.log("current user ?", isReviewer);
-
-      const res = await apiDelete(`/reviews/${reviewId}`);
-      console.log("Response:", res.status);
-        if (res.ok) {
-        const data = await res.json();
-        toast.success(data.message);
+    const isReviewer = (reviewUserId) === (currentUserId);
   
-        // If the review was deleted update UI
+    try {
+      const res = await apiDelete(`/reviews/${reviewId}`); 
+      console.log('Delete Review',res);
+      
+  
+      if (data.success || data.message === "Review deleted successfully") {
+        toast.success(data.message || "Review deleted");
+  
         if (isReviewer) {
           setReviews((prev) => prev.filter((r) => r.id !== reviewId));
         }
       } else {
-        console.log("Request raised by business owner");
-        const err = await res.json();
-        toast.error(err.message || "Failed to delete review");
+        console.warn("Review delete request raised, not deleted");
+        toast.info(data.message || "Delete request has been raised to admin");
       }
     } catch (error) {
-      console.error("Delete review error:", error);
-      toast.error("Server error while deleting review");
+      console.error("Error deleting review:", error);
+      toast.error("Failed to delete review");
     } finally {
       setVisibleMenu(null);
     }
   };
-
   
   console.log("review.user_id", reviews.user_id);
   console.log("currentUserId", currentUserId);

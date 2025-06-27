@@ -63,7 +63,7 @@ export default function Enquiries() {
           ))}
         </div>
       ) : businessIds.length === 0 ? (
-        <p className="text-center text-gray-500">No enquiries for any business yet.</p>
+        <p className="text-center text-gray-500">"Currently, no enquiries have been made for any business." </p>
       ) : (
         businessIds.map((id) => {
           const { name, enquiries } = groupedEnquiries[id];

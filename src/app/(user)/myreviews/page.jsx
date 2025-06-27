@@ -100,7 +100,7 @@ export default function AllReviews() {
        {renderSkeletons()}
      </div>
       ) : reviews.length === 0 ? (
-        <p className="text-center text-md m-20 text-gray-600">Oops Sorry!☺️ <br/>You have not added any review yet.</p>
+        <p className="text-center text-md m-20 text-gray-600">Oops Sorry!☺️ <br/>You have not added any reviews yet.</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 

@@ -32,7 +32,7 @@ export default function EditBusinessPopup({ business, onClose }) {
     (async () => {
       try {
         const userRes = await apiGet("/users/me");
-        setCurrentUser(userRes);
+        setCurrentUser(userRes.data);
       } catch (err) {
         toast.error("Failed to fetch user");
       }
@@ -133,14 +133,15 @@ export default function EditBusinessPopup({ business, onClose }) {
     }
 
     try {
+
       const payload = {
         owner_id: business.owner_id,
         name: formData.name,
         description: formData.description,
-        hours: formData.timing,
+        timing: formData.timing,
         website: formData.website,
         phone: formData.contactNumber,
-        wp_number: formData.whatsappNumber,
+        wp_number: formData.wp_number,
         area: formData.area,
         category_id: business.category_id,
         subcategory_id: business.subcategory_id,
@@ -148,17 +149,23 @@ export default function EditBusinessPopup({ business, onClose }) {
         sector: business.sector,
         address: business.address,
         pin_code: business.pin_code,
-        wp_number: business.wp_number,
+        slug: business.slug,
       };
       console.log("Payload being submitted:", payload)
 
       const isAdmin = currentUser.role === "admin";
+      console.log("Current user role:", currentUser.role);
+
       const endpoint = isAdmin ? `/businesses/${business.id}` : `/businesses/update/${business.id}`;
-      console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
-      alert('Business data submitted successfully')
+      // console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
+  
       await apiPut(endpoint, payload);
+      console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
+
+      alert('Business data submitted successfully')
       console.log("Business data submitted successfully");
 
+      // Photo upload
       if (selectedPhotos.length > 0) {
         const formPhotos = new FormData();
         selectedPhotos.forEach((file) => formPhotos.append("photos", file));
@@ -175,7 +182,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         });
       }
 
-      toast.success(isAdmin ? "Business updated" : "Edit submitted for approval");
+      toast.success(isAdmin ? "Business updated successfully" : "Edit submitted for admin review");
       onClose();
     } catch (err) {
       console.error(err);

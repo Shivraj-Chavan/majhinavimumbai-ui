@@ -57,7 +57,7 @@ export default function ContactListPage() {
                     <td className="px-4 py-3">{contact.user_name}</td>
                     <td className="px-4 py-3">{contact.phone}</td>
                     <td className="px-4 py-3">{contact.enquiry}</td>
-                    <td className="px-4 py-3">{new Date(contact.createdAt).toLocaleString()}</td>
+                    <p className="text-sm text-gray-500 mt-2"> {new Date(contact.created_at).toLocaleString()}</p>
                   </tr>
                 ))}
               </tbody>

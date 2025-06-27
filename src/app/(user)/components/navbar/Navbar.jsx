@@ -322,7 +322,7 @@ export default function Navbar() {
                     </button>
   
                     {open && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                         <ul className="py-1 text-sm text-gray-700">
                           <li>
                             <button
