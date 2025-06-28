@@ -15,7 +15,7 @@ export default function Photos({ business, setTab }) {
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 z-0 relative">
         <div className="relative col-span-1 h-36 sm:h-40 md:h-48 rounded-xl overflow-hidden">
           <Image
-            src={imagecopy}
+            src='http://69.62.84.113/5005/uploads/1751113677338-658185846.jpg'
             alt="No Images Available"
             fill
             className="object-cover"
@@ -39,10 +39,10 @@ export default function Photos({ business, setTab }) {
 
       {/* Thumbnails */}
       {business.images.map((imgObj, i) => {
-  if (i === 0) return null;
+        if (i === 0) return null;
 
-  const imageUrl = typeof imgObj === 'string' ? imgObj : imgObj?.url;
-  const isLast = i === business.images.length - 1;
+      const imageUrl = typeof imgObj === 'string' ? imgObj : imgObj?.url;
+      const isLast = i === business.images.length - 1;
 
   return (
     <div

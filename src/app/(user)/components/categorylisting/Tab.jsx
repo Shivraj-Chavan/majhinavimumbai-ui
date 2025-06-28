@@ -14,9 +14,12 @@ const Tab = ({ business, renderStars}) => {
 
   const sections = ["overview", "detail", "reviews", "photos"];
 
+   
     // Fetch current user ID
     useEffect(() => {
+     
       const fetchCurrentUser = async () => {
+        if(!isLoggedIn) return 
         try {
           const res = await apiGet("/users/me");
           console.log("Fetched user:", res);
@@ -30,7 +33,6 @@ const Tab = ({ business, renderStars}) => {
           console.error("Failed to fetch current user:", err);
         }
       };
-  
       fetchCurrentUser();
     }, []);
   
@@ -52,8 +54,14 @@ const Tab = ({ business, renderStars}) => {
     };
   
     if (business?.id) fetchReviews();
-  }, [business?.id]);
-
+     // Set business owner ID here
+     if (business.owner_id) {
+      setBusinessOwnerId(business.owner_id);
+    } else {
+      console.warn("Business owner_id missing");
+    }
+}, [business?.id]);
+ 
 
   const handleDeleteReview = async (reviewId, reviewUserId) => {
     const isReviewer = (reviewUserId) === (currentUserId);

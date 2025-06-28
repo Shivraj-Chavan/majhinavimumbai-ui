@@ -29,14 +29,15 @@ export default function EditBusinessPopup({ business, onClose }) {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    (async () => {
+    const loadUser=async()=>{
       try {
         const userRes = await apiGet("/users/me");
-        setCurrentUser(userRes.data);
+        setCurrentUser(userRes);
       } catch (err) {
         toast.error("Failed to fetch user");
       }
-    })();
+    }
+    loadUser()    
   }, []);
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export default function EditBusinessPopup({ business, onClose }) {
   };
 
   const handleDeleteExistingPhoto = async (index) => {
-    if (!window.confirm("Delete this photo?")) return;
+    if (!window.confirm("Delete this photo?")) return
 
     try {
       const photoToDelete = existingPhotos[index];
@@ -124,9 +125,13 @@ export default function EditBusinessPopup({ business, onClose }) {
     );
   };
 
+  useEffect(()=>{
+      console.log({currentUser})
+  },[currentUser])
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("handleSubmit triggered");
+    console.log({currentUser})
     if (!currentUser) {
       toast.error("User not loaded yet");
       return;
@@ -151,7 +156,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         pin_code: business.pin_code,
         slug: business.slug,
       };
-      console.log("Payload being submitted:", payload)
+      console.log("Payload being submitted:", payload);
 
       const isAdmin = currentUser.role === "admin";
       console.log("Current user role:", currentUser.role);
@@ -172,7 +177,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         formPhotos.append("user_id", business.owner_id);
 
         const token = localStorage.getItem("token");
-        const photoUploadUrl = isAdmin ? `http://69.62.84.113:5005/businesses/${business.id}/photos` : `http://69.62.84.113:5005/businesses/update/${business.id}/photos`;
+        const photoUploadUrl = isAdmin ? `http://69.62.84.113:5005/api/businesses/${business.id}/photos` : `http://69.62.84.113:5005/api/businesses/update/${business.id}/photos`;
         console.log(`Uploading to: ${photoUploadUrl}`);
 
         await axios.post(photoUploadUrl, formPhotos, {
@@ -202,7 +207,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
           <TextEditor label="Description" value={formData.description} onChange={(val) => setFormData((prev) => ({ ...prev, description: val }))} />
-          <Input label="Hours" name="hours" type="text" value={formData.hours} onChange={handleChange} />
+          <Input label="Timing" name="timing" type="text" value={formData.timing} onChange={handleChange} />
           <Input label="Website" name="website" value={formData.website} onChange={handleChange} />
           <div className="flex gap-4">
             <Input label="Contact" name="contactNumber" type="tel" value={formData.contactNumber} onChange={handleChange} />

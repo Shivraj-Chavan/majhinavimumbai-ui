@@ -77,10 +77,12 @@ export default function ListingInfo() {
         const data = await apiGet(`/businesses/s/${slug}`);
         if (!data.business) throw new Error("Business not found.");
         setBusiness(data.business);
+        
       } catch (err) {
         setError("Oops ! Your Business is not Verified"|| "Error loading business");
       } finally {
         setLoading(false);
+        // alert()
       }
     };
     fetchBusiness();
