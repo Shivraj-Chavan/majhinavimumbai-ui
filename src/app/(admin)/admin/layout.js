@@ -1,4 +1,5 @@
 // app/layout.js
+"use client"
 import './../../globals.css'
 import { ReduxProvider } from "@/redux/provider"; 
 import DashboardLayout from "./DashboardLayout/page";

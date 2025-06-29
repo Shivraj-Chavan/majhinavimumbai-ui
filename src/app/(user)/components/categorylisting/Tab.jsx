@@ -11,8 +11,14 @@ const Tab = ({ business, renderStars}) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibleMenu, setVisibleMenu] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const sections = ["overview", "detail", "reviews", "photos"];
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
    
     // Fetch current user ID
@@ -34,7 +40,7 @@ const Tab = ({ business, renderStars}) => {
         }
       };
       fetchCurrentUser();
-    }, []);
+    }, [isLoggedIn]);
   
 
   useEffect(() => { 
@@ -60,16 +66,15 @@ const Tab = ({ business, renderStars}) => {
     } else {
       console.warn("Business owner_id missing");
     }
-}, [business?.id]);
+  }, [business?.id]);
  
 
   const handleDeleteReview = async (reviewId, reviewUserId) => {
     const isReviewer = (reviewUserId) === (currentUserId);
   
     try {
-      const res = await apiDelete(`/reviews/${reviewId}`); 
+      const res = await apiDelete(`/reviews/reviews/${reviewId}`); 
       console.log('Delete Review',res);
-      
   
       if (data.success || data.message === "Review deleted successfully") {
         toast.success(data.message || "Review deleted");
@@ -89,9 +94,9 @@ const Tab = ({ business, renderStars}) => {
     }
   };
   
-  console.log("review.user_id", reviews.user_id);
-  console.log("currentUserId", currentUserId);
-  console.log("businessOwnerId", businessOwnerId);
+  // console.log("review user_id", reviews[0]?.user_id);
+  // console.log("currentUserId", currentUserId);
+  // console.log("businessOwnerId", businessOwnerId);
 
   return (
     <div className="space-y-10 scroll-smooth">
@@ -191,9 +196,11 @@ const Tab = ({ business, renderStars}) => {
             {reviews.map((review) => {
               const isReviewer = review.user_id=== currentUserId;
               const isBusinessOwner = businessOwnerId === currentUserId;
+              console.log({"koni takla ":review.user_id,"kon bgtay ":currentUserId,"business owner":businessOwnerId})
                 console.log({isReviewer,isBusinessOwner,currentUserId})
+                
               return (
-                <div key={review.id}className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
+                <div key={review.id} className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
                   {/* Review content */}
                   <p className="text-gray-900 mb-2">{review.comment}</p>
                   <p className="text-yellow-500 flex">{renderStars(review.rating)}</p>

@@ -48,7 +48,7 @@ export default function AboutUs() {
           <p className="text-gray-700 mt-6 leading-relaxed">
             <span className="font-bold">Navi Mumbai Local Search (Majhi Navi Mumbai)</span> is Navi Mumbai’s dedicated local
             discovery platform. Our mission is to connect users with the best businesses, services, and
-            solutions available exclusively in Navi Mumbai. Whether you're looking for a service
+            solutions available exclusively in Navi Mumbai. Whether you&apos;re looking for a service
             provider, a local store, a restaurant, or any essential service, we make discovery simple, fast,
             and reliable. We empower users to find relevant local businesses and enable smooth communication and
             transactions, all through a single, user-friendly platform available on web, mobile apps, and

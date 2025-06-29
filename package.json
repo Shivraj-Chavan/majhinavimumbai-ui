@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "PORT=5007 next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=5007 next start",
     "lint": "next lint"
   },
   "dependencies": {

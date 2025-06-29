@@ -26,7 +26,7 @@ export const useApi = (apiFn, deps = []) => {
 
     fetchData();
     return () => { isMounted = false; };
-  }, deps);
+  }, [apiFn,deps]);
 
   return { data, loading, error };
 };

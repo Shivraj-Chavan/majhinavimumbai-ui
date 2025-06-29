@@ -22,26 +22,6 @@ export default function BusinessRegister({ ownerId }) {
   const [subcategoriesData, setSubcategoriesData] = useState([]);
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
-  
-  const dispatch = useDispatch();
-  
-    const { categories, loading, error } = useSelector((state) => state.categories);
-  
-    useEffect(() => {
-      if (categories?.length > 0) {
-        setSubcategoriesData(categories);
-        //  dispatch(fetchCategories());
-      }
-    }, [categories]);
-
-    if (loading) {
-      return <div className="text-center py-10 font-semibold">Loading...</div>;
-    }
-    
-    if (error) {
-      return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
-    }
-
   const [formData, setFormData] = useState({
     owner_id: null,
     name: "",
@@ -58,20 +38,51 @@ export default function BusinessRegister({ ownerId }) {
     website: "",
     timing:[{ day: "", open: "09:00", close: "18:00" }],
   });
+  const dispatch = useDispatch();
+  
+    const { categories, loading, error } = useSelector((state) => state.categories);
+  
+    useEffect(() => {
+      if (categories?.length > 0) {
+        setSubcategoriesData(categories);
+        //  dispatch(fetchCategories());
+      }
+    }, [categories]);
+ 
+
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const storedOwnerId = localStorage.getItem("ownerId");
+        console.log("ownerId from localStorage:", storedOwnerId);
+        
+        setCheckingOtp(false);
+        // setFormData((prev) => ({
+        //   ...prev,
+        //   owner_id: storedOwnerId,
+        // }));
+      }
+    }, [router]);
+    
+  useEffect(()=>{
+    console.log({"Timing-----":formData.timing})
+  },[formData.timing])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedOwnerId = localStorage.getItem("ownerId");
-      console.log("ownerId from localStorage:", storedOwnerId);
-      
-      setCheckingOtp(false);
-      // setFormData((prev) => ({
-      //   ...prev,
-      //   owner_id: storedOwnerId,
-      // }));
+    console.log("Received ownerId:", ownerId);
+    if (ownerId) {
+      setFormData((prev) => ({ ...prev, owner_id: Number(ownerId),}));
     }
-  }, [router]);
-  
+  }, [ownerId]);
+
+    if (loading) {
+      return <div className="text-center py-10 font-semibold">Loading...</div>;
+    }
+    
+    if (error) {
+      return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+    }
+
+
   const handleInputChange = (label,value) => {
     setFormData((prev) => ({ ...prev, [label]: value }));
   };
@@ -91,10 +102,6 @@ export default function BusinessRegister({ ownerId }) {
       timing: [...prev.timing, { day: "", open: "09:00", close: "18:00" }],
     }));
   };
-
-  useEffect(()=>{
-    console.log({"Timing-----":formData.timing})
-  },[formData.timing])
 
   const removeTiming = (index) => {
     const updatedTimings = formData.timing.filter((_, i) => i !== index);
@@ -122,13 +129,6 @@ export default function BusinessRegister({ ownerId }) {
       setShowWarning(false);
     }
   };
-
-  useEffect(() => {
-    console.log("Received ownerId:", ownerId);
-    if (ownerId) {
-      setFormData((prev) => ({ ...prev, owner_id: Number(ownerId),}));
-    }
-  }, [ownerId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

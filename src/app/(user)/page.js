@@ -10,7 +10,7 @@ import ChooseUs from './components/miniaboutSections/chooseus'
 import { useDispatch } from 'react-redux'
 import { fetchCategories } from '@/redux/slice/categoriesSlice'
 
-export default function page() {
+export default function Page() {
       const dispatch = useDispatch();
   
       useEffect(() => {
