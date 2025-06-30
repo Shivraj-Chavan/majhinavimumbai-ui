@@ -20,15 +20,16 @@ export default function About() {
         {loading ? (
           <div className="w-[90%] md:w-[400px] h-full bg-gray-200 animate-pulse rounded-xl" />
         ) : (
-          <div className="relative w-[90%] md:w-[400px] h-full">
-            <Image
-              src="/NMumb.jpg"
-              alt="mahanagarpalika"
-              fill
-              className="object-cover h-full w-full rounded-xl shadow-lg"
-              sizes="(max-width: 768px) 100vw, 400px"
-            />
-          </div>
+          <div className="relative w-[400px] h-[300px] rounded-xl shadow-lg overflow-hidden">
+          <Image
+            src="/nmmc.png"
+            alt="mahanagarpalika"
+            fill
+            className="object-contain"
+            sizes="(max-width: 768px) 100vw, 400px"
+          />
+        </div>
+
         )}
       </div>
 

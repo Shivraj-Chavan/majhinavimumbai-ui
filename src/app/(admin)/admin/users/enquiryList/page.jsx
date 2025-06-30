@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { apiGet } from "@/lib/apiClient";
 import { toast } from "react-toastify";
+import Pagination from "../../components/usercomp/Pagination";
 
 export default function AdminEnquiries() {
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchEnquiries = async () => {
@@ -24,6 +27,10 @@ export default function AdminEnquiries() {
 
     fetchEnquiries();
   }, []);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
@@ -85,6 +92,9 @@ export default function AdminEnquiries() {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 }

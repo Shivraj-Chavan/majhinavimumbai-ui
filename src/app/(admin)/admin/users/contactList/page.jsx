@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { apiGet } from "@/lib/apiClient";
+import Pagination from "../../components/usercomp/Pagination";
 
 export default function ContactListPage() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -23,6 +26,10 @@ export default function ContactListPage() {
 
     fetchContacts();
   }, []);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
@@ -80,6 +87,9 @@ export default function ContactListPage() {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 }

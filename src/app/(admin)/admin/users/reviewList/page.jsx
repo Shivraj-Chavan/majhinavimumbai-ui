@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { apiDelete, apiGet } from "@/lib/apiClient";
 import { toast } from "react-toastify";
+import Pagination from "../../components/usercomp/Pagination";
 
 export default function RaisedReviewsPage() {
   const [raisedReviews, setRaisedReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
   const fetchRaisedReviews = async () => {
     try {
@@ -37,6 +40,10 @@ export default function RaisedReviewsPage() {
   useEffect(() => {
     fetchRaisedReviews();
   }, []);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
@@ -105,6 +112,9 @@ export default function RaisedReviewsPage() {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 }

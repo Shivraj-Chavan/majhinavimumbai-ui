@@ -1,7 +1,7 @@
 import axios from 'axios';
-
+import CONFIG from './../constance'
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://69.62.84.113:5005/api",
+  baseURL: CONFIG.API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

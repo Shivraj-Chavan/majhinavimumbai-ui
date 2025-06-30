@@ -111,7 +111,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     // }
       let errorMap = {};
     
-      if (!name.trim()) errorMap.name = "Name is required";
+      // if (!name.trim()) errorMap.name = "Name is required";
+
       if (!email.trim()) {
         errorMap.email = "Email is required";
       } else {
@@ -131,7 +132,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setIsSendingOtp(true);
     
     try {
-      const response = await apiPost("/otp/send", {name, email });
+      const response = await apiPost("/otp/send", {name:"", email });
       console.log("OTP Sent Response:", response.data);
       setStatusMessage({ type: "success", message: "OTP sent successfully via Email!" });
       setCountdown(30);
@@ -160,7 +161,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
     let newErrors = {};
    
-    if (!name.trim()) newErrors.name = "Name is required";
+    // if (!name.trim()) newErrors.name = "Name is required";
     // if (phone.length !== 10) newErrors.phone = "Phone number must be 10 digits";
     if (!otp || otp.length !== 6) newErrors.otp = "OTP must be 6 digits";
 
@@ -168,8 +169,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      const data = await apiPost("otp/verify", { name: name, email: email, otp: otp });
-      console.log("Verifying OTP:", {name, email, otp });
+      const data = await apiPost("otp/verify", { name:"", email: email, otp: otp });
+      console.log("Verifying OTP:", { email, otp });
       console.log("OTP Verify Full Response:", data);
 
        // Extract token and role from the response
@@ -180,7 +181,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       console.log("Extracted Role:", role);
 
       // Create a minimal user object yourself if needed
-      const user = { name, email };
+      const user = { name:"", email };
 
       if (!token) throw new Error("Token not found in response");
 
@@ -258,7 +259,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
           )}
 
           <form className="space-y-6 mt-5" onSubmit={handleSubmit}>
-          <div>
+          {/* <div>
               <label className="block text-lg font-medium">Your Full Name</label>
               <input
                 type="text"
@@ -270,7 +271,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                 } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
               />
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
+            </div> */}
 
             {/* <div>
               <label className="block text-lg font-medium">Phone Number</label>

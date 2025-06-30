@@ -15,7 +15,7 @@ export default function Photos({ business, setTab }) {
               className="relative w-full h-40 rounded-xl overflow-hidden bg-gray-100"
             >
               <Image
-                src={`http://69.62.84.113:5005${imageUrl}`}
+                src={`${CONFI}${imageUrl}`}
                 alt={`Business Image ${index + 1}`}
                 fill
                 className="object-cover"

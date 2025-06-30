@@ -62,6 +62,7 @@ export default function ProfilePage() {
     try {
       await apiPut(`/users/${user.id}/profile`, user);
       setIsEditing(false);
+      setPreviewImage(null);
       toast.success("Profile Updated!");
     } catch (err) {
       console.error(err);
@@ -99,7 +100,7 @@ export default function ProfilePage() {
           <div className="text-center">
             <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-orange-100 to-green-100">
               <img
-                src={previewImage || user?.profileImage || "https://via.placeholder.com/150"}
+                src={previewImage || user?.profile_image || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -202,17 +203,6 @@ export default function ProfilePage() {
               <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
                 <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Member Since</h3>
               </div>
-              {/* <p className="text-gray-800 font-medium text-lg">
-                {user?.createdAt
-                  ? new Date(user.createdAt).toLocaleString("en-IN", {
-                      day: "2-digit",
-                      month: "long", 
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                  : "Date not available"}
-              </p> */}
               <span className="text-md text-black font-bold"> {new Date(user.created_at).toLocaleDateString()} </span>
             </div>
           </div>

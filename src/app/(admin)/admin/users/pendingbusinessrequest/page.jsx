@@ -4,12 +4,15 @@ import { toast } from "react-toastify";
 import { apiDelete, apiGet, apiPut } from "@/lib/apiClient";
 import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
+import Pagination from "../../components/usercomp/Pagination";
 
 export default function PendingUpdates() {
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
   const fetchUpdates = async () => {
     try {
@@ -73,6 +76,10 @@ export default function PendingUpdates() {
       const existing = prevUsers.filter((user) => user.id !== updatedBusiness.id);  // Add the new verified business and remove it from the pending list 
       return [...existing, updatedBusiness];
     });
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -156,7 +163,10 @@ export default function PendingUpdates() {
     )}
 
     {/* Modal Component */}
-          <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} updateVerifiedBusinessList={updateVerifiedBusinessList}/>
+      <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} updateVerifiedBusinessList={updateVerifiedBusinessList}/>
+  
+  {/* Pagination */}
+    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
   </div>
   );
 }

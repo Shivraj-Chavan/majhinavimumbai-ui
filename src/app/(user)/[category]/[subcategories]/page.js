@@ -82,7 +82,7 @@ export default function Page({ params }) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-2">
         <div className="text-sm text-gray-600 mb-4 font-semibold">
           <nav className="flex items-center space-x-2">
             <Link href="/" className="hover:underline text-black">Home</Link>
@@ -95,20 +95,21 @@ export default function Page({ params }) {
           </nav>
         </div>
 
-        <div className="text-center">
+        <div className="text-center mb-2">
           <h1 className="text-4xl font-bold text-blue-900 capitalize">
             {subcategories.replace(/-/g, " ")}
           </h1>
-          <p className="text-gray-600 mt-2">Browse top businesses in this subcategory.</p>
+          <p className="text-gray-600 mt-1">Browse top businesses in this subcategory.</p>
         </div>
 
-        <div className="-mt-10 me-25 -mb-17 flex justify-end align-top text-xl font-medium">
-          <FilterBar onSortChange={(order) => setSortOrder(order)} />
-        </div>
+        {/* FilterBar */}
+      <div className="flex justify-center md:justify-end mt-2">
+        <FilterBar onSortChange={(order) => setSortOrder(order)} />
+      </div>
       </div>
 
       {/* Listings */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         {businessesLoading ? (
           <div className="space-y-6">
             {Array.from({ length: 10 }).map((_, i) => (

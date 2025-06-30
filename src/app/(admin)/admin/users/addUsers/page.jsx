@@ -1,12 +1,20 @@
 "use client";
 
 import { apiPost } from "@/lib/apiClient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 export default function AddUserForm() {
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
   const [errors, setErrors] = useState({});
+
+  // Show toast after reload if flagged
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("userCreated") === "true") {
+      toast.success("User Created Successfully!");
+      localStorage.removeItem("userCreated");
+    }
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -34,7 +42,9 @@ export default function AddUserForm() {
 
     try {
       const res = await apiPost("/users/users", formData); 
+      localStorage.setItem("userCreated", "true")
       toast.success('User Created Successfully!')
+      window.location.reload();
       console.log("User created:", res);
     } catch (error) {
       toast.error("Failed to create user.");

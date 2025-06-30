@@ -1,5 +1,6 @@
 "use client";
 
+import Pagination from '@/app/(admin)/admin/components/usercomp/Pagination';
 import { apiGet } from '@/lib/apiClient';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -23,6 +24,9 @@ function SkeletonCard() {
 export default function Enquiries() {
   const [groupedEnquiries, setGroupedEnquiries] = useState({});
   const [loading, setLoading] = useState(true);
+   const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+  
   const [token, setToken] = useState(null);
   const router = useRouter();
 
@@ -49,6 +53,10 @@ export default function Enquiries() {
   
 
   const businessIds = Object.keys(groupedEnquiries);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
@@ -102,6 +110,9 @@ export default function Enquiries() {
           );
         })
       )}
+
+      {/* Pagination */}
+       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 }

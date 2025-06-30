@@ -356,7 +356,7 @@ export default function BusinessRegister({ ownerId }) {
       </button>
 
       {/* Success Modal */}
-      <SuccessModal isOpen={isSuccessModalOpen}  onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" />
+      {/* <SuccessModal isOpen={isSuccessModalOpen}  onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" /> */}
     </form>
   );
 }

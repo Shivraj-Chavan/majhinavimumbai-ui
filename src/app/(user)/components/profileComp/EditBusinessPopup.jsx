@@ -7,7 +7,7 @@ import { apiGet, apiPut } from "@/lib/apiClient";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import CONFIG from './../../../../constance'
 export default function EditBusinessPopup({ business, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -64,7 +64,7 @@ export default function EditBusinessPopup({ business, onClose }) {
       });
 
       const fullPhotoUrls = (business.images || []).map((image) =>
-        image.url.startsWith("http") ? image.url : `http://69.62.84.113:5005${image.url}`
+        image.url.startsWith("http") ? image.url : `${CONFIG.IMAGE_BASE_URL}${image.url}`
       );
       setExistingPhotos(fullPhotoUrls);
       setSelectedPhotos([]);
@@ -103,7 +103,7 @@ export default function EditBusinessPopup({ business, onClose }) {
       const photoToDelete = existingPhotos[index];
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://69.62.84.113:5005/businesses/${business.id}/photos`, {
+      await axios.delete(`${CONFIG.API_BASE_URL}/businesses/${business.id}/photos`, {
         data: { photoUrl: photoToDelete },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -177,7 +177,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         formPhotos.append("user_id", business.owner_id);
 
         const token = localStorage.getItem("token");
-        const photoUploadUrl = isAdmin ? `http://69.62.84.113:5005/api/businesses/${business.id}/photos` : `http://69.62.84.113:5005/api/businesses/update/${business.id}/photos`;
+        const photoUploadUrl = isAdmin ? `${CONFIG.API_BASE_URL}/businesses/${business.id}/photos` : `${CONFIG.API_BASE_URL}/businesses/update/${business.id}/photos`;
         console.log(`Uploading to: ${photoUploadUrl}`);
 
         await axios.post(photoUploadUrl, formPhotos, {
