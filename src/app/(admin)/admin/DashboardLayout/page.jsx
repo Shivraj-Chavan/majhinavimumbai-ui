@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slice/userSlice";
 import PopUp from "@/app/(user)/components/home/contactPopup";
 import Image from "next/image";
-
+import CONFIG from './../../../../constance'
 export default function DashboardLayout({ children }) {
   const dispatch = useDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
