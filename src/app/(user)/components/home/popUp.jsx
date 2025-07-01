@@ -73,7 +73,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     setEmail(value);
   
     const gmailRegex = /^[a-zA-Z0-9](?!.*\.\.)[a-zA-Z0-9._%+-]*@gmail\.com$/;
-    if (!gmailRegex.test(value)) {
+    if (!gmailRegex.test(value) && !value.endsWith("@majhinavimumbai.com")) {
       setErrors((prev) => ({ ...prev, email: "Please enter a valid @gmail.com email address." }));
     } else {
       setErrors((prev) => ({ ...prev, email: "" }));
@@ -117,7 +117,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
         errorMap.email = "Email is required";
       } else {
         const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-        if (!gmailRegex.test(email)) {
+        if (!gmailRegex.test(email) && !email.endsWith("@majhinavimumbai.com")) {
           errorMap.email = "Please enter a valid @gmail.com email address.";
         }
       }
