@@ -68,12 +68,14 @@ export default function ListingInfo() {
   const [showStickyHero, setShowStickyHero] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
-
+  const [refreshApi,setRefreshApi]=useState(0)
 
   useEffect(() => {
     if (!slug) return;
     const fetchBusiness = async () => {
       try {
+        setLoading(true);
+
         const data = await apiGet(`/businesses/s/${slug}`);
         if (!data.business) throw new Error("Business not found.");
         setBusiness(data.business);
@@ -86,7 +88,7 @@ export default function ListingInfo() {
       }
     };
     fetchBusiness();
-  }, [slug]);
+  }, [slug,refreshApi]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -196,11 +198,11 @@ export default function ListingInfo() {
         <div className="bg-white rounded-3xl shadow-xl p-5 sm:p-8">
           <Info business={business} hours={hours} />
           <div className="mt-8">
-          <Tab business={business} renderStars={renderStars} businessOwnerId={business?.owner_id} currentUserId={currentUserId}/>
+          <Tab setRefreshApi={setRefreshApi} business={business} renderStars={renderStars} businessOwnerId={business?.owner_id} currentUserId={currentUserId}/>
 
           </div>
           <div className="mt-12">
-            <UsersndMsg setReviews={setReviews} businessId={business.id} />
+            <UsersndMsg setRefreshApi={setRefreshApi} setReviews={setReviews} businessId={business.id} />
           </div>
         </div>
 

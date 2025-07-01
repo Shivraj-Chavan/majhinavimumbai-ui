@@ -3,6 +3,7 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { MdCheckCircle } from "react-icons/md";
+import Link from "next/link";
 
 export default function SuccessModal({ isOpen, onClose, message }) {
   // const router = useRouter();
@@ -48,10 +49,11 @@ export default function SuccessModal({ isOpen, onClose, message }) {
                     <p className="text-sm text-gray-500">{message || "Your action was successful."}</p>
                   </div>
                   <div className="mt-6">
-                    <button type="button" className="inline-flex justify-center rounded-full bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 transition-all" onClick={handleClose} >
-                      Go to Homepage
-                    </button>
-                  </div>
+                    {/* <h1 className="font-bold text-lg m-4">Business added Successfully !</h1> */}
+                    <Link href="/mybussiness" className="inline-flex justify-center rounded-full bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 transition-all" onClick={handleClose}>
+                    Okay
+                    </Link>                  
+                    </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

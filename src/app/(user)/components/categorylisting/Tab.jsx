@@ -5,7 +5,7 @@ import Image from "next/image";
 import { apiDelete, apiGet } from "@/lib/apiClient";
 import { toast } from "react-toastify";
 
-const Tab = ({ business, renderStars}) => {
+const Tab = ({ business, renderStars, setRefreshApi}) => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [businessOwnerId, setBusinessOwnerId] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -73,8 +73,8 @@ const Tab = ({ business, renderStars}) => {
     const isReviewer = (reviewUserId) === (currentUserId);
   
     try {
-      const res = await apiDelete(`/reviews/reviews/${reviewId}`); 
-      console.log('Delete Review',res);
+      const data = await apiDelete(`/reviews/reviews/${reviewId}`); 
+      console.log('Delete Review',data);
   
       if (data.success || data.message === "Review deleted successfully") {
         toast.success(data.message || "Review deleted");
@@ -90,7 +90,9 @@ const Tab = ({ business, renderStars}) => {
       console.error("Error deleting review:", error);
       toast.error("Failed to delete review");
     } finally {
+      setRefreshApi((oldCount) => oldCount + 1);
       setVisibleMenu(null);
+
     }
   };
   

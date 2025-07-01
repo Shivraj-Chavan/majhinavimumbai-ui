@@ -304,7 +304,7 @@ export default function Navbar() {
                       className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-2 hover:shadow transition"
                     >
                       <Image
-                        src="/resto.jpg"
+                        src={profileImage}
                         // alt="User"
                         width={24}
                         height={24}
@@ -326,7 +326,7 @@ export default function Navbar() {
                         <ul className="py-1 text-sm text-gray-700">
                           <li>
                             <button
-                              onClick={() => handleNavigate("/mybusiness")}
+                              onClick={() => handleNavigate("/mybussiness")}
                               className="flex items-center gap-x-2 w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                             >
                               <IoBusinessSharp className="text-md" />

@@ -7,7 +7,7 @@ import { apiPost } from '@/lib/apiClient';
 import Star from '@/app/(user)/components/categorylisting/Star'
 import { toast } from 'react-toastify';
 
-export default function UsersndMsg({ setReviews ,businessId}) {
+export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -61,7 +61,9 @@ export default function UsersndMsg({ setReviews ,businessId}) {
     } catch (error) {
       console.error('Failed to send review:', error.message);
     } finally {
+      setRefreshApi((oldCount) => oldCount + 1);
       setSubmitting(false);
+      
     }
   };
   
@@ -80,6 +82,7 @@ export default function UsersndMsg({ setReviews ,businessId}) {
     {isLoggedIn ? (
       <div className="mt-10 bg-white rounded-xl shadow-xl p-6 max-w-2xl mx-auto">
         <form onSubmit={handleMessageSubmit}>
+       
           <Star rating={rating} setRating={setRating} />
           <h2 className="text-xl font-semibold mb-4 text-blue-800">Feedback</h2>
   

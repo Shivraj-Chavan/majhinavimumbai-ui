@@ -3,6 +3,7 @@ import { Dialog } from "@headlessui/react";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { apiPut } from '@/lib/apiClient';
+import { toast } from 'react-toastify';
 
 export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -104,7 +105,8 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   
       await apiPut(`/businesses/${business?.id}`, payload);
       console.log("Changes",payload);
-      alert("Business updated successfully!");
+      // alert("Business updated successfully!");
+      toast.success("Business updated successfully!")
       setIsEditing(false);
       onClose();
       if (payload.is_verified) {

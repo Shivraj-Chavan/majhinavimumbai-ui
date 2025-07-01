@@ -12,7 +12,7 @@ export default function PendingUpdates() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchUpdates = async () => {
     try {
