@@ -50,9 +50,9 @@ export default function SuccessModal({ isOpen, onClose, message }) {
                   </div>
                   <div className="mt-6">
                     {/* <h1 className="font-bold text-lg m-4">Business added Successfully !</h1> */}
-                    <Link href="/mybussiness" className="inline-flex justify-center rounded-full bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 transition-all" onClick={handleClose}>
+                    <button className="inline-flex justify-center rounded-full bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 transition-all" onClick={handleClose}>
                     Okay
-                    </Link>                  
+                    </button>                  
                     </div>
                 </div>
               </Dialog.Panel>

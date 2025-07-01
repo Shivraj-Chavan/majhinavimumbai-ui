@@ -178,7 +178,7 @@ export default function EditBusinessPopup({ business, onClose }) {
 
         const token = localStorage.getItem("token");
         const photoUploadUrl = isAdmin ? `${CONFIG.API_BASE_URL}/businesses/${business.id}/photos` : `${CONFIG.API_BASE_URL}/businesses/update/${business.id}/photos`;
-        console.log(`Uploading to: ${photoUploadUrl}`);
+        // console.log(`Uploading to: ${photoUploadUrl}`);
 
         await axios.post(photoUploadUrl, formPhotos, {
           headers: {
