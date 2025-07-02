@@ -40,7 +40,7 @@ export default function WeOffer() {
             <h1 className="font-bold text-2xl md:text-3xl text-blue-800 mb-2">What We Offer</h1>
             {offers.map((item, index) => (
               <div key={index} className="flex items-start px-3">
-                <FaCheckSquare className="text-green-600 text-lg mt-1.5 " />
+               <FaCheckSquare className="text-green-600 text-base sm:text-lg mt-1 sm:mt-1"/>
                 <p className="text-md text-gray-700 leading-relaxed ml-2 ">{item}</p>
               </div>
             ))}

@@ -29,7 +29,6 @@ export default function About() {
             sizes="(max-width: 768px) 100vw, 400px"
           />
         </div>
-
         )}
       </div>
 

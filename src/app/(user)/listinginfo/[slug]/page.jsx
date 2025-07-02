@@ -17,15 +17,6 @@ import Link from "next/link";
 import { IoIosCall } from "react-icons/io";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
-const hours = {
-  Monday: "10 AM - 10 PM",
-  Tuesday: "10 AM - 10 PM",
-  Wednesday: "10 AM - 10 PM",
-  Thursday: "10 AM - 10 PM",
-  Friday: "10 AM - 11 PM",
-  Saturday: "9 AM - 11 PM",
-  Sunday: "9 AM - 9 PM",
-};
 
 // Skeleton loader kept same
 function SkeletonLoader() {
@@ -70,6 +61,7 @@ export default function ListingInfo() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [refreshApi,setRefreshApi]=useState(0)
 
+
   useEffect(() => {
     if (!slug) return;
     const fetchBusiness = async () => {
@@ -84,7 +76,6 @@ export default function ListingInfo() {
         setError("🤗 Oops ! Your Business is not Verified"|| "Error loading business");
       } finally {
         setLoading(false);
-        // alert()
       }
     };
     fetchBusiness();
@@ -151,8 +142,8 @@ export default function ListingInfo() {
               <div className="w-20 h-20 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-2xl font-extrabold text-blue-700 shadow-lg">{business.name?.[0]}</div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-blue-900 mb-1">{business.name}</h1>
-                <p className="text-sm sm:text-base text-gray-600 mb-2">{business.category} · {business.address}</p>
-                <div className="flex items-center gap-2">{renderStars(business.rating)}</div>
+                <p className="text-sm sm:text-base text-gray-600 mb-2">{business.category} {business.address}</p>
+                {/* <div className="flex items-center gap-2">{renderStars(business.rating)}</div> */}
               </div>
             </div>
 
@@ -189,15 +180,21 @@ export default function ListingInfo() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-5 mb-9">
-          <Actionbtn href={business.website} icon={<FcGlobe />} label="Website" ringColor="blue" />
+          <Actionbtn
+           href={
+            business.website?.startsWith("http")
+              ? business.website
+              : `https://${business.website}`
+          }
+          icon={<FcGlobe />} label="Website" isButton={false} ringColor="blue" />
           <Actionbtn href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(business.mapLink || business.name || "Your Business Location")}`} icon={<FcDownRight />} label="Directions" ringColor="gray" />
           <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
           {/* <Actionbtn icon={<FcBookmark />} label="Save" ringColor="orange" isButton /> */}
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-5 sm:p-8">
-          <Info business={business} hours={hours} />
-          <div className="mt-8">
+        {/* <Info hours={business.timings} /> */}
+          <div className="mt-2">
           <Tab setRefreshApi={setRefreshApi} business={business} renderStars={renderStars} businessOwnerId={business?.owner_id} currentUserId={currentUserId}/>
 
           </div>

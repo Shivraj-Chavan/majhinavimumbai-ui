@@ -82,7 +82,46 @@ export default function BusinessRegister({ ownerId }) {
       return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
     }
 
+    const handleTimingChange = (index, field, value, day) => {
+      setFormData((prev) => {
+        const updatedTimings = [...(prev.timing || [])];
+        const existingIndex = updatedTimings.findIndex((t) => t.day === day);
+    
+        if (existingIndex >= 0) {
+          updatedTimings[existingIndex] = {
+            ...updatedTimings[existingIndex],
+            [field]: value,
+          };
+    
+          // If "closed" is checked, reset times
+          if (field === "closed" && value === true) {
+            updatedTimings[existingIndex].open = "";
+            updatedTimings[existingIndex].close = "";
+          }
+        } else {
+          const newEntry = { day, open: "", close: "", closed: false };
+          newEntry[field] = value;
+          if (field === "closed" && value === true) {
+            newEntry.open = "";
+            newEntry.close = "";
+          }
+          updatedTimings.push(newEntry);
+        }
+    
+        return { ...prev, timing: updatedTimings };
+      });
+    };
 
+    const clearTiming = (day) => {
+      setFormData((prev) => {
+        const updatedTimings = (prev.timing || []).map((t) =>
+          t.day === day ? { ...t, open: "", close: "", closed: false } : t
+        );
+        return { ...prev, timing: updatedTimings };
+      });
+    };
+    
+  
   const handleInputChange = (label,value) => {
     setFormData((prev) => ({ ...prev, [label]: value }));
   };
@@ -91,22 +130,22 @@ export default function BusinessRegister({ ownerId }) {
     "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
   ];
   
-  const handleTimingChange = (index, field, value) => {
-    const updatedTimings = [...formData.timing];
-    updatedTimings[index][field] = value;
-    setFormData({ ...formData, timing: updatedTimings });
-  };
+  // const handleTimingChange = (index, field, value) => {
+  //   const updatedTimings = [...formData.timing];
+  //   updatedTimings[index][field] = value;
+  //   setFormData({ ...formData, timing: updatedTimings });
+  // };
   
-  const addTiming = () => {
-    setFormData((prev) => ({ ...prev,
-      timing: [...prev.timing, { day: "", open: "09:00", close: "18:00" }],
-    }));
-  };
+  // const addTiming = () => {
+  //   setFormData((prev) => ({ ...prev,
+  //     timing: [...prev.timing, { day: "", open: "09:00", close: "18:00" }],
+  //   }));
+  // };
 
-  const removeTiming = (index) => {
-    const updatedTimings = formData.timing.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, timing: updatedTimings }));
-  };
+  // const removeTiming = (index) => {
+  //   const updatedTimings = formData.timing.filter((_, i) => i !== index);
+  //   setFormData((prev) => ({ ...prev, timing: updatedTimings }));
+  // };
 
   const handleCategoryChange = (e) => {
     const selectedSlug = e.target.value;
@@ -151,7 +190,7 @@ export default function BusinessRegister({ ownerId }) {
       await apiPost("/businesses", finalData);
       console.log('bussiness',finalData);
       
-      // toast.success("Business Registered Successfully!");
+      toast.success("Bussiness Registered Successfully!");
       setSuccessModalOpen(true);
 
       setFormData({
@@ -276,76 +315,150 @@ export default function BusinessRegister({ ownerId }) {
 
         <div className="md:col-span-6">
           <Input label="Website" value={formData.website} onChange={(e) => handleInputChange("website", e.target.value)} />
+          </div>
         </div>
 
-        {/* Business Timings */}
-        <div className="md:col-span-12">
-            <h3 className="font-semibold text-gray-700 mb-4">Business Timings</h3>
+{/* Business Timings */}
+<div className="w-full">
+  <h3 className="font-semibold text-gray-700 mb-4 mt-6">Business Timings</h3>
 
-            {formData?.timing?.map((timing, index) => (
-              <div key={index} className="flex flex-col md:flex-row gap-4 mb-4">
-                
-                {/* Day Dropdown */}
-                <div className="w-full md:w-1/4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Day</label>
-                  <select
-                    value={timing.day}
-                    onChange={(e) => handleTimingChange(index, "day", e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-2 w-full"
-                  >
-                    <option value="">Select Day</option>
-                    {daysOfWeek.map((day) => (
-                      <option key={day} value={day}>{day}</option>
-                    ))}
-                  </select>
-                </div>
+  {/* Desktop Table View */}
+  <div className="hidden md:block">
+    <table className="w-full text-left border rounded-lg text-sm">
+      <thead className="bg-gray-100 text-gray-700">
+        <tr>
+          <th className="px-4 py-2">#</th>
+          <th className="px-4 py-2">Day</th>
+          <th className="px-4 py-2">Open Time</th>
+          <th className="px-4 py-2">Close Time</th>
+          <th className="px-4 py-2">Closed</th>
+          <th className="px-4 py-2">Status</th>
+          <th className="px-4 py-2">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {daysOfWeek.map((day, index) => {
+          const currentTiming = formData.timing?.find((t) => t.day === day) || {
+            open: "",
+            close: "",
+            closed: false,
+          };
 
-                {/* Open Time */}
-                <div className="w-full md:w-1/4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Open Time</label>
-                  <input
-                    type="time"
-                    value={timing.open}
-                    onChange={(e) => handleTimingChange(index, "open", e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-2 w-full"
-                  />
-                </div>
+          return (
+            <tr key={day} className="border-b">
+              <td className="px-4 py-2">{index + 1}</td>
+              <td className="px-4 py-2 font-medium">{day}</td>
+              <td className="px-4 py-2">
+                <input
+                  type="time"
+                  value={currentTiming.open}
+                  disabled={currentTiming.closed}
+                  onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
+                  className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
+                />
+              </td>
+              <td className="px-4 py-2">
+                <input
+                  type="time"
+                  value={currentTiming.close}
+                  disabled={currentTiming.closed}
+                  onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
+                  className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
+                />
+              </td>
+              <td className="px-4 py-2 text-center">
+                <input
+                  type="checkbox"
+                  checked={currentTiming.closed || false}
+                  onChange={(e) => handleTimingChange(index, "closed", e.target.checked, day)}
+                />
+              </td>
+              <td className="px-4 py-2">
+                {currentTiming.closed ? (
+                  <span className="text-gray-600 italic">Closed</span>
+                ) : currentTiming.open && currentTiming.close ? (
+                  <span className="text-green-600 font-semibold">✅ Set</span>
+                ) : (
+                  <span className="text-gray-400">Not Set</span>
+                )}
+              </td>
+              <td className="px-4 py-2">
+                <button
+                  type="button"
+                  onClick={() => clearTiming(day)}
+                  className="text-red-500 hover:underline text-sm"
+                >
+                  Clear
+                </button>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
 
-                {/* Close Time */}
-                <div className="w-full md:w-1/4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Close Time</label>
-                  <input
-                    type="time"
-                    value={timing.close}
-                    onChange={(e) => handleTimingChange(index, "close", e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-2 w-full"
-                  />
-                </div>
+  {/* Mobile Card View */}
+  <div className="block md:hidden space-y-4">
+    {daysOfWeek.map((day, index) => {
+      const currentTiming = formData.timing?.find((t) => t.day === day) || {
+        open: "",
+        close: "",
+        closed: false,
+      };
 
-                {/* Remove Button */}
-                <div className="w-full md:w-1/4 flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => removeTiming(index)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Remove
-                  </button>
-                </div>
-
-              </div>
-            ))}
-
-            {/* Add Button */}
-            <button
-              type="button"
-              onClick={addTiming}
-              className="text-blue-600 mt-4 hover:underline"
-            >
-              + Add Timing
-            </button>
+      return (
+        <div key={day} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <span className="font-medium text-gray-700">{index + 1}. {day}</span>
+            <input
+              type="checkbox"
+              checked={currentTiming.closed || false}
+              onChange={(e) => handleTimingChange(index, "closed", e.target.checked, day)}
+            />
           </div>
+
+          <div className="space-y-2">
+            <div>
+              <label className="block text-sm text-gray-600">Open Time</label>
+              <input
+                type="time"
+                value={currentTiming.open}
+                disabled={currentTiming.closed}
+                onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
+                className="border border-gray-300 rounded px-3 py-2 w-full disabled:bg-gray-100"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-600">Close Time</label>
+              <input
+                type="time"
+                value={currentTiming.close}
+                disabled={currentTiming.closed}
+                onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
+                className="border border-gray-300 rounded px-3 py-2 w-full disabled:bg-gray-100"
+              />
+            </div>
+
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-sm text-gray-500">
+                {currentTiming.closed ? "Closed" : currentTiming.open && currentTiming.close ? "✅ Set" : "Not Set"}
+              </span>
+              <button
+                type="button"
+                onClick={() => clearTiming(day)}
+                className="text-red-500 text-sm hover:underline"
+              >
+                Clear
+              </button>
+            </div>
           </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
           
       {/* Submit Button */}
       <button

@@ -28,6 +28,10 @@ export default function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleScrollDown = () => {
+    window.scrollBy({ top: 150, behavior: "smooth" });  
+  };
+
   if (loading) {
     return (
       <div className="relative w-full h-[450px] md:h-[550px] max-w-8xl mx-auto shadow-xl overflow-hidden">
@@ -63,17 +67,16 @@ export default function HeroSection() {
 
   // Normal render when not loading
   return (
-    <div className="relative w-full h-[450px] md:h-[550px] overflow-hidden shadow-xl max-w-8xl mx-auto">
-    {/* Background Image */}
-    <div className="absolute inset-0 z-0">
-      <Image
-        src="/nmmc.png"
-        alt="I Love Majhi Navi Mumbai"
-        fill
-        className="object-contain object-[center_-50px] w-full h-full blur-sm brightness-95"
-        priority
-      />
-    </div>
+    <div className="relative w-full h-[450px] sm:h-[400px] md:h-[600px] overflow-hidden shadow-xl max-w-8xl mx-auto">
+  <div className="absolute inset-0 z-0">
+    <Image
+      src="/nmmc.png"
+      alt="I Love Majhi Navi Mumbai"
+      fill
+      className="object-contain object-center w-full h-full blur-sm brightness-95 transition-all duration-500"
+      priority
+    />
+  </div>
  
   <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/10 backdrop-blur-md h-full">
 
@@ -181,7 +184,7 @@ export default function HeroSection() {
         </div>
 
         {/* Bouncing arrow */}
-        <div className="flex flex-col items-center fixed bottom-4 right-4 z-50 animate-bounce md:hidden">
+        <div onClick={handleScrollDown} className="flex flex-col items-center fixed bottom-4 right-4 z-50 animate-bounce md:hidden">
           <span className="text-xs sm:text-sm mb-1 text-gray-600">Scroll Down</span>
           <div className="text-xl sm:text-2xl text-gray-700 p-2 bg-gray-500/10 rounded-full">
             <MdOutlineKeyboardDoubleArrowDown />

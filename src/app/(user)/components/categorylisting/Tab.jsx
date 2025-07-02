@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { apiDelete, apiGet } from "@/lib/apiClient";
 import { toast } from "react-toastify";
+import CONFIG from "@/constance";
 
 const Tab = ({ business, renderStars, setRefreshApi}) => {
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -171,21 +172,40 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
       </section>
 
       {/* Detail */}
-      <section id="detail" className="scroll-mt-24">
-        <h2 className="text-2xl font-semibold text-blue-900 mb-2">Detail</h2>
-        <ul className="text-gray-700 space-y-2">
-          {business.menu?.length > 0 ? (
-            business.menu.map((item, idx) => (
-              <li key={idx} className="flex justify-between border-b py-2">
-                <span>{item.item}</span>
-                <span>{item.price}</span>
-              </li>
-            ))
-          ) : (
-            <p className="text-gray-500">No menu items available.</p>
-          )}
-        </ul>
-      </section>
+      <section id="timings" className="scroll-mt-24">
+  <h2 className="text-2xl font-semibold text-blue-900 mb-2">Business Timings</h2>
+
+  {business.timing ? (
+    <ul className="text-gray-700 text-sm space-y-1">
+      {(() => {
+        let parsedTimings = [];
+
+        try {
+          parsedTimings = typeof business.timing === "string" ? JSON.parse(business.timing) : business.timing;
+        } catch (error) {
+          console.error("Failed to parse timings", error);
+        }
+
+        return parsedTimings.length > 0 ? (
+          parsedTimings.map((t, i) => (
+            <li key={i}>
+              <strong>{t.day}:</strong>{" "}
+              {t.closed
+                ? "Closed"
+                : `${t.open || "--"} - ${t.close || "--"}`}
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500">No timing data available.</p>
+        );
+      })()}
+    </ul>
+  ) : (
+    <p className="text-gray-500">Timings not provided.</p>
+  )}
+</section>
+
+
 
       {/* Reviews */}
     <section id="reviews" className="scroll-mt-24">
@@ -254,7 +274,7 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
             business.images.filter((img) => img) 
             .map((img, i) => (
               <div key={i} className="relative h-40 rounded-lg overflow-hidden">
-                <Image src={img} alt={`Photo ${i + 1}`} fill className="object-cover" />
+                <Image src={`${CONFIG.IMAGE_BASE_URL}${img.url}`} alt={`Photo ${i + 1}`} fill className="object-cover" />
               </div>
             ))
           ) : (

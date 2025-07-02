@@ -27,15 +27,15 @@ export default function SidebarMenu() {
                 <SidebarSubItem title="Sent" href="/messages/sent" />
                 <SidebarSubItem title="Drafts" href="/messages/drafts" />
               </SidebarItemWithSubmenu> */}
-            <h1 className="ms-3 font-bold flex items-center gap-2"> <LuUsers className="h-5 w-5" /> Users</h1>
-            <SidebarItem title="Add Users " href="/admin/users/addUsers"/>
-            <SidebarItem title="Users" href="/admin/users" />
-            <SidebarItem title="Business Users" href="/admin/users/businessUsers" />
-            <SidebarItem title="Pending User Requests" href="/admin/users/pendingRequest" />
-            <SidebarItem title="Pending Business Request" href="/admin/users/pendingbusinessrequest"/>
+            {/* <h1 className="ms-3 font-bold flex items-center gap-2"> <LuUsers className="h-5 w-5" /> Users</h1> */}
+            <SidebarItem title="Create Users " href="/admin/users/addUsers"/>
+            <SidebarItem title="All Users" href="/admin/users" />
+            <SidebarItem title="Verified Businesses" href="/admin/users/businessUsers" />
+            <SidebarItem title="Pending Business Verification" href="/admin/users/pendingRequest" />
+            <SidebarItem title="Pending Business Update Request" href="/admin/users/pendingbusinessrequest"/>
             <SidebarItem title="Contact List" href="/admin/users/contactList"/>
-            <SidebarItem title="Review List" href="/admin/users/reviewList"/>
-            <SidebarItem title="Enquiry List" href="/admin/users/enquiryList"/>
+            <SidebarItem title="Review Delete Queries" href="/admin/users/reviewList"/>
+            <SidebarItem title="Enquiry To business" href="/admin/users/enquiryList"/>
             
 
 

@@ -67,7 +67,7 @@ export default function BusinessUsersPage({business}) {
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Pending Bussiness Request</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Pending User Request</h2>
 
       {loading ? (
         <div className="text-center text-gray-600">Loading...</div>

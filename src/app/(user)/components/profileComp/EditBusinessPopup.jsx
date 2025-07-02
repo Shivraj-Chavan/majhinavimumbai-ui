@@ -12,10 +12,10 @@ export default function EditBusinessPopup({ business, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    timing: "",
+    timing: [],
     website: "",
-    contactNumber: "",
-    whatsappNumber: "",
+    phone: "",
+    wp_number: "",
     area: "",
     landmark: "",
     sector: "",
@@ -52,9 +52,18 @@ export default function EditBusinessPopup({ business, onClose }) {
         name: business.name || "",
         description: business.description || "",
         website: business.website || "",
-        contactNumber: business.contactNumber || "",
-        wp_number: business.wp_number || "",
-        timing: business.timing || "",
+        phone: business.phone || "",
+        timing: (() => {
+          try {
+            const parsed = Array.isArray(business.timing)
+              ? business.timing
+              : JSON.parse(business.timing || "[]");
+            console.log({parsed})
+            return parsed.filter((t) => t.day && typeof t.day === "string");
+          } catch {
+            return [];
+          }
+        })(),
         address: business.address || "",
         area: business.area || "",
         sector: business.sector || "",
@@ -74,22 +83,51 @@ export default function EditBusinessPopup({ business, onClose }) {
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
 
-    if (type === "file" && name === "photos") {
-      const newFiles = Array.from(files).map((file) =>
-        Object.assign(file, { preview: URL.createObjectURL(file) })
-      );
-
-      if (existingPhotos.length + selectedPhotos.length + newFiles.length > 2) {
-        toast.error("Max 2 photos allowed (existing + new)");
-        newFiles.forEach((file) => URL.revokeObjectURL(file.preview));
-        return;
+    // Handle website validation
+      let updatedValue = value;
+      if (name === "website") {
+        if (value && !value.startsWith("http://") && !value.startsWith("https://")) {
+          updatedValue = `http://${value}`;
+        }
       }
 
-      setSelectedPhotos((prev) => [...prev, ...newFiles]);
+    if (type === "file" && name === "photos") {
+      const newFiles = Array.from(files);
+  
+      // Validate file size
+      for (let file of newFiles) {
+        if (file.size > 5 * 1024 * 1024) { // 5MB in bytes
+          toast.error(`File "${file.name}" exceeds 5MB size limit`);
+          return;
+        }
+      }
+    
+      // Check total image count (existing + new)
+      if (existingPhotos.length + selectedPhotos.length + newFiles.length > 2) {
+        toast.error("Max 2 photos allowed (existing + new)");
+        return;
+      }
+    
+      const filesWithPreview = newFiles.map((file) =>
+        Object.assign(file, { preview: URL.createObjectURL(file) })
+      );
+    
+      setSelectedPhotos((prev) => [...prev, ...filesWithPreview]);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
+
+  const handleWebsiteBlur = (e) => {
+    const { name, value } = e.target;
+    if (name === "website" && value && !value.startsWith("http://") && !value.startsWith("https://")) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: `http://${value}`,
+      }));
+    }
+  };
+  
 
   // Delete Selected or Existing Photos
   const handleDeletePhoto = (index) => {URL.revokeObjectURL(selectedPhotos[index].preview);
@@ -143,9 +181,9 @@ export default function EditBusinessPopup({ business, onClose }) {
         owner_id: business.owner_id,
         name: formData.name,
         description: formData.description,
-        timing: formData.timing,
+        timing: JSON.stringify(formData.timing),
         website: formData.website,
-        phone: formData.contactNumber,
+        phone: formData.phone,
         wp_number: formData.wp_number,
         area: formData.area,
         category_id: business.category_id,
@@ -167,7 +205,7 @@ export default function EditBusinessPopup({ business, onClose }) {
       await apiPut(endpoint, payload);
       console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
 
-      alert('Business data submitted successfully')
+      toast.success('Business data submitted successfully')
       console.log("Business data submitted successfully");
 
       // Photo upload
@@ -194,7 +232,33 @@ export default function EditBusinessPopup({ business, onClose }) {
       toast.error("Failed to update");
     }
   };
-
+  const updateTiming = (day, field, value) => {
+    setFormData((prev) => {
+      const updated = [...(prev.timing || [])];
+      const index = updated.findIndex((t) => t.day === day);
+      if (index >= 0) {
+        updated[index] = {
+          ...updated[index],
+          [field]: value,
+        };
+  
+        if (field === "closed" && value === true) {
+          updated[index].open = "";
+          updated[index].close = "";
+        }
+      } else {
+        const newEntry = { day, open: "", close: "", closed: false, [field]: value };
+        if (field === "closed" && value === true) {
+          newEntry.open = "";
+          newEntry.close = "";
+        }
+        updated.push(newEntry);
+      }
+  
+      return { ...prev, timing: updated };
+    });
+  };
+  
   return (
     <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-6 md:p-8 relative overflow-y-auto max-h-[95vh]">
@@ -206,12 +270,58 @@ export default function EditBusinessPopup({ business, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
-          <TextEditor label="Description" value={formData.description} onChange={(val) => setFormData((prev) => ({ ...prev, description: val }))} />
-          <Input label="Timing" name="timing" type="text" value={formData.timing} onChange={handleChange} />
-          <Input label="Website" name="website" value={formData.website} onChange={handleChange} />
+          <div>
+  <label htmlFor="description" className="block mb-1 font-medium">
+    Business Details
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    rows={5}
+    value={formData.description}
+    onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+    className="w-full border px-3 py-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+          {/* Timing Section (REPLACED input with custom logic) */}
+<div>
+  <label className="block mb-1 font-medium">Business Timings</label>
+  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
+  const timing = formData?.timing?.find((t) => t.day === day) || { open: "", close: "", closed: false };
+
+    return (
+      <div key={day} className="flex flex-col md:flex-row items-start md:items-center gap-2 mb-2">
+        <span className="w-24 font-medium text-gray-700">{day}</span>
+        <input
+          type="time"
+          value={timing.open}
+          disabled={timing.closed}
+          onChange={(e) => updateTiming(day, "open", e.target.value)}
+          className="border px-2 py-1 rounded w-32 disabled:bg-gray-100"
+        />
+        <input
+          type="time"
+          value={timing.close}
+          disabled={timing.closed}
+          onChange={(e) => updateTiming(day, "close", e.target.value)}
+          className="border px-2 py-1 rounded w-32 disabled:bg-gray-100"
+        />
+        <label className="flex items-center gap-1 text-sm text-gray-600">
+          <input
+            type="checkbox"
+            checked={timing.closed}
+            onChange={(e) => updateTiming(day, "closed", e.target.checked)}
+          />
+          Closed
+        </label>
+      </div>
+    );
+  })}
+</div>
+          <Input label="Website" name="website" value={formData.website} onChange={handleChange} onBlur={handleWebsiteBlur} />
           <div className="flex gap-4">
-            <Input label="Contact" name="contactNumber" type="tel" value={formData.contactNumber} onChange={handleChange} />
-            <Input label="WhatsApp" name="whatsappNumber" type="tel" value={formData.whatsappNumber} onChange={handleChange} />
+            <Input label="Contact" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
+            <Input label="WhatsApp" name="wp_number" type="tel" value={formData.wp_number} onChange={handleChange} />
           </div>
 
           <div>
