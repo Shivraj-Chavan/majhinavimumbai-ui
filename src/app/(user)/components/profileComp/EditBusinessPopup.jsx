@@ -27,6 +27,7 @@ export default function EditBusinessPopup({ business, onClose }) {
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [existingPhotos, setExistingPhotos] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showTextarea, setShowTextarea] = useState('');
 
   useEffect(() => {
     const loadUser=async()=>{
