@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import ContactPopup from "../home/contactPopup"
 import PopUp from '../home/popUp';
+import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 export default function Footer() {
   const [loading, setLoading] = useState(true);
@@ -157,20 +158,56 @@ export default function Footer() {
           </a>
 
           {/* Map */}
-          <div className="mt-4 rounded-md overflow-hidden shadow-sm border border-orange-200">
-            <iframe
-              title="Google Maps Location"
-              src="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706&output=embed"
-              width="30%"
-              height="70"
-              allowFullScreen
-              loading="lazy"
-              className="w-full h-[180px] border-0"
-            ></iframe>
-          </div>
+          <div className="mt-4 rounded-md overflow-hidden shadow-sm border border-orange-200 flex justify-center md:justify-start">
+          <iframe
+            title="Google Maps Location"
+            src="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706&output=embed"
+            allowFullScreen
+            loading="lazy"
+            className="w-full h-[180px] border-0 md:w-[30%]"
+          ></iframe>
+        </div>
+
+        </div>
+
+      </div>
+
+      {/* Column 5 - Social media */}
+    <div className="max-w-7xl mx-auto px-4 mb-6">
+      <div className="flex flex-col items-center justify-center text-center">
+        <h2 className="text-lg font-semibold mb-3 text-red-600">Follow Us</h2>
+        <div className="flex gap-6 text-2xl">
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-blue-600 transition"
+          >
+            <FaFacebookF />
+          </a>
+          <a
+            href="https://youtube.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-red-600 transition"
+          >
+            <FaYoutube />
+          </a>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-500 transition"
+          >
+            <FaInstagram />
+          </a>
         </div>
       </div>
     </div>
+
+    </div>
+
+    
 
     {/* Bottom Section with Enhanced Tricolor */}
     <div className="relative">

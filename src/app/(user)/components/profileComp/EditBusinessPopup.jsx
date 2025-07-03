@@ -53,6 +53,7 @@ export default function EditBusinessPopup({ business, onClose }) {
         description: business.description || "",
         website: business.website || "",
         phone: business.phone || "",
+        wp_number: business.wp_number || "",
         timing: (() => {
           try {
             const parsed = Array.isArray(business.timing)
@@ -271,57 +272,144 @@ export default function EditBusinessPopup({ business, onClose }) {
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
           <div>
-  <label htmlFor="description" className="block mb-1 font-medium">
-    Business Details
-  </label>
-  <textarea
-    id="description"
-    name="description"
-    rows={5}
-    value={formData.description}
-    onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-    className="w-full border px-3 py-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
-</div>
-          {/* Timing Section (REPLACED input with custom logic) */}
-<div>
-  <label className="block mb-1 font-medium">Business Timings</label>
-  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
-  const timing = formData?.timing?.find((t) => t.day === day) || { open: "", close: "", closed: false };
-
-    return (
-      <div key={day} className="flex flex-col md:flex-row items-start md:items-center gap-2 mb-2">
-        <span className="w-24 font-medium text-gray-700">{day}</span>
-        <input
-          type="time"
-          value={timing.open}
-          disabled={timing.closed}
-          onChange={(e) => updateTiming(day, "open", e.target.value)}
-          className="border px-2 py-1 rounded w-32 disabled:bg-gray-100"
-        />
-        <input
-          type="time"
-          value={timing.close}
-          disabled={timing.closed}
-          onChange={(e) => updateTiming(day, "close", e.target.value)}
-          className="border px-2 py-1 rounded w-32 disabled:bg-gray-100"
-        />
-        <label className="flex items-center gap-1 text-sm text-gray-600">
-          <input
-            type="checkbox"
-            checked={timing.closed}
-            onChange={(e) => updateTiming(day, "closed", e.target.checked)}
-          />
-          Closed
+        <label htmlFor="description" className="block mb-1 font-medium">
+          Business Details
         </label>
-      </div>
-    );
-  })}
-</div>
+        {/* <textarea
+          id="description"
+          name="description"
+          rows={5}
+          value={formData.description}
+          onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+          className="w-full border px-3 py-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+        /> */}
+
+         <div>
+            {!showTextarea ? (
+              <div>
+                <div className="text-sm text-gray-800 whitespace-pre-wrap">
+                  {formData.description.length > 100 ? (
+                    <>
+                      {descriptionPreview}...
+                      <button
+                        onClick={() => setShowTextarea(true)}
+                        className="ml-1 text-blue-500 underline text-sm"
+                      >
+                        Read More
+                      </button>
+                    </>
+                  ) : (
+                    formData.description || "No description"
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={5}
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                  className="w-full border px-3 py-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={() => setShowTextarea(false)}
+                  className="mt-1 text-blue-500 underline text-sm"
+                >
+                  Read Less
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+      {/* Timing Section (REPLACED input with custom logic) */}
+        <div>
+          <label className="block mb-1 font-medium">Business Timings</label>
+          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
+          const timing = formData?.timing?.find((t) => t.day === day) || { open: "", close: "", closed: false };
+
+            return (
+              <div key={day} className="flex flex-col md:flex-row items-start md:items-center gap-2 mb-2">
+                <span className="w-24 font-medium text-gray-700">{day}</span>
+                <input
+                  type="time"
+                  value={timing.open}
+                  disabled={timing.closed}
+                  onChange={(e) => updateTiming(day, "open", e.target.value)}
+                  className="border px-2 py-1 rounded w-32 disabled:bg-gray-100"
+                />
+                <input
+                  type="time"
+                  value={timing.close}
+                  disabled={timing.closed}
+                  onChange={(e) => updateTiming(day, "close", e.target.value)}
+                  className="border px-2 py-1 rounded w-32 disabled:bg-gray-100"
+                />
+                <label className="flex items-center gap-1 text-sm text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={timing.closed}
+                    onChange={(e) => updateTiming(day, "closed", e.target.checked)}
+                  />
+                  Closed
+                </label>
+              </div>
+            );
+          })}
+        </div>
           <Input label="Website" name="website" value={formData.website} onChange={handleChange} onBlur={handleWebsiteBlur} />
-          <div className="flex gap-4">
-            <Input label="Contact" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
-            <Input label="WhatsApp" name="wp_number" type="tel" value={formData.wp_number} onChange={handleChange} />
+          <div className="flex gap-5">
+            {/* <Input label="Contact" name="phone" type="tel" value={formData.phone} onChange={handleChange} /> */}
+            {/* <Input label="WhatsApp" name="wp_number" type="tel" value={formData.wp_number} onChange={handleChange} /> */}
+
+            {/* Phone Input with +91 prefix */}
+          <div className="md:col-span-6">
+            <label className="block font-medium text-gray-700 mb-1">Contact</label>
+            <div className="flex border border-gray-300 rounded-md overflow-hidden items-center  w-[320px]">
+              <span className="text-gray-700 text-md px-[9px] border-r border-gray-300">+91</span>
+              <input
+                type="tel"
+                name="phone"
+                maxLength={10}
+                value={formData.phone}
+                onChange={(e) => {
+                  const input = e.target.value.replace(/\D/g, "");
+                  if (input.length <= 10) {
+                    handleChange({ target: { name: "phone", value: input } });
+                  }
+                }}
+                className="w-full px-2 py-2 text-md focus:outline-none"
+                placeholder="Enter 10-digit number"
+              />
+            </div>
+          </div>
+
+          {/* WhatsApp Input with +91 prefix */}
+          <div className="md:col-span-6">
+            <label className="block font-medium text-gray-700 mb-1">WhatsApp</label>
+            <div className="flex border border-gray-300 rounded-md overflow-hidden items-center  w-[320px]">
+              <span className="text-gray-700 text-md px-[9px] border-r border-gray-300">+91</span>
+              <input
+                type="tel"
+                name="wp_number"
+                maxLength={10}
+                value={formData.wp_number}
+                onChange={(e) => {
+                  const input = e.target.value.replace(/\D/g, "");
+                  if (input.length <= 10) {
+                    handleChange({ target: { name: "wp_number", value: input } });
+                  }
+                }}
+                className="w-full px-2 py-2 text-md focus:outline-none"
+                placeholder="Enter 10-digit number"
+              />
+            </div>
+          </div>
+
           </div>
 
           <div>

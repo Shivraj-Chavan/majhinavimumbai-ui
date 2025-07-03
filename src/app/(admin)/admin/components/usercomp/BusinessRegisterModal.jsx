@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { apiPut } from '@/lib/apiClient';
 import { toast } from 'react-toastify';
 
-export default function BusinessRegisterModal({ isOpen, onClose, business }) {
+export default function BusinessRegisterModal({ isOpen, onClose, business, isAdmin = false }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -38,8 +38,8 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
         console.error("Failed to parse timing JSON", err);
       }
       setFormData({...business,timing: parsedTimings,});
-      setSelectedCategory(business.category);
-      setSelectedSubcategory(business.subcategory);
+      setSelectedCategory(business.category_id);
+      setSelectedSubcategory(business.subcategory_id);
     }
   }, [business]);
 
@@ -98,8 +98,8 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const handleSubmit = async () => {
     try {
       const payload = { ...formData,
-        category: selectedCategory,
-        subcategory: selectedSubcategory,
+        category: formData.category_id,
+        subcategory: formData.subcategory_id,
         timing: JSON.stringify(formData.timing),
       };
   
@@ -108,6 +108,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
       // alert("Business updated successfully!");
       toast.success("Business updated successfully!")
       setIsEditing(false);
+      onClose(true);
       onClose();
       if (payload.is_verified) {
         if (typeof onVerified === "function") {
@@ -146,7 +147,6 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
       timing: prev.timing.filter((_, index) => index !== indexToDelete),
     }));
   };
-  
   
   if (!business) return null;
 
@@ -307,8 +307,6 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
               
               )}
             </div>
-
-
 
                 {/* Verification Status */}
                <div className="mt-4">

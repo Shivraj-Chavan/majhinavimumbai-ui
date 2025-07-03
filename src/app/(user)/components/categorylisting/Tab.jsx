@@ -13,6 +13,7 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
   const [loading, setLoading] = useState(true);
   const [visibleMenu, setVisibleMenu] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showFull, setShowFull] = useState(false);
 
   const sections = ["overview", "detail", "reviews", "photos"];
 
@@ -96,6 +97,10 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
 
     }
   };
+
+  const maxChars = 150; 
+  const isLong = business.description.length > maxChars;
+  const preview = business.description.slice(0, maxChars);
   
   // console.log("review user_id", reviews[0]?.user_id);
   // console.log("currentUserId", currentUserId);
@@ -115,7 +120,19 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
       {/* Overview */}
       <section id="overview" className="scroll-mt-24">
         <h2 className="text-2xl font-semibold text-blue-900 mb-2">Overview</h2>
-        <p className="text-gray-700 mb-4">{business.description}</p>
+        {/* <p className="text-gray-700 mb-4">{business.description}</p> */}
+        <p className="text-gray-700 mb-2 whitespace-pre-line">
+        {showFull || !isLong ? business.description : `${preview}...`}
+      </p>
+
+      {isLong && (
+        <button
+          onClick={() => setShowFull((prev) => !prev)}
+          className="text-blue-600 underline text-sm"
+        >
+          {showFull ? 'Read Less' : 'Read More'}
+        </button>
+      )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2 text-gray-700 mb-6">
           {business.phone && <p><strong>Phone:</strong> {business.phone}</p>}
           {business.wp_number && (
@@ -204,7 +221,6 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
     <p className="text-gray-500">Timings not provided.</p>
   )}
 </section>
-
 
 
       {/* Reviews */}

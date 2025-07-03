@@ -163,8 +163,13 @@ export default function PendingUpdates() {
       {/* Modal Component */}
       <BusinessRegisterModal
         isOpen={modalOpen}
-        onClose={closeModal}
+        onClose={(shouldRefresh) => {
+          setModalOpen(false);
+          setSelectedBusiness(null);
+          if (shouldRefresh) fetchUpdates(currentPage); // <-- refresh list
+        }}
         business={selectedBusiness}
+        isAdmin={true}
       />
 
       {/* Image Preview Overlay */}

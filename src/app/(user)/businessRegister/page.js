@@ -301,13 +301,53 @@ export default function BusinessRegister({ ownerId }) {
           <Input label="Area" value={formData.area} onChange={(e) => handleInputChange("area", e.target.value)} />
         </div>
 
-        <div className="md:col-span-6">
+        {/* <div className="md:col-span-6">
           <Input label="Phone" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
           <Input label="WhatsApp Number" value={formData.wp_number} onChange={(e) => handleInputChange("wp_number", e.target.value)} />
+        </div> */}
+
+      <div className="md:col-span-6">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+          <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
+          <input
+            type="tel"
+            maxLength={10}
+            value={formData.phone}
+            onChange={(e) => {
+              const input = e.target.value.replace(/\D/g, ""); 
+              if (input.length <= 10) {
+                handleInputChange("phone", input);
+              }
+            }}
+            className="w-full px-1 py-2 focus:outline-none"
+            placeholder="Enter 10-digit number"
+          />
         </div>
+      </div>
+
+      <div className="md:col-span-6">
+        <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+          <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
+          <input
+            type="tel"
+            maxLength={10}
+            value={formData.wp_number}
+            onChange={(e) => {
+              const input = e.target.value.replace(/\D/g, "");
+              if (input.length <= 10) {
+                handleInputChange("wp_number", input);
+              }
+            }}
+            className="w-full px-1 py-2 focus:outline-none"
+            placeholder="Enter 10-digit number"
+          />
+        </div>
+      </div>
 
         <div className="md:col-span-6">
           <Input label="Email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
