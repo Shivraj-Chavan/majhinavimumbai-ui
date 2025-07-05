@@ -88,7 +88,7 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
 };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
+    <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg h-full">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Business Users</h2>
       <ManageBusinessImagesModal
   isOpen={imageModalOpen}
