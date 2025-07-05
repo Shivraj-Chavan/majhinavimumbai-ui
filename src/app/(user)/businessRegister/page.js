@@ -184,7 +184,7 @@ export default function BusinessRegister({ ownerId }) {
       toast.error(validationResult);
       return;
     }
-    if (!formData.category_id || !formData.subcategory_id) {
+    if (selectedCategory || selectedSubcategory) {
       toast.error("Please select both category and subcategory.");
       return;
     }
