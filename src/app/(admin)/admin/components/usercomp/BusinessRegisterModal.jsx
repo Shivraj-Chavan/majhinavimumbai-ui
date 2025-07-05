@@ -174,8 +174,6 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
               { label: "Email", name: "email" },
               { label: "Address", name: "address" },
               { label: "Area", name: "area" },
-              { label: "Category", name: "category_id" },
-              { label: "Subcategory", name: "subcategory_id" },
               { label: "Pincode", name: "pin_code" },
               { label: "Landmark", name: "landmark" },
               { label: "Sector", name: "sector" },
@@ -194,8 +192,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
               </div>
             ))}
 
-            {isEditing && (
-              <>
+           
                 {/* Category */}
                 <div>
                   <label className="block text-gray-600 font-medium mb-1">Category</label>
@@ -204,6 +201,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
                     onChange={handleCategoryChange}
                     name='category_id'
                     className="w-full px-4 py-2 border rounded-xl"
+                    disabled={!isEditing}
                   >
                     <option value="">Select Category</option>
                     {subcategoriesData.map((cat) => (
@@ -220,6 +218,8 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
                     onChange={handleChange}
                     name='subcategory_id'
                     onFocus={handleSubcategoryFocus}
+                    disabled={!isEditing}
+
                     className={`w-full px-4 py-2 border rounded-xl ${showWarning ? "border-red-500 ring-red-400" : ""}`}
                   >
                     <option value="">Select Subcategory</option>
@@ -229,8 +229,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
                   </select>
                   {showWarning && <p className="text-red-500 text-sm mt-1">Please select a category first.</p>}
                 </div>
-              </>
-            )}
+             
 
 
             {/* Timing */}

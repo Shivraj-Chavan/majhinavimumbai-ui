@@ -11,6 +11,9 @@ import { FcCollaboration } from "react-icons/fc";
 import SuccessModal from "../components/businessRegistercomp/SuccessModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "@/redux/slice/categoriesSlice";
+import { MdDelete } from "react-icons/md";
+import axios from "axios";
+import CONFIG from "@/constance";
 
 export default function BusinessRegister({ ownerId }) {
   const router = useRouter();
@@ -39,7 +42,8 @@ export default function BusinessRegister({ ownerId }) {
     timing:[{ day: "", open: "09:00", close: "18:00" }],
   });
   const dispatch = useDispatch();
-  
+  const [selectedPhotos, setSelectedPhotos] = useState([]);
+
     const { categories, loading, error } = useSelector((state) => state.categories);
   
     useEffect(() => {
@@ -187,10 +191,23 @@ export default function BusinessRegister({ ownerId }) {
     console.log("Data submitting to server:", finalData.timing);
 
     try {
-      await apiPost("/businesses", finalData);
+      const registeredBusiness=await apiPost("/businesses", finalData);
       console.log('bussiness',finalData);
       
       toast.success("Bussiness Registered Successfully!");
+      if (selectedPhotos.length > 0) {
+              const formPhotos = new FormData();
+              selectedPhotos.forEach((file) => formPhotos.append("photos", file));
+      
+              const token = localStorage.getItem("token");
+              const photoUploadUrl = `${CONFIG.API_BASE_URL}/businesses/${registeredBusiness.id}/photos`;
+             
+              await axios.post(photoUploadUrl, formPhotos, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+            }
       setSuccessModalOpen(true);
 
       setFormData({
@@ -217,6 +234,43 @@ export default function BusinessRegister({ ownerId }) {
       console.error("Submission Error:", error);
       toast.error("Error submitting form.");
     }
+  };
+  const handleChange = (e) => {
+    const { name, files, type } = e.target;
+  
+    if (type === "file" && name === "photos") {
+      const newFiles = Array.from(files);
+  
+      // Validate file size
+      for (let file of newFiles) {
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`File "${file.name}" exceeds 5MB size limit`);
+          return;
+        }
+      }
+  
+      // Combine existing + new files
+      const totalFilesCount = selectedPhotos.length + newFiles.length;
+      if (totalFilesCount > 2) {
+        toast.error("You can upload a maximum of 2 photos");
+        return;
+      }
+  
+      const filesWithPreview = newFiles.map((file) =>
+        Object.assign(file, { preview: URL.createObjectURL(file) })
+      );
+  
+      setSelectedPhotos((prev) => [...prev, ...filesWithPreview]);
+    }
+  };
+
+  const handleDeletePhoto = (index) => {
+    const fileToDelete = selectedPhotos[index];
+    if (fileToDelete?.preview) {
+      URL.revokeObjectURL(fileToDelete.preview);
+    }
+  
+    setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
   if (checkingOtp) return null;
@@ -499,7 +553,22 @@ export default function BusinessRegister({ ownerId }) {
     })}
   </div>
 </div>
-          
+           <div>
+                      <label className="block text-sm font-medium mb-1">Add New Photos (max total 2)</label>
+                      <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                      {selectedPhotos.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
+                          {selectedPhotos.map((file, idx) => (
+                            <div key={idx} className="relative w-24 h-24 rounded overflow-hidden border border-gray-300">
+                              <img src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
+                              <button type="button" onClick={() => handleDeletePhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full" aria-label="Delete selected photo">
+                                <MdDelete size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
       {/* Submit Button */}
       <button
         type="submit"
