@@ -16,21 +16,21 @@ export default function BusinessUsersPage({business}) {
   const [pendingList, setPendingList] = useState([]);
 
   const limit = 10;
-  useEffect(() => {
-    const fetchBusinessUsers = async () => {
-      try {
-        setLoading(true);
-        const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
-        setBusinessUsers(response.data); 
-        setTotalPages(response.totalPages); 
-      } catch (error) {
-        console.error("Error fetching business users:", error);
-      } finally { 
-        setLoading(false);
-      }
-    };
+  const fetchBusinessUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
+      setBusinessUsers(response.data);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error("Error fetching business users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchBusinessUsers();
+  useEffect(() => {
+    fetchBusinessUsers(currentPage);
   }, [currentPage]);
  
   const openModal = (business) => {
@@ -56,6 +56,8 @@ export default function BusinessUsersPage({business}) {
       if (response && response.success) {
         setBusinessUsers((prev) => prev.filter((biz) => biz.id !== id));
         alert("Business verified successfully");
+        await fetchBusinessUsers(currentPage); 
+        closeModal(); 
       } else {
         alert("Failed to verify business");
       }

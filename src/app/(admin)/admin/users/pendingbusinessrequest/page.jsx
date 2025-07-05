@@ -16,6 +16,26 @@ export default function PendingUpdates() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [previewImage, setPreviewImage] = useState(null);
+  const [businessUsers, setBusinessUsers] = useState([]);
+
+
+  useEffect(() => {
+    const fetchBusinessUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await apiGet(`/businesses?isVerified=true&page=${currentPage}&limit=${limit}`);
+        setBusinessUsers(response.data); 
+        setTotalPages(response.totalPages); 
+      } catch (error) {
+        console.error("Error fetching business users:", error);
+      } finally { 
+        setLoading(false);
+      }
+    };
+  
+    fetchBusinessUsers();
+  }, [currentPage]);
+  
 
   const fetchUpdates = async (page = 1) => {
     try {

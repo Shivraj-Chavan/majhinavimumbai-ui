@@ -16,6 +16,7 @@ import Enquirymsg from "../../components/categorylisting/Enquirymsg";
 import Link from "next/link";
 import { IoIosCall } from "react-icons/io";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import ShareButton from "../../components/categorylisting/Sharebtn";
 
 
 // Skeleton loader kept same
@@ -91,6 +92,7 @@ export default function ListingInfo() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  
 
   const renderStars = (rating) => {
     const safeRating = typeof rating === "number" && !isNaN(rating) ? rating : 0;
@@ -167,9 +169,10 @@ export default function ListingInfo() {
                 <TbBrandWhatsapp className="text-xl" /> WhatsApp
               </a>
 
-              <button className="inline-flex items-center cursor-pointer gap-2 bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all">
+              {/* <button onClick={handleShare} className="inline-flex items-center cursor-pointer gap-2 bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all">
                 <TfiShare className="text-lg" /> Share
-              </button>
+              </button> */}
+              <ShareButton/>
             </div>
           </div>
 

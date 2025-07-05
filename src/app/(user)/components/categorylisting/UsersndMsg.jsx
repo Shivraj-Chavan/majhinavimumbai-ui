@@ -6,6 +6,7 @@ import PopUp from '../home/popUp';
 import { apiPost } from '@/lib/apiClient';
 import Star from '@/app/(user)/components/categorylisting/Star'
 import { toast } from 'react-toastify';
+import { FaCommentDots } from 'react-icons/fa';
 
 export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
   const [message, setMessage] = useState("");
@@ -84,8 +85,10 @@ export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
         <form onSubmit={handleMessageSubmit}>
        
           <Star rating={rating} setRating={setRating} />
-          <h2 className="text-xl font-semibold mb-4 text-blue-800">Feedback</h2>
-  
+          <div className="flex items-center gap-2 mb-4">
+          <FaCommentDots className="text-pink-500 text-2xl" />
+          <h2 className="text-xl font-semibold text-blue-800">Feedback</h2>
+        </div>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}

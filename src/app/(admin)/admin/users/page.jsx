@@ -81,6 +81,8 @@ export default function Page() {
       const response = await apiPut(`/users/${id}/profile`, updatedData);
       console.log("Response after update:", response);
       toast.success("User updated successfully");
+      // await fetchUsers();
+      setShowPopup(false);
   
       setUsers((prevUsers) => prevUsers.map((user) => user.id === id ? { ...user, ...response } : user));
     } catch (err) {
@@ -193,9 +195,9 @@ export default function Page() {
       </div>
 
       {/* Pagination Component */}
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && ( */}
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
-      )}
+     {/* )} */}
 
       {/* Popup for editing user */}
       <PopupEditUser user={selectedUser} isOpen={showPopup} onClose={() => setShowPopup(false)} onUpdate={handleUpdate}/>

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { apiDelete, apiGet } from "@/lib/apiClient";
 import { toast } from "react-toastify";
 import CONFIG from "@/constance";
+import { FaAddressBook, FaBuilding, FaCity, FaCommentDots, FaEnvelope, FaGlobe, FaInfoCircle, FaMapMarkerAlt, FaMapPin, FaPhoneAlt, FaStarHalfAlt, FaWhatsapp } from "react-icons/fa";
+import { MdPhotoLibrary, MdRateReview } from "react-icons/md";
 
 const Tab = ({ business, renderStars, setRefreshApi}) => {
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -97,10 +99,11 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
 
     }
   };
+  const maxChars = 500;
+  const descriptionText = business.description || "";
+  const isLong = descriptionText.length > maxChars;
+  const preview = descriptionText.slice(0, maxChars);
 
-  const maxChars = 150; 
-  const isLong = business.description.length > maxChars;
-  const preview = business.description.slice(0, maxChars);
   
   // console.log("review user_id", reviews[0]?.user_id);
   // console.log("currentUserId", currentUserId);
@@ -119,113 +122,229 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
 
       {/* Overview */}
       <section id="overview" className="scroll-mt-24">
-        <h2 className="text-2xl font-semibold text-blue-900 mb-2">Overview</h2>
-        {/* <p className="text-gray-700 mb-4">{business.description}</p> */}
+      <div className="flex items-center gap-2 text-blue-800 font-semibold text-xl mb-4">
+        <FaInfoCircle className="text-blue-500" />
+        <h2>Overview</h2>
+      </div>
+        
         <p className="text-gray-700 mb-2 whitespace-pre-line">
-        {showFull || !isLong ? business.description : `${preview}...`}
-      </p>
-
-      {isLong && (
-        <button
-          onClick={() => setShowFull((prev) => !prev)}
-          className="text-blue-600 underline text-sm"
-        >
-          {showFull ? 'Read Less' : 'Read More'}
-        </button>
-      )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2 text-gray-700 mb-6">
-          {business.phone && <p><strong>Phone:</strong> {business.phone}</p>}
-          {business.wp_number && (
-            <p>
-              <strong>WhatsApp:</strong>{" "}
-              <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="text-black underline">
-                {business.wp_number}
-              </a>
-            </p>
-          )}
-          {business.email && (
-            <p>
-              <strong>Email:</strong>{" "}
-              <a href={`mailto:${business.email}`} className="text-blue-600">
-                {business.email}
-              </a>
-            </p>
-          )}
-          {business.website && (
-            <p>
-              <strong>Website:</strong>{" "}
-              <a
-                href={business.website.startsWith("http") ? business.website : `https://${business.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline"
+          {!business.description || business.description.trim() === "" ? (
+            <span className="text-gray-500 italic">No overview added yet.</span>
+          ) : isLong && !showFull ? (
+            <>
+              {preview}...{" "}
+              <button
+                onClick={() => setShowFull(true)}
+                className="text-black font-semibold underline text-sm inline"
               >
-                {business.website}
-              </a>
-            </p>
+                Read more
+              </button>
+            </>
+          ) : (
+            <>
+              {business.description}{" "}
+              {isLong && (
+                <button
+                  onClick={() => setShowFull(false)}
+                  className="text-black font-semibold underline text-sm inline"
+                >
+                  Read less
+                </button>
+              )}
+            </>
           )}
-          {business.pin_code && <p><strong>Pincode:</strong> {business.pin_code}</p>}
-          {business.landmark && <p><strong>Landmark:</strong> {business.landmark}</p>}
-          {business.sector && <p><strong>Sector:</strong> {business.sector}</p>}
-          {business.area && <p><strong>Area:</strong> {business.area}</p>}
-        </div>
+        </p>
+        <hr className="text-gray-100 mt-5"/>
 
-        {business.timings?.length > 0 && (
+        {/* Detail Section */}
+        <h2 className="text-2xl font-semibold text-blue-900 mb-6 flex items-center gap-2 mt-3">
+         <FaAddressBook className="text-indigo-500 text-xl mt-1" /> Business Information </h2>
+
+         <div className=" grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 mt-4">
+          {/* Phone */}
+          {business.phone && (
+            <a href={`tel:${business.phone}`} className="block hover:opacity-90 transition">
+            <div className="flex items-center gap-4">
+              <div className="bg-blue-100 text-blue-600 p-2 rounded-full text-lg">
+                <FaPhoneAlt />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Phone</p>
+                <p className="text-gray-800 font-semibold">{business.phone}</p>
+              </div>
+            </div>
+          </a>
+          
+          )}
+
+          {/* WhatsApp */}
+          {business.wp_number && (
+            <div className="flex items-center gap-4">
+              <div className="bg-green-100 text-green-600 p-2 rounded-full text-lg"> <FaWhatsapp/></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">WhatsApp</p>
+                <a
+                  href={`https://wa.me/+91${business.wp_number}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-800 font-semibold hover:text-green-700"
+                >
+                  {business.wp_number}
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Email */}
+          {business.email && (
+            <div className="flex items-center gap-4">
+              <div className="bg-red-100 text-red-600 p-2 rounded-full text-lg"><FaEnvelope/></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Email</p>
+                <a
+                  href={`mailto:${business.email}`}
+                  className="text-gray-800 font-semibold underline hover:text-red-600"
+                >
+                  {business.email}
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Website */}
+          {business.website && (
+            <div className="flex items-center gap-4">
+              <div className="bg-indigo-100 text-indigo-600 p-2 rounded-full text-lg"><FaGlobe /></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Website</p>
+                <a
+                  href={business.website.startsWith("http") ? business.website : `https://${business.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-800 text-sm font-semibold underline break-words hover:text-indigo-700"
+                >
+                  {business.website}
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Pincode */}
+          {business.pin_code && (
+            <div className="flex items-center gap-4">
+              <div className="bg-gray-100 text-gray-600 p-2 rounded-full text-lg"><FaMapPin /></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Pincode</p>
+                <p className="text-gray-800 font-semibold">{business.pin_code}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Landmark */}
+          {business.landmark && (
+            <div className="flex items-center gap-4">
+              <div className="bg-yellow-100 text-yellow-600 p-2 rounded-full text-lg"><FaMapMarkerAlt /></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Landmark</p>
+                <p className="text-gray-800 font-semibold">{business.landmark}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Sector */}
+          {business.sector && (
+            <div className="flex items-center gap-4">
+              <div className="bg-purple-100 text-purple-600 p-2 rounded-full text-lg"><FaBuilding /></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Sector</p>
+                <p className="text-gray-800 font-semibold">{business.sector}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Area */}
+          {business.area && (
+            <div className="flex items-center gap-4">
+              <div className="bg-teal-100 text-teal-600 p-2 rounded-full text-lg"><FaCity /></div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Area</p>
+                <p className="text-gray-800 font-semibold">{business.area}</p>
+              </div>
+            </div>
+          )}
+          </div>
+          <hr className="text-gray-100 mt-5"/>
+
+
+        {/* {business.timings?.length > 0 && (
           <div className="mb-6">
             <h3 className="font-semibold text-gray-800">Business Timings</h3>
             <ul className="list-disc ml-6 text-sm text-gray-700">
-              {business.timings.map((t, i) => (
+          {business.timings.map((t, i) => (
                 <li key={i}>
                   <strong>{t.day}:</strong> {t.openTime} - {t.closeTime}
                 </li>
-              ))}
+             ))}
             </ul>
-          </div>
-        )}
+           </div>
+            )} */}
 
+        {/* map */}
         {business.mapLink && (
           <iframe src={business.mapLink} width="100%" height="300" style={{ border: 0 }} allowFullScreen loading="lazy" className="rounded-lg shadow"></iframe>
         )}
       </section>
+      {/* <hr className="text-gray-100 mt-5"/> */}
 
-      {/* Detail */}
-      <section id="timings" className="scroll-mt-24">
-  <h2 className="text-2xl font-semibold text-blue-900 mb-2">Business Timings</h2>
 
-  {business.timing ? (
-    <ul className="text-gray-700 text-sm space-y-1">
-      {(() => {
-        let parsedTimings = [];
+      {/* Timing */}
+      <section id="timings" className="scroll-mt-24 mb-10">
+            <h2 className="text-2xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
+              🕒 Business Timings
+            </h2>
 
-        try {
-          parsedTimings = typeof business.timing === "string" ? JSON.parse(business.timing) : business.timing;
-        } catch (error) {
-          console.error("Failed to parse timings", error);
-        }
+            {business.timing ? (() => {
+              let timings = [];
 
-        return parsedTimings.length > 0 ? (
-          parsedTimings.map((t, i) => (
-            <li key={i}>
-              <strong>{t.day}:</strong>{" "}
-              {t.closed
-                ? "Closed"
-                : `${t.open || "--"} - ${t.close || "--"}`}
-            </li>
-          ))
-        ) : (
-          <p className="text-gray-500">No timing data available.</p>
-        );
-      })()}
-    </ul>
-  ) : (
-    <p className="text-gray-500">Timings not provided.</p>
-  )}
-</section>
+              try {
+                timings = typeof business.timing === "string"
+                  ? JSON.parse(business.timing)
+                  : business.timing;
+              } catch (err) {
+                console.error("Failed to parse timing data", err);
+                return <p className="text-red-600">Invalid timing format</p>;
+              }
+
+              return timings?.length > 0 ? (
+                <ul className="text-sm md:text-base space-y-1">
+            {timings.map((t, i) => {
+              const isClosed = t.closed || !t.open || !t.close;
+              return (
+                <li key={i} className="flex items-center py-1 px-2">
+                  <span className="w-32 font-medium text-gray-700">{t.day}</span>
+                  <span className={isClosed ? "text-red-600 font-semibold" : "text-gray-800"}>
+                    {isClosed ? "Closed" : `${t.open} - ${t.close}`}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+              ) : (
+                <p className="text-gray-500">No timing data available.</p>
+              );
+            })() : (
+              <p className="text-gray-500">Timings not provided.</p>
+            )}
+          </section>
+          <hr className="text-gray-100 mt-5"/>
 
 
       {/* Reviews */}
     <section id="reviews" className="scroll-mt-24">
-        <h2 className="text-2xl font-semibold text-blue-900 mb-6">Reviews</h2>
+      <h2 className="text-2xl font-semibold text-blue-900 mb-6 flex items-center gap-2">
+    <FaCommentDots  className="text-yellow-500 text-2xl" />
+    Reviews
+  </h2>
 
         {loading ? (
           <p className="text-gray-500 text-sm">Loading reviews...</p>
@@ -278,12 +397,16 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
           <p className="text-sm text-gray-500">No reviews yet.</p>
         )}
       </section>
+      <hr className="text-gray-100 mt-5"/>
+
 
       {/* Photos */}
       <section id="photos" className="scroll-mt-24">
-        <div className="flex justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-blue-900">Photos</h2>
-        </div>
+        
+      <div className="flex items-center gap-2 mb-4">
+        <MdPhotoLibrary className="text-purple-500 text-2xl" />
+        <h2 className="text-2xl font-semibold text-blue-900">Photos</h2>
+      </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {business.images?.length > 0 ? (

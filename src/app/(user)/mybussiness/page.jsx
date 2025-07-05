@@ -143,7 +143,7 @@ export default function MyBusinessPage() {
                   <h2 className="text-xl md:text-2xl font-bold text-gray-800">
                     {business.name}
                   </h2>
-                  <div className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: business.description || "<p>No description provided.</p>",}}/>
+                  {/* <div className="text-gray-600 text-sm mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: business.description || "<p>No description provided.</p>",}}/> */}
                 </div>
 
                 <div>

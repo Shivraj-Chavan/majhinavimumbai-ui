@@ -260,6 +260,11 @@ export default function EditBusinessPopup({ business, onClose }) {
       return { ...prev, timing: updated };
     });
   };
+
+  const handleEditorChange = (value) => {
+    setFormData((prev) => ({ ...prev, description: value }));
+  };
+  
   
   return (
     <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4">
@@ -273,19 +278,24 @@ export default function EditBusinessPopup({ business, onClose }) {
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
           <div>
-        <label htmlFor="description" className="block mb-1 font-medium">
-          Business Details
-        </label>
-        {/* <textarea
-          id="description"
-          name="description"
-          rows={5}
-          value={formData.description}
-          onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-          className="w-full border px-3 py-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-        /> */}
+          <div>
+  <label htmlFor="description" className="block mb-1 font-medium">
+    Business Description
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    rows={6}
+    value={formData.description}
+    onChange={(e) =>
+      setFormData((prev) => ({ ...prev, description: e.target.value }))
+    }
+    className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+    placeholder="Enter business details..."
+  />
+</div>
 
-         <div>
+         {/* <div>
             {!showTextarea ? (
               <div>
                 <div className="text-sm text-gray-800 whitespace-pre-wrap">
@@ -324,7 +334,7 @@ export default function EditBusinessPopup({ business, onClose }) {
                 </button>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
       {/* Timing Section (REPLACED input with custom logic) */}
