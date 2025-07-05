@@ -47,9 +47,11 @@ export default function BusinessRegister({ ownerId }) {
     const { categories, loading, error } = useSelector((state) => state.categories);
   
     useEffect(() => {
+      
       if (categories?.length > 0) {
         setSubcategoriesData(categories);
-        //  dispatch(fetchCategories());
+      }else{
+         dispatch(fetchCategories());
       }
     }, [categories]);
  
@@ -182,7 +184,10 @@ export default function BusinessRegister({ ownerId }) {
       toast.error(validationResult);
       return;
     }
-
+    if (!formData.category_id || !formData.subcategory_id) {
+      toast.error("Please select both category and subcategory.");
+      return;
+    }
     const finalData = {
       ...formData,
       category_id: selectedCategory,
@@ -243,8 +248,8 @@ export default function BusinessRegister({ ownerId }) {
   
       // Validate file size
       for (let file of newFiles) {
-        if (file.size > 5 * 1024 * 1024) {
-          toast.error(`File "${file.name}" exceeds 5MB size limit`);
+        if (file.size > 2 * 1024 * 1024) {
+          toast.error(`File "${file.name}" exceeds  2MB size limit (must be under 2MB)`);
           return;
         }
       }

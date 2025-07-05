@@ -15,7 +15,7 @@ export const apiPut = async (url, body) => {
   return response.data;
 };
 
-export const apiDelete = async (url) => {
+export const apiDelete = async (url,body) => {
   const response = await axios.delete(url);
   return response.data;
 };

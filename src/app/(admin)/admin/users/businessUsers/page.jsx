@@ -5,6 +5,7 @@ import { apiDelete, apiGet } from "@/lib/apiClient";
 import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
+import ManageBusinessImagesModal from "../../components/usercomp/ManageBusinessImagesModal";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
@@ -13,7 +14,8 @@ export default function BusinessUsersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImageBusiness, setSelectedImageBusiness] = useState(null);
   const limit = 10;
   useEffect(() => {
     const fetchBusinessUsers = async () => {
@@ -47,6 +49,16 @@ export default function BusinessUsersPage() {
     setCurrentPage(page); 
   };
 
+  const handleOpenImageManager = (business) => {
+    setSelectedImageBusiness(business);
+    setImageModalOpen(true);
+  };
+  
+  const handleCloseImageManager = () => {
+    setImageModalOpen(false);
+    setSelectedImageBusiness(null);
+  };
+
 const handleDelete = async (id) => {
   console.log("Deleting business with ID:", id);
   if (!id) {
@@ -78,6 +90,11 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Business Users</h2>
+      <ManageBusinessImagesModal
+  isOpen={imageModalOpen}
+  onClose={handleCloseImageManager}
+  business={selectedImageBusiness}
+/>
 
       {loading ? (
         <div className="text-center text-gray-600">Loading...</div>
@@ -102,13 +119,19 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
                     <td className="px-4 py-3 font-medium text-gray-800">{(currentPage - 1) * limit + (index + 1)}</td>
                     <td className="px-4 py-3">{user.name}</td>
                     <td className="px-4 py-3">{user.phone}</td>
-                    <td className="px-4 py-3 text-center">
-                      <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
-                        <FaRegEye />
+                    <td className="px-4 py-3 flex justify-center gap-3">
+                    <button
+  className="bg-yellow-500 flex align-center hover:bg-yellow-600 text-white text-md px-4 py-1 mx-1 rounded-full font-medium shadow-md transition duration-200"
+  onClick={() => handleOpenImageManager(user)}
+>
+  Manage Images
+</button>
+                      <button onClick={() => openModal(user)} className="bg-blue-500 gap-2 items-center flex hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
+                        <FaRegEye /> View
                       </button>
 
                       <button
-                        className="bg-red-500 hover:bg-red-600 text-white text-md px-4 py-1 mx-3 rounded-full font-medium shadow-md transition duration-200"
+                        className="bg-red-500 flex align-center hover:bg-red-600 text-white text-md px-4 py-1 mx-3 rounded-full font-medium shadow-md transition duration-200"
                         onClick={() => {
                           if (confirm("Are you sure you want to delete this business?")) {
                             handleDelete(user?.id);}
@@ -132,7 +155,7 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
                 <p className="text-sm text-gray-600 mt-1">Phone: {user.phone}</p>
                 <div className="mt-4 flex justify-end">
                   <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
-                    <FaRegEye />
+                    <FaRegEye /> View
                   </button>
 
                   <button

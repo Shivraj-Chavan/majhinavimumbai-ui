@@ -14,7 +14,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
   const [newDay, setNewDay] = useState("Monday");
-
+  
   const dispatch = useDispatch();
   const { categories, loading, error } = useSelector((state) => state.categories);
 
@@ -279,31 +279,6 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
                 ))
               ) : (
                 <div className="text-gray-500">N/A</div>
-              )}
-
-              {isEditing && (
-                <div className="flex items-center gap-4">
-                <select
-                  value={newDay}
-                  onChange={(e) => setNewDay(e.target.value)}
-                  className="border rounded px-2 py-1"
-                >
-                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                    <option key={day} value={day}>
-                      {day}
-                    </option>
-                  ))}
-                </select>
-              
-                <button
-                  type="button"
-                  onClick={handleAddTiming}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1 rounded"
-                >
-                  + Add Timing
-                </button>
-              </div>
-              
               )}
             </div>
 
