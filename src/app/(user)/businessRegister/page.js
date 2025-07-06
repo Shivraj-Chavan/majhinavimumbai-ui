@@ -416,6 +416,20 @@ export default function BusinessRegister({ ownerId }) {
           <Input label="Website" value={formData.website} onChange={(e) => handleInputChange("website", e.target.value)} />
           </div>
         </div>
+        <div className="pt-5">
+  <label htmlFor="description" className="block mb-1 font-medium">
+    Business Description
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    rows={6}
+    value={formData.description}
+    onChange={(e) => handleInputChange("description", e.target.value)} 
+    className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+    placeholder="Enter business details..."
+  />
+</div>
 
 {/* Business Timings */}
 <div className="w-full">
@@ -558,8 +572,8 @@ export default function BusinessRegister({ ownerId }) {
     })}
   </div>
 </div>
-           <div>
-                      <label className="block text-sm font-medium mb-1">Add New Photos (max total 2)</label>
+           <div className="pt-3">
+                      <label className="block text-sm font-medium mb-1">Add up to 2 photos (Each file must be under 2MB)</label>
                       <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                       {selectedPhotos.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">

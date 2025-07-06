@@ -12,6 +12,7 @@ import Link from "next/link";
 import { TbBrandWhatsapp } from "react-icons/tb";
 import { TfiShare } from "react-icons/tfi";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination";
+import CONFIG from "@/constance";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -57,8 +58,8 @@ export default function SearchPage() {
             <div key={business.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
               <div className="relative w-full sm:w-48 h-40 rounded-xl mt-5 overflow-hidden bg-gray-100 flex-shrink-0">
                 <Image
-                  src={business.image_url || "/image.png"}
-                  alt={business.name || "Business Image"}
+                    src={business?.image_url ? `${CONFIG.IMAGE_BASE_URL}${business?.image_url}`   :"/image.png"}
+                    alt={business.name || "Business Image"}
                   fill
                   className="object-cover"
                 />

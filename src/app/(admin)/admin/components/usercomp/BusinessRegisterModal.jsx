@@ -192,7 +192,6 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
               </div>
             ))}
 
-           
                 {/* Category */}
                 <div>
                   <label className="block text-gray-600 font-medium mb-1">Category</label>
@@ -281,8 +280,9 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
                 <div className="text-gray-500">N/A</div>
               )}
             </div>
-
                 {/* Verification Status */}
+              
+           
                <div className="mt-4">
                   <label className="block text-gray-600 font-medium mb-1">Verification Status</label>
                   {isEditing ? (
@@ -303,10 +303,26 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
                     </div>
                   )}
                 </div>
+                 
 
             </div>
           </div>
 
+          <div className="pt-5">
+  <label htmlFor="description" className="block mb-1 font-medium">
+    Business Description
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    rows={6}
+    value={formData.description}
+    onChange={handleChange} 
+    disabled={!isEditing}
+    className={`w-full px-4 py-2 border rounded-xl focus:outline-none ${isEditing ? "border-gray-300 focus:ring-2 focus:ring-orange-400" : "bg-gray-100 text-gray-700" }`}
+    placeholder="Enter business details..."
+  />
+</div>
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
             {isEditing ? (

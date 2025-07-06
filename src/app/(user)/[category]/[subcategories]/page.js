@@ -14,6 +14,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { IoIosCall } from "react-icons/io";
 import { ImMail4 } from "react-icons/im";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination";
+import CONFIG from "@/constance";
 
 const SkeletonCard = () => (
   <div className="animate-pulse bg-white rounded-xl shadow-md p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
@@ -87,7 +88,7 @@ export default function Page({ params }) {
           <nav className="flex items-center space-x-2">
             <Link href="/" className="hover:underline text-black">Home</Link>
             <span>/</span>
-            <Link href={`/category/${category}`} className="hover:underline text-black capitalize">
+            <Link href={`/${category}`} className="hover:underline text-black capitalize">
               {category.replace(/-/g, " ")}
             </Link>
             <span>/</span>
@@ -128,7 +129,10 @@ export default function Page({ params }) {
               .map((business) => (
                 <div key={business.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
                   <div className="relative w-full sm:w-48 h-40 rounded-xl mt-5 overflow-hidden bg-gray-100 flex-shrink-0">
-                    <Image src="/image.png" alt={business.name || "Business Image"} fill className="object-cover" />
+                    <Image                      
+                    src={business?.image_url ? `${CONFIG.IMAGE_BASE_URL}${business?.image_url}`   :"/image.png"}
+                    alt={business.name || "Business Image"} fill className="object-cover" />
+                    
                   </div>
 
                   <div className="flex-1 flex flex-col justify-between">

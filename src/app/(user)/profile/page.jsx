@@ -99,11 +99,14 @@ export default function ProfilePage() {
           {/* Profile Picture */}
           <div className="text-center">
             <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-orange-100 to-green-100">
+              {
+                user?.profile_image &&
               <img
-                src={previewImage || user?.profile_image || "https://via.placeholder.com/150"}
-                alt="Profile"
-                className="w-full h-full object-cover"
+              src={previewImage || user?.profile_image}
+              alt="Profile"
+              className="w-full h-full object-cover"
               />
+            }
               {isEditing && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer group">
                   <div className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />

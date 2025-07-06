@@ -10,6 +10,7 @@ import { FcFinePrint } from 'react-icons/fc';
 import { TbBrandWhatsapp } from 'react-icons/tb';
 import { IoCallSharp } from 'react-icons/io5';
 import { useParams } from 'next/navigation';
+import CONFIG from '@/constance';
 
 // Skeleton loaders
 const SubcategorySkeleton = () => (
@@ -138,7 +139,7 @@ export default function Page() {
                   {/* Business Image */}
                   <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-gray-100">
                     <Image
-                      src={business?.images?.[0] || "/image.png"}
+                      src={business?.image_url ? `${CONFIG.IMAGE_BASE_URL}${business?.image_url}`   :"/image.png"}
                       alt={business?.name || "Business Image"}
                       fill
                       className="object-cover"
