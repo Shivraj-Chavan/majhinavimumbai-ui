@@ -229,12 +229,15 @@ export default function BusinessRegister({ ownerId }) {
         wp_number: "",
         email: "",
         website: "",
+        description: "",
         timing: [{ day: "", open: "09:00", close: "18:00" }],
       });
       console.log("Submitting formData:", formData);
 
       setSelectedCategory("");
       setSelectedSubcategory("");
+      setSelectedPhotos([]);
+
     } catch (error) {
       console.error("Submission Error:", error);
       toast.error("Error submitting form.");
