@@ -25,6 +25,8 @@ export default function BusinessRegister({ ownerId }) {
   const [subcategoriesData, setSubcategoriesData] = useState([]);
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
     owner_id: null,
     name: "",
@@ -188,6 +190,8 @@ export default function BusinessRegister({ ownerId }) {
       toast.error("Please select category .");
       return;
     }
+    setSubmitting(true); 
+
     const finalData = {
       ...formData,
       category_id: selectedCategory,
@@ -199,7 +203,6 @@ export default function BusinessRegister({ ownerId }) {
       const registeredBusiness=await apiPost("/businesses", finalData);
       console.log('bussiness',finalData);
       
-      toast.success("Bussiness Registered Successfully!");
       if (selectedPhotos.length > 0) {
               const formPhotos = new FormData();
               selectedPhotos.forEach((file) => formPhotos.append("photos", file));
@@ -213,7 +216,8 @@ export default function BusinessRegister({ ownerId }) {
                 },
               });
             }
-      setSuccessModalOpen(true);
+            toast.success("Bussiness Registered Successfully!");
+            setSuccessModalOpen(true);
 
       setFormData({
         owner_id: "",
@@ -241,6 +245,8 @@ export default function BusinessRegister({ ownerId }) {
     } catch (error) {
       console.error("Submission Error:", error);
       toast.error("Error submitting form.");
+    }finally {
+      setSubmitting(false); // ✅ Stop loader
     }
   };
   const handleChange = (e) => {
@@ -594,10 +600,42 @@ export default function BusinessRegister({ ownerId }) {
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full mt-10 px-4 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 text-white font-bold text-lg py-3 rounded-xl shadow-md hover:scale-105 transition-transform"
+        disabled={submitting}
+        className={`w-full mt-10 px-4 py-3 rounded-xl shadow-md font-bold text-lg text-white transition-transform ${
+          submitting
+            ? "bg-blue-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 hover:scale-105"
+        }`}
       >
-        Submit Registration
+        {submitting ? (
+          <div className="flex items-center justify-center gap-2">
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
+            </svg>
+            Submitting...
+          </div>
+        ) : (
+          "Submit Registration"
+        )}
       </button>
+
 
       {/* Success Modal */}
       <SuccessModal isOpen={isSuccessModalOpen}  onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" />
