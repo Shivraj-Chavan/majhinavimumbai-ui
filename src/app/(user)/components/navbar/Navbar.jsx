@@ -107,9 +107,9 @@ export default function Navbar() {
     <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link href='/' className="flex items-center">
-          <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
-        </Link>
+        <div href='/' className="flex items-center">
+          <img src='/logo.png' alt="Logo" width={160} height={50} priority />
+        </div>
 
       {/* location and searchbar scroll */}
         {showSearch && (

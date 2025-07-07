@@ -24,6 +24,23 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
   const otpInputRef = useRef(null);
 
+  const Spinner = () => (
+    <svg
+      className="animate-spin h-5 w-5 text-white inline-block ml-2"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v8z"
+      ></path>
+    </svg>
+  );
+  
+
 // Countdown timer
   useEffect(() => {
     let timer;
@@ -168,6 +185,9 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
+    setIsVerifyingOtp(true); // <--- add before try
+
+
     try {
       const data = await apiPost("otp/verify", { name:"", email: email, otp: otp });
       console.log("Verifying OTP:", { email, otp });
@@ -231,7 +251,10 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
         message: backendMsg || "OTP verification failed.",
       });
       setOtp("");
+    } finally {
+      setIsVerifyingOtp(false);
     }
+    
   };
 
   return (
@@ -322,12 +345,23 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
           {!otpSent && !errors.email && email && (
             <button
               type="button"
-              onClick={handleSendOtp}  
-              className="w-full mt-3 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition"
+              onClick={handleSendOtp}
+              disabled={isSendingOtp}
+              className={`w-full mt-3 text-white py-2 rounded-md transition ${
+                isSendingOtp ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
+              }`}
             >
-              Submit
+              {isSendingOtp ? (
+                <>
+                  Sending OTP
+                  <Spinner />
+                </>
+              ) : (
+                "Submit"
+              )}
             </button>
           )}
+
 
 
             {/* Send OTP Button */}
@@ -362,11 +396,21 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                 </div>
 
                 <button
-                  type="submit"
-                  className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition"
-                >
-                  Submit
-                </button>
+                    type="submit"
+                    className={`w-full py-2 rounded-md transition text-white ${
+                      isVerifyingOtp ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
+                    }`}
+                    disabled={isVerifyingOtp}
+                  >
+                    {isVerifyingOtp ? (
+                      <>
+                        Verifying
+                        <Spinner />
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
 
                     {/* Resend OTP */}
                 <div className="text-right mt-2">
