@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { apiGet, apiPost, apiDelete } from "@/lib/apiClient";
 import CONFIG from "@/constance";
 import axiosInstance from "@/lib/axios";
+import Image from "next/image";
 
 export default function ManageBusinessImagesModal({ isOpen, onClose, business }) {
   const [images, setImages] = useState([]);
@@ -191,7 +192,7 @@ export default function ManageBusinessImagesModal({ isOpen, onClose, business })
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {selectedFiles.map(({ file, preview, id }) => (
                     <div key={id} className="relative group">
-                      <img
+                      <Image
                         src={preview}
                         alt={file.name}
                         className="w-full h-24 object-cover rounded-lg shadow border"
@@ -234,7 +235,7 @@ export default function ManageBusinessImagesModal({ isOpen, onClose, business })
                 return (
                   <div key={idx} className="relative group bg-gray-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                     {imageUrl ? (
-                      <img
+                      <Image
                         src={imageUrl}
                         alt={`Business Image ${idx + 1}`}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"

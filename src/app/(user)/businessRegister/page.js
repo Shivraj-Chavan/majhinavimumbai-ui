@@ -14,6 +14,7 @@ import { fetchCategories } from "@/redux/slice/categoriesSlice";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import CONFIG from "@/constance";
+import Image from "next/image";
 
 export default function BusinessRegister({ ownerId }) {
   const router = useRouter();
@@ -588,7 +589,7 @@ export default function BusinessRegister({ ownerId }) {
                         <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
                           {selectedPhotos.map((file, idx) => (
                             <div key={idx} className="relative w-24 h-24 rounded overflow-hidden border border-gray-300">
-                              <img src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
+                              <Image src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
                               <button type="button" onClick={() => handleDeletePhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full" aria-label="Delete selected photo">
                                 <MdDelete size={16} />
                               </button>

@@ -9,6 +9,7 @@ import { FcFinePrint } from "react-icons/fc";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { GrEdit } from "react-icons/gr";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function MyBusinessPage() {
   const [businesses, setBusinesses] = useState([]); 
@@ -132,7 +133,7 @@ export default function MyBusinessPage() {
             >
               <div className="flex flex-col items-center text-center space-y-4">
                 <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
-                  <img
+                  <Image
                     src={business.logoUrl || "/image.png"}
                     alt="Business Logo"
                     className="object-contain w-full h-full"

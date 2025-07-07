@@ -6,6 +6,7 @@ import PopUp from "@/app/(user)/components/home/popUp";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function ProfilePage() {
   const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
@@ -101,7 +102,7 @@ export default function ProfilePage() {
             <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-orange-100 to-green-100">
               {
                 user?.profile_image &&
-              <img
+              <Image
               src={previewImage || user?.profile_image}
               alt="Profile"
               className="w-full h-full object-cover"

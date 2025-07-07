@@ -7,6 +7,7 @@ import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 import CONFIG from "@/constance";
+import Image from "next/image";
 
 export default function PendingUpdates() {
   const [updates, setUpdates] = useState([]);
@@ -137,7 +138,7 @@ export default function PendingUpdates() {
                             ? imageUrl
                             : `${CONFIG.IMAGE_BASE_URL}${imageUrl}`;
                           return (
-                            <img
+                            <Image
                               key={idx}
                               src={fullImageUrl}
                               onClick={() => openImagePreview(fullImageUrl)}
@@ -198,7 +199,7 @@ export default function PendingUpdates() {
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[100]"
           onClick={closeImagePreview}
         >
-          <img
+          <Image
             src={previewImage}
             alt="Preview"
             className="max-w-full max-h-full rounded-lg shadow-lg"

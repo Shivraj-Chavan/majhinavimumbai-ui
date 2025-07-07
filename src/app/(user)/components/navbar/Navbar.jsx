@@ -108,7 +108,7 @@ export default function Navbar() {
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <div href='/' className="flex items-center">
-          <img src='/logo.png' alt="Logo" width={160} height={50} priority />
+          <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
         </div>
 
       {/* location and searchbar scroll */}
