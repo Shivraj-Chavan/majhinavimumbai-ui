@@ -12,6 +12,8 @@ import { FcInternal } from "react-icons/fc";
 import LocationDropdown from "./locationDropdown";
 import SearchBar from "./searchBar";
 import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
+import { useRouter } from "next/navigation";
+import { apiGet } from "@/lib/apiClient";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -20,18 +22,64 @@ export default function HeroSection() {
   const [searchInput, setSearchInput] = useState("");
   const [showContact, setShowContact] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [suggestions, setSuggestions] = useState([]);
+const [showSuggestions, setShowSuggestions] = useState(false);
+
   // Simulate loading state 
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500); 
     return () => clearTimeout(timer);
   }, []);
-
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!searchInput.trim()) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+  
+      try {
+        const res = await apiGet(`/businesses/search?q=${encodeURIComponent(searchInput)}`);
+        const data = res.data || [];
+        setSuggestions(data);
+        setShowSuggestions(data.length > 0);
+      } catch (err) {
+        console.error("Suggestion fetch failed:", err);
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    };
+  
+    const delay = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(delay);
+  }, [searchInput]);
   const handleScrollDown = () => {
     window.scrollBy({ top: 150, behavior: "smooth" });  
   };
-
+  const handleSearchSubmit = () => {
+    const trimmed = searchInput.trim();
+    if (trimmed) {
+      router.push(`/search?query=${encodeURIComponent(trimmed)}`);
+      setSearchInput("");
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+  
+  const handleKeyPressMobile = (e) => {
+    if (e.key === "Enter") handleSearchSubmit();
+  };
+  
+  const handleSuggestionClick = (name) => {
+    router.push(`/search?query=${encodeURIComponent(name)}`);
+    setSearchInput("");
+    setSuggestions([]);
+    setShowSuggestions(false);
+  };
+  
   if (loading) {
     return (
       <div className="relative w-full h-[450px] md:h-[550px] max-w-8xl mx-auto shadow-xl overflow-hidden">
@@ -161,14 +209,30 @@ export default function HeroSection() {
 
               {/* Search Input with Button Inside */}
               <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Search for services..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="w-full pl-4 pr-12 py-3 rounded-2xl bg-white shadow-md border border-gray-300 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-                <button className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white bg-blue-500 hover:bg-blue-600 p-2 rounded-full shadow ">
+              <input
+                    type="text"
+                    placeholder="Search for services..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={handleKeyPressMobile}
+                    className="w-full pl-4 pr-12 py-3 rounded-2xl bg-white shadow-md border border-gray-300 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                  {showSuggestions && suggestions.length > 0 && (
+  <ul className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-xl shadow-lg z-50 max-h-32 overflow-y-auto">
+    {suggestions.map((item) => (
+      <li
+        key={item.id}
+        onClick={() => handleSuggestionClick(item.name)}
+        className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100"
+      >
+        {item.name}
+      </li>
+    ))}
+  </ul>
+)}
+                <button
+                onClick={handleSearchSubmit}
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white bg-blue-500 hover:bg-blue-600 p-2 rounded-full shadow ">
                   <FiSearch className="text-lg" />
                 </button>
               </div>

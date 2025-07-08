@@ -166,8 +166,8 @@ export default function Page() {
 
                   <button
                     // onClick={() => handleStatusToggle(user._id, user.is_active)}
-                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ user.is_active ? 'bg-gray-500 hover:bg-gray-400' : 'bg-orange-500 hover:bg-orange-400' } text-white`}>
-                    {user.is_active ? 'Inactive' : 'Active'}
+                    className={`h-8 px-3 rounded-md text-sm font-semibold ${ !user?.is_active ? 'bg-gray-500 hover:bg-gray-400' : 'bg-orange-500 hover:bg-orange-400' } text-white`}>
+                    {!user?.is_active ? 'Inactive' : 'Active'}
                   </button>
 
                   <button
