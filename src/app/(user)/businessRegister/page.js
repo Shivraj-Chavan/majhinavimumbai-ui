@@ -244,8 +244,8 @@ export default function BusinessRegister({ ownerId }) {
       setSelectedPhotos([]);
 
     } catch (error) {
-      console.error("Submission Error:", error);
-      toast.error("Error submitting form.");
+      console.log("Submission Error:", error?.response?.data?.error);
+      toast.error(error?.response?.data?.error || "Error submitting form.");
     }finally {
       setSubmitting(false); // ✅ Stop loader
     }
