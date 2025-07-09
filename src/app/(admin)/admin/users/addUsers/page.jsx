@@ -47,7 +47,8 @@ export default function AddUserForm() {
       window.location.reload();
       console.log("User created:", res);
     } catch (error) {
-      toast.error("Failed to create user.");
+      // toast.error("Failed to create user.");
+      toast.error(error?.response?.data?.message)
       console.error("Error creating user:", error);
       setErrors({ api: "Failed to create user. Please try again." });
     }
