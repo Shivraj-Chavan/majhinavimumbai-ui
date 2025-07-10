@@ -26,13 +26,8 @@ export default function HeroSection() {
 const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Simulate loading state 
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500); 
-    return () => clearTimeout(timer);
-  }, []);
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (!searchInput.trim()) {
@@ -79,41 +74,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
     setSuggestions([]);
     setShowSuggestions(false);
   };
-  
-  if (loading) {
-    return (
-      <div className="relative w-full h-[450px] md:h-[550px] max-w-8xl mx-auto shadow-xl overflow-hidden">
-        {/* Skeleton Background */}
-        <div className="absolute inset-0 bg-gray-300 animate-pulse" />
 
-        {/* Skeleton Content Overlay */}
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-10 bg-white/60 backdrop-blur-md h-full">
-          {/* Left Skeleton Text Block */}
-          <div className="w-full md:w-1/2 m-4 sm:m-10 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left space-y-6">
-            <div className="h-16 sm:h-20 md:h-24 bg-gray-300 rounded w-48 sm:w-64 md:w-80"></div>
-            <div className="h-16 sm:h-20 md:h-24 bg-gray-300 rounded w-48 sm:w-64 md:w-80"></div>
-            <div className="h-6 bg-gray-300 rounded w-40 sm:w-52 md:w-64 mt-2 md:ms-60 sm:ms-10"></div>
-
-            <div className="flex flex-col md:flex-row items-center gap-4 mt-6 w-full">
-              <div className="h-12 w-48 bg-gray-300 rounded-full animate-pulse"></div>
-
-              <div className="w-full mt-10 md:hidden flex items-center gap-2 px-4">
-                <div className="p-3 rounded-xl bg-gray-300 flex items-center justify-center"></div>
-                <div className="flex-1 h-12 bg-gray-300 rounded-2xl"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Skeleton Box */}
-          <div className="hidden md:flex w-full md:w-1/2 justify-center items-center mt-10 md:mt-0">
-            <div className="w-full max-w-lg h-40 bg-gray-300 rounded-3xl animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Normal render when not loading
   return (
     <div className="relative w-full h-[450px] sm:h-[400px] md:h-[600px] overflow-hidden shadow-xl max-w-8xl mx-auto">
   <div className="absolute inset-0 z-0">
