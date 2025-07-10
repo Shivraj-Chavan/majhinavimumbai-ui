@@ -140,7 +140,7 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
       {/* searchbar */}
-     <div className="flex justify-center w-full">
+     <div className="relative flex justify-center w-full">
       <div className="sm:flex items-center gap-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mb-3 w-full px-2 py-2">
       <div className="flex w-full">
         <input
@@ -160,7 +160,7 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
   
       {/* Suggestions Dropdown */}
       {showDropdown && (
-        <ul className="absolute z-10 w-full bg-white border rounded-b-md shadow-md max-h-60 overflow-y-auto">
+        <ul className="absolute z-10 top-13 bg-white rounded-b-md shadow-md max-h-60 overflow-y-auto">
           {suggestions.map((item) => (
             <li
               key={item.id}
