@@ -118,7 +118,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
     <div className="relative w-full h-[450px] sm:h-[400px] md:h-[600px] overflow-hidden shadow-xl max-w-8xl mx-auto">
   <div className="absolute inset-0 z-0">
     <Image
-      src="/nmmc.png"
+      src="/logo.png"
       alt="I Love Majhi Navi Mumbai"
       fill
       className="object-contain object-center w-full h-full blur-sm brightness-95 transition-all duration-500"
@@ -126,7 +126,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
     />
   </div>
  
-  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/10 backdrop-blur-md h-full">
+  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/15 backdrop-blur h-full">
 
         {/* Left Section */}
         <div className="w-full md:w-1/2 m-4 sm:m-6 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">

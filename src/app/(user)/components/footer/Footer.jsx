@@ -4,7 +4,8 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import ContactPopup from "../home/contactPopup"
 import PopUp from '../home/popUp';
-import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
+import { SiX } from 'react-icons/si';
 
 export default function Footer() {
   const [loading, setLoading] = useState(true);
@@ -72,7 +73,7 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <li><Link href="/businessRegister" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Business Listing</Link></li>
+                <li><Link href="/businessRegister" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Add Your Business</Link></li>
                 <li><Link href="#categories" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Categories</Link></li>
                 <li><Link href="#subcategories" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Subcategories</Link></li>
               </>
@@ -140,26 +141,26 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Column 5 - Address */}
-        <div className="md:row-span-2 lg:row-span-1">
-          <h3 className="font-semibold text-lg mb-3 text-green-700 border-b-2 border-green-200 pb-1">Address</h3>
-          
-          <a
-            href="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-start space-x-2 hover:text-blue-600 transition-colors duration-200"
-          >
-            <span className="text-xl">📍</span>
-            <span className="text-sm text-gray-700 leading-relaxed group-hover:underline">
-              F113, Railway Station Complex, <br />
-              Nerul West, Navi Mumbai – 400706
-            </span>
-          </a>
+        {/* Column 5 - Address desktop view */}
+       
+        <div className="mt-8 lg:mt-0 hidden lg:block ">
+        <h3 className="font-semibold text-lg mb-3 text-green-700 border-b-2 border-green-200 pb-1">Address</h3>
+        <a
+          href="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-start space-x-2 hover:text-blue-600 transition-colors duration-200"
+        >
+          <span className="text-xl">📍</span>
+          <span className="text-sm text-gray-700 leading-relaxed group-hover:underline">
+            F113, Railway Station Complex, <br />
+            Nerul West, Navi Mumbai – 400706
+          </span>
+        </a>
 
-          {/* Map */}
-          <div className="mt-4 flex justify-center md:justify-start">
-          <div className="w-full md:max-w-[700px] rounded-md overflow-hidden shadow-sm border border-orange-200">
+        {/* Map */}
+        <div className="mt-4">
+          <div className="w-full rounded-md overflow-hidden shadow-sm border border-orange-200">
             <iframe
               title="Google Maps Location"
               src="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706&output=embed"
@@ -169,6 +170,32 @@ export default function Footer() {
             ></iframe>
           </div>
         </div>
+      </div>
+    </div>
+
+    {/* Mobile View: Address Section */}
+      <div className="block lg:hidden px-4">
+        <h3 className="font-semibold text-lg mb-3 text-green-700 border-b-2 border-green-200 pb-1">Address</h3>
+
+        <div className="bg-white rounded-xl shadow-md p-4 border border-gray-100">
+          <div className="flex items-start space-x-3 mb-3">
+            <span className="text-xl">📍</span>
+            <span className="text-sm text-gray-700 leading-relaxed">
+              F113, Railway Station Complex,<br />
+              Nerul West, Navi Mumbai – 400706
+            </span>
+          </div>
+
+          {/* Google Maps */}
+          <div className="rounded-md overflow-hidden border border-orange-200">
+            <iframe
+              title="Google Maps Location"
+              src="https://www.google.com/maps?q=F113+Railway+Station+Complex,+Nerul+West,+Navi+Mumbai+400706&output=embed"
+              allowFullScreen
+              loading="lazy"
+              className="w-full h-[180px] border-0"
+            ></iframe>
+          </div>
         </div>
       </div>
 
@@ -178,15 +205,15 @@ export default function Footer() {
         <h2 className="text-lg font-semibold mb-3 text-green-700">Follow Us</h2>
         <div className="flex gap-4 text-2xl">
           <a
-            href="https://facebook.com"
+            href="https://x.com/majhinavimumbai?s=09"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-700 hover:text-blue-800 transition"
+            className="text-black hover:text-black transition"
           >
-            <FaFacebookF />
+            <SiX/>
           </a>
           <a
-            href="https://youtube.com"
+            href="https://youtube.com/watch?v=U1TvvhV7NBM&feature=shared"
             target="_blank"
             rel="noopener noreferrer"
             className="text-red-600  hover:text-red-700 transition"
@@ -194,7 +221,7 @@ export default function Footer() {
             <FaYoutube />
           </a>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/invites/contact/?igsh=rd4wqglt4ujv&utm_content=xlzw37g"
             target="_blank"
             rel="noopener noreferrer"
             className="text-pink-600 hover:text-pink-700 transition"

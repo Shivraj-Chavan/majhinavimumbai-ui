@@ -317,7 +317,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
             id="description"
             name="description"
             rows={6}
-            value={formData.description}
+            value={formData?.description || ''}
             onChange={handleChange} 
             disabled={!isEditing}
             className={`w-full px-4 py-2 border rounded-xl focus:outline-none ${isEditing ? "border-gray-300 focus:ring-2 focus:ring-orange-400" : "bg-gray-100 text-gray-700" }`}

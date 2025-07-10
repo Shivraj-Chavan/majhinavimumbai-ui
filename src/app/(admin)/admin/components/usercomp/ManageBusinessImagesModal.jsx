@@ -238,7 +238,9 @@ export default function ManageBusinessImagesModal({ isOpen, onClose, business })
                       <Image
                         src={imageUrl}
                         alt={`Business Image ${idx + 1}`}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        width={300}
+                        height={200}
+                        className="h-48 object-cover group-hover:scale-105 transition-transform duration-300 "
                         onError={(e) => {
                           console.error('Image failed to load:', imageUrl);
                           e.target.style.display = 'none';

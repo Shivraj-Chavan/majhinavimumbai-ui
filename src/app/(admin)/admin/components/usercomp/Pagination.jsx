@@ -41,7 +41,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         {pageNumbers?.map((page, index) => page === '...' ? (
             <span key={index} className="px-3 py-1 text-white">...</span>
           ) : (
-            <button key={page} className={`px-3 py-1 ${currentPage === page ? 'bg-blue-600' : 'bg-blue-500'} text-white rounded-full`}  onClick={() => handlePageClick(page)} >
+            <button key={index} className={`px-3 py-1 ${currentPage === page ? 'bg-blue-600' : 'bg-blue-500'} text-white rounded-full`}  onClick={() => handlePageClick(page)} >
               {page}
             </button>
           )

@@ -107,9 +107,9 @@ export default function Navbar() {
     <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <div href='/' className="flex items-center">
+        <a href='/' className="flex items-center">
           <Image src='/logo.png' alt="Logo" width={160} height={50} priority />
-        </div>
+        </a>
 
       {/* location and searchbar scroll */}
         {showSearch && (
@@ -136,7 +136,6 @@ export default function Navbar() {
           </div>
         )}
     
-  
         {/* Business Listing & Profile/Login */}
         <div className="hidden md:flex items-center space-x-4">
           {/* <Payment amount={1000} businessId={businessId}  /> */}
@@ -254,29 +253,30 @@ export default function Navbar() {
   
       {/* Mobile Menu */}
       {isMenuOpen && (
-       <div className="w-full mt-5 md:hidden flex flex-col gap-5 px-4 pb-4">
-         {/* Location & Search */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex rounded-lg">
-              <div className="w-1/2">
-                <LocationDropdown
-                  location={location}
-                  setLocation={setLocation}
-                  showDropdown={showDropdown}
-                  setShowDropdown={setShowDropdown}
-                  dropdownRef={dropdownRef}
-                  className="w-full border border-gray-300 px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-                />
-              </div>
-              <div className="w-1/2">
-                <SearchBar
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="w-full border-l-0 border border-gray-300 px-4 py-2 rounded-r-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400"
-                />
-              </div>
-            </div>
-          </div>
+  <div className="w-full mt-4 md:hidden px-4 pb-6 m-3">
+    <div className="flex items-center gap-2">
+      {/* Location Dropdown */}
+      <div className="flex items-center ">
+        <LocationDropdown
+          location={location}
+          setLocation={setLocation}
+          showDropdown={showDropdown}
+          setShowDropdown={setShowDropdown}
+          dropdownRef={dropdownRef}
+          className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+        />
+      </div>
+
+      {/* Search Input */}
+      <div className="w-1/2 m-6">
+        <SearchBar
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-gray-400"
+          placeholder="Search for service"
+        />
+      </div>
+    </div>
   
           {/* Buttons */}
           <div className="w-full flex justify-center">
