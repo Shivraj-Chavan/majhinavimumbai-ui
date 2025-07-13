@@ -122,7 +122,7 @@ export default function Services() {
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
             <span className="text-2xl"><IoLogoElectron /></span>
-            <h3 className="text-xl font-semibold text-gray-900">Electronics Keywords:</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Electronics:</h3>
           </div>
           <p className="text-gray-600 text-sm">
           Electronics store, Home appliances, Consumer electronics, Branded electronics, Electronic gadgets, Smart electronics, Latest electronics, Affordable electronics, Electronic showroom, Best electronics deals, Mobile phones, Smart TVs, Washing machines, Refrigerators, Laptops & computer, Air conditioners, Bluetooth speakers, Kitchen appliances, CCTV & security systems, Headphones & accessories, Electronics repair, Appliance installation, Warranty services, Authorized electronics dealer, Electronic spare parts, Inverter and battery services, Home automation solutions, Home appliance showroom, Electronics repair and service.
@@ -132,7 +132,7 @@ export default function Services() {
         <div className="p-6 rounded-lg shadow bg-white hover:shadow-md transition">
           <div className="flex items-center space-x-3 mb-3">
             <span className="text-2xl"><FaWheelchairMove /></span>
-            <h3 className="text-xl font-semibold text-gray-900">Entertainment & Recreation keywords :</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Entertainment & Recreation:</h3>
           </div>
           <p className="text-gray-600 text-sm">
           Entertainment services, Recreation center, Family entertainment, Indoor play zone, Fun activities, Gaming arcade, Bowling alley, Trampoline park, Adventure park,  Mini golf course, Escape room games, Movie theatre, Amusement park, Event and party venue, Live music shows, Weekend getaway ideas, Kids activity center, Fun for kids, Activities for families, Adult recreational services, Teen entertainment zone, Group entertainment ideas, Nightclubs and lounges, Late-night entertainment, Weekend nightlife spots, Nightlife events, Live music bar, DJ nights, Dance club, Rooftop bar, Cocktail lounge, Night party venue. 
@@ -157,7 +157,14 @@ export default function Services() {
             <h3 className="text-xl font-semibold text-gray-900">Government Services:</h3>
           </div>
           <p className="text-gray-600 text-sm">
-          Beauty salon services, Haircut and styling, Bridal makeup artist, Unisex salon, Facial and skincare treatments, Full body spa, Nail art and manicure, Pedicure services, Eyebrow threading and waxing, Body polishing and massage, Herbal and ayurvedic spa, Relaxation and wellness therapy, Wellness center, Yoga and meditation classes, Weight loss programs, Skin and hair care clinic, Detox and rejuvenation, Beauty products store, Organic skincare products, Hair care and cosmetics, Herbal beauty treatments, Wellness supplements, Online salon booking, Beauty services at home, Certified beauty professionals, Monthly grooming packages, Instant beauty appointments.
+          Government services portal, Citizen services online, Public service assistance, Official
+document services, e-Governance solutions, Passport application assistance, PAN card
+services, Aadhaar update services, Voter ID registration, Birth and death certificate help,
+Property tax payment help, Water and electricity bill support, Municipality services,
+Grievance redressal service, Government scheme application, Pension scheme assistance,
+Subsidy application support, Government job application help, Ration card services, Health
+scheme registration, MSME registration, GST filing and support, Trade license services,
+Company registration help, Digital signature services.
           </p>
         </div>
 
