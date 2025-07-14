@@ -136,6 +136,8 @@ export default function MyBusinessPage() {
                   <Image
                     src={business.logoUrl || "/image.png"}
                     alt="Business Logo"
+                    width={128} 
+                    height={128}
                     className="object-contain w-full h-full"
                   />
                 </div>

@@ -9,7 +9,7 @@ export default function ContactListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchContacts = async () => {

@@ -179,19 +179,19 @@ const [showSuggestions, setShowSuggestions] = useState(false);
                     className="w-full pl-4 pr-12 py-3 rounded-2xl bg-white shadow-md border border-gray-300 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                   {showSuggestions && suggestions.length > 0 && (
-  <ul className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-xl shadow-lg z-50 max-h-32 overflow-y-auto">
-    {suggestions.map((item) => (
-      <li
-        key={item.id}
-        onClick={() => handleSuggestionClick(item.name)}
-        className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100"
-      >
-        {item.name}
-      </li>
-    ))}
-  </ul>
-)}
-                <button
+                    <ul className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-xl shadow-lg z-50 max-h-32 overflow-y-auto">
+                      {suggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleSuggestionClick(item.name)}
+                          className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+              <button
                 onClick={handleSearchSubmit}
                 className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white bg-blue-500 hover:bg-blue-600 p-2 rounded-full shadow ">
                   <FiSearch className="text-lg" />

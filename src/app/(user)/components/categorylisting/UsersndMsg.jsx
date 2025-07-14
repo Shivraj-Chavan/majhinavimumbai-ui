@@ -33,6 +33,11 @@ export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
   const handleMessageSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
+
+    if (rating === 0) {
+      toast.error("Please select a rating before submitting !");
+      return;
+    }
   
     setSubmitting(true);
     try {
@@ -46,8 +51,8 @@ export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
       // Update reviews list immediately
       setReviews(prev => [
         {
-          user: "You", 
-          avatar: "/image.png", 
+          user: currentUser?.name || "You",
+          avatar: currentUser?.avatar || "/image.png",
           rating,
           comment: message,
           date: new Date().toISOString()
@@ -120,12 +125,13 @@ export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
       </div>
     ) : (
       <div className="text-center mt-10">
+         <h1 className='mb-3 text-sm font-semibold'>Please Login for sending Feedback</h1>
         <button
           onClick={handleFeedbackClick}
           className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg transition-all hover:scale-105"
         >
           <VscFeedback className="text-lg" />
-          Feedback
+          Login
         </button>
       </div>
     )}

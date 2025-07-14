@@ -239,7 +239,7 @@ export default function ProfilePage() {
                 onClick={() => setIsEditing(true)}
                 className="flex items-center px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
               >
-                <button className="w-4 h-4 mr-2" />
+                <span className="w-4 h-4 mr-2 inline-block" />
                 Edit Profile
               </button>
             )}

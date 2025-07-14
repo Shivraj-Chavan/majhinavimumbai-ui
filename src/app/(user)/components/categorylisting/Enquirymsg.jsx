@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PopUp from '../home/popUp';
 import { apiPost } from '@/lib/apiClient'; 
 import { toast } from 'react-toastify';
+import { VscFeedback } from 'react-icons/vsc';
 
 export default function Enquirymsg({ businessId }) {
   const [message, setMessage] = useState("");
@@ -72,11 +73,13 @@ export default function Enquirymsg({ businessId }) {
         </form>
       ) : (
         <div className="text-center">
+          <h1 className='mb-3 text-sm font-semibold'>Please Login for sending Enquiry</h1>
           <button
             onClick={() => setShowLoginPopup(true)}
-            className="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition"
+            className="inline-flex gap-1 bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition"
           >
-            Send Enquiry
+             <VscFeedback className="text-lg" />
+            Login
           </button>
         </div>
       )}

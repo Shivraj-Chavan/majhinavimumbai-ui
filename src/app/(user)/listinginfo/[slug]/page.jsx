@@ -141,7 +141,11 @@ export default function ListingInfo() {
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-start gap-5">
-              <div className="w-20 h-20 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-2xl font-extrabold text-blue-700 shadow-lg">{business.name?.[0]}</div>
+            <div className="p-0">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white border-4 border-blue-300 rounded-full flex items-center justify-center text-xl sm:text-2xl font-extrabold text-blue-700 shadow-lg shrink-0"> {business.name?.[0]}</div>
+        </div>
+
+
               <div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-blue-900 mb-1">{business.name}</h1>
                 <p className="text-sm sm:text-base text-gray-600 mb-2">{business.category} {business.address}</p>
@@ -155,7 +159,7 @@ export default function ListingInfo() {
               </button>
 
               {showEnquiryPopup && (
-                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto px-4 py-10">
                   <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl">
                     <button className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg" onClick={() => setShowEnquiryPopup(false)}>
                       &times;

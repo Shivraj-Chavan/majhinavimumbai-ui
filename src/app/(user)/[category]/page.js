@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux'; 
@@ -11,6 +11,8 @@ import { TbBrandWhatsapp } from 'react-icons/tb';
 import { IoCallSharp } from 'react-icons/io5';
 import { useParams } from 'next/navigation';
 import CONFIG from '@/constance';
+import Pagination from '@/app/(admin)/admin/components/usercomp/Pagination';
+
 
 // Skeleton loaders
 const SubcategorySkeleton = () => (
@@ -33,15 +35,19 @@ const BusinessSkeleton = () => (
 export default function Page() {
   const { category } = useParams();
   const dispatch = useDispatch();
-
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  
   const { categories = [], loading, error } = useSelector((state) => state.categories);
   const { businesses, loading: businessesLoading, error: businessesError } = useSelector((state) => state.businesses);
+  
+  const limit = 10;
 
   useEffect(() => {
     if (category) {
-      dispatch(fetchBusinesses({ categoryslug: category }));
+      dispatch(fetchBusinesses({ categoryslug: category, page: currentPage, limit }));
     }
-  }, [dispatch, category]);
+  }, [dispatch, category, currentPage]);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -49,6 +55,14 @@ export default function Page() {
     }
   }, [dispatch, categories.length]);
 
+
+  useEffect(() => {
+    if (businesses?.totalPages) {
+      setTotalPages(businesses.totalPages);
+    }
+  }, [businesses]);
+
+  
   const selectedCategory = categories.find(data => data.slug === category);
 
   if (error) {
@@ -62,6 +76,10 @@ export default function Page() {
       </div>
     );
   }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };      
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -213,6 +231,8 @@ export default function Page() {
           </div>
         )}
       </div>
+      {/* Pagination */}
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 }

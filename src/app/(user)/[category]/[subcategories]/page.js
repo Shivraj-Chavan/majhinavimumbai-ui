@@ -15,6 +15,7 @@ import { IoIosCall } from "react-icons/io";
 import { ImMail4 } from "react-icons/im";
 import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination";
 import CONFIG from "@/constance";
+import ShareButton from "../../components/categorylisting/Sharebtn";
 
 const SkeletonCard = () => (
   <div className="animate-pulse bg-white rounded-xl shadow-md p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
@@ -188,10 +189,11 @@ export default function Page({ params }) {
                           <TbBrandWhatsapp className="text-xl" />
                           WhatsApp
                         </a>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
+                        {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
                           <TfiShare className="text-xl mr-1" />
                           Share
-                        </button>
+                        </button> */}
+                        <ShareButton/>
                       </div>
                     </div>
                   </div>

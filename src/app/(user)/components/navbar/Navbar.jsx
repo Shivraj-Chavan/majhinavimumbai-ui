@@ -47,6 +47,8 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const dropdownRef = useRef(null);
+  const menuRef = useRef(null);
+  const avatarRef = useRef(null);
 
   // location and searchbar scroll logic
   useEffect(() => {
@@ -78,16 +80,24 @@ export default function Navbar() {
   }, [dispatch]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event) => {
+      // Close mobile menu if click is outside menuRef
+      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+  
+      // Close avatar dropdown if click is outside avatarRef
+      if (open && avatarRef.current && !avatarRef.current.contains(event.target)) {
         setOpen(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen, open]);
+  
 
   const handleLogout = () => {
     localStorage.clear();
@@ -253,7 +263,7 @@ export default function Navbar() {
   
       {/* Mobile Menu */}
       {isMenuOpen && (
-  <div className="w-full mt-4 md:hidden px-4 pb-6 m-3">
+  <div ref={menuRef} className="w-full mt-4 md:hidden px-4 pb-6 m-3">
     <div className="flex items-center gap-2">
       {/* Location Dropdown */}
       <div className="flex items-center ">
@@ -262,7 +272,7 @@ export default function Navbar() {
           setLocation={setLocation}
           showDropdown={showDropdown}
           setShowDropdown={setShowDropdown}
-          dropdownRef={dropdownRef}
+          // dropdownRef={dropdownRef}
           className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
       </div>
@@ -296,7 +306,7 @@ export default function Navbar() {
                 Add Your Bussiness
               </Button>
                 {/* User Avatar or Login Button */}
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative" ref={avatarRef}>
                 {isLoggedIn ? (
                   <>
                     <button
@@ -305,7 +315,7 @@ export default function Navbar() {
                     >
                       <Image
                         src={profileImage}
-                        // alt="User"
+                        alt="User"
                         width={24}
                         height={24}
                         className="rounded-full object-cover"
