@@ -5,9 +5,9 @@ export default function page() {
     <div className="bg-white text-gray-800">
       {/* Header Section */}
       <div className="bg-gradient-to-r from-orange-300 via-white to-green-300 text-white py-16 px-4 text-center shadow-lg">
-        <h1 className="text-4xl font-bold mb-2 text-blue-800">Refund Policy</h1>
+        <h1 className="text-4xl font-bold mb-2 text-blue-800">Refund Policy & Order Cancellation</h1>
         <p className="text-lg text-blue-800 font-semibold max-w-2xl mx-auto">
-          Please read this refund policy carefully before using our services.
+          Please read this refund policy & order cancellation carefully before using our services.
         </p>
       </div>
 
@@ -34,6 +34,25 @@ export default function page() {
           <li>In case of delays beyond 10 business days, please contact our support team at <a href="mailto:admin@majhinavimumbai.com" className="text-blue-600 underline">admin@majhinavimumbai.com</a>.</li>
         </ul>
       </div>
+
+    {/* Order cancellation */}
+      <div className="max-w-3xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-8 mb-10">
+      <h2 className="text-2xl font-bold text-red-600 mb-4 flex items-center gap-2">
+        🔁 Order Cancellation
+      </h2>
+      <ul className="list-disc pl-6 space-y-3 text-gray-800 text-base leading-relaxed">
+        <li>
+          Orders/services <span className="font-semibold">once booked</span> cannot be canceled directly through the platform.
+        </li>
+        <li>
+          For cancellations, customers must <span className="font-semibold">contact our support team within 24 hours</span> of placing the order.
+        </li>
+        <li>
+          If the service has already been <span className="font-semibold">processed or initiated</span>, cancellation is <span className="font-semibold text-red-600">not permitted</span>.
+        </li>
+      </ul>
+    </div>
+
     </div>
   );
 }
