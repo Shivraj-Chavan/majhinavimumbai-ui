@@ -50,7 +50,7 @@ export default function page() {
         <li>
           If the service has already been <span className="font-semibold">processed or initiated</span>, cancellation is <span className="font-semibold text-red-600">not permitted</span>.
         </li>
-      </ul>
+      </ul> 
     </div>
 
     </div>

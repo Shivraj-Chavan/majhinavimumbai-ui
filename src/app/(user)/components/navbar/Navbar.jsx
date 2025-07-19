@@ -19,6 +19,8 @@ import Payment from '../payment/payment';
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { VscFeedback } from 'react-icons/vsc';
+import { EyeIcon } from 'lucide-react';
+import { apiGet } from '@/lib/apiClient';
 
 export function handleLoginSuccess (user, token) {
   
@@ -43,13 +45,20 @@ export default function Navbar() {
   const profileImage = user?.image || '/person.jpg';
   const [showSearch, setShowSearch] = useState(false);  
   const [businessId, setBusinessId] = useState(null);
-
+  const [websiteCount,setWebsiteCount]=useState(null)
   const dispatch = useDispatch();
   const router = useRouter();
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
   const avatarRef = useRef(null);
 
+  useEffect(()=>{
+    const getWebCount=async()=>{
+      const data=await apiGet('/count/webview')
+      setWebsiteCount(data?.visitCount)
+    }
+    getWebCount()
+  },[])
   // location and searchbar scroll logic
   useEffect(() => {
     const handleScroll = () => {
@@ -115,6 +124,16 @@ export default function Navbar() {
 
   return (
     <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
+      <div className="bg-orange-400">
+        <div className="text-white max-w-7xl mx-auto  flex flex-row justify-between ">
+          <span>
+          +91 91524 18196
+          </span>
+           <span className='text-sm flex'>
+           <EyeIcon className='text-xs mr-2' /> {websiteCount}
+           </span>
+        </div>
+      </div>
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <a href='/' className="flex items-center">
