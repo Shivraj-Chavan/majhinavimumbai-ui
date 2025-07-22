@@ -4,23 +4,24 @@ import Button from '../form/Button';
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from 'react';
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiPhoneCall, FiX } from "react-icons/fi";
 import PopUp from '../home/popUp';
 import LocationDropdown from '../home/locationDropdown';
 import SearchBar from '../home/searchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '@/redux/slice/userSlice';
 import { IoBusinessSharp } from 'react-icons/io5';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaInstagram, FaUserCircle, FaYoutube } from 'react-icons/fa';
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { CiSquareQuestion } from 'react-icons/ci';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 import Payment from '../payment/payment';
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { VscFeedback } from 'react-icons/vsc';
 import { EyeIcon } from 'lucide-react';
 import { apiGet } from '@/lib/apiClient';
+import { SiX } from 'react-icons/si';
 
 export function handleLoginSuccess (user, token) {
   
@@ -124,15 +125,53 @@ export default function Navbar() {
 
   return (
     <nav className="bg-blue-50 sticky top-0 z-50 shadow-md">
-      <div className="bg-orange-400">
-        <div className="text-white max-w-7xl mx-auto  flex flex-row justify-between ">
-          <span>
-          +91 91524 18196
-          </span>
-           <span className='text-sm flex'>
-           <EyeIcon className='text-xs mr-2' /> {websiteCount}
-           </span>
+      <div className="bg-orange-300">
+      <div className="bg-gradient-to-r from-orange-500 via-white to-green-500  ">
+  <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-white text-sm">
+    
+    {/* LEFT: Phone Number */}
+    <div className="flex items-center gap-2 text-white">
+      <FiPhoneCall className="text-base sm:text-lg md:text-xl" />
+      <span className="font-semibold text-sm sm:text-base md:text-lg">
+        +91 91524 18196
+      </span>
+    </div>
+
+        {/* CENTER: View Count */}
+        <div className="flex items-end gap-1 text-blue-600 font-bold text-sm">
+          <EyeIcon className="w-5 h-5" />
+          <span>{websiteCount}</span>
         </div>
+
+        {/* RIGHT: Social Icons */}
+        <div className="flex gap-4 items-center text-white text-base sm:text-lg md:text-xl">
+      <a
+        href="https://x.com/majhinavimumbai?s=09"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-black transition"
+      >
+        <SiX />
+      </a>
+      <a
+        href="https://youtube.com/watch?v=U1TvvhV7NBM&feature=shared"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-red-600 transition"
+      >
+        <FaYoutube />
+      </a>
+      <a
+        href="https://www.instagram.com/invites/contact/?igsh=rd4wqglt4ujv&utm_content=xlzw37g"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-pink-600 transition"
+      >
+        <FaInstagram />
+      </a>
+    </div>
+      </div>
+    </div>
       </div>
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
