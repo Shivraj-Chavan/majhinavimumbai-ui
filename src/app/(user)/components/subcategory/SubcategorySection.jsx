@@ -57,7 +57,8 @@ export default function SubcategoryCard() {
           {loading
             ?
               [...Array(20)].map((_, idx) => <SkeletonCategoryCard key={idx} />)
-            : categories?.map((category) => (
+            :  categories?.filter((category) => Array.isArray(category.subcategories) && category.subcategories.length > 0)
+            .map((category) => (
                 <div
                   key={category.slug}
                   className="group p-5 sm:p-6 rounded-3xl bg-white border border-orange-100 shadow-md hover:shadow-xl transition duration-300 hover:-translate-y-1"

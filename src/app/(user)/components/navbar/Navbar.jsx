@@ -131,8 +131,8 @@ export default function Navbar() {
     
     {/* LEFT: Phone Number */}
     <div className="flex items-center gap-2 text-white">
-      <FiPhoneCall className="text-base sm:text-lg md:text-xl" />
-      <span className="font-semibold text-sm sm:text-base md:text-lg">
+      <FiPhoneCall className="text-base sm:text-md md:text-xl" />
+      <span className="font-semibold text-sm">
         +91 91524 18196
       </span>
     </div>
