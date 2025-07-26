@@ -139,7 +139,7 @@ export default function Navbar() {
 
         {/* CENTER: View Count */}
         <div className="flex items-end gap-1 text-blue-600 font-bold text-sm">
-          <EyeIcon className="w-5 h-5" />
+          <EyeIcon className="w-4 h-4" />
           <span>{websiteCount}</span>
         </div>
 
@@ -151,7 +151,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className="hover:text-black transition"
       >
-        <SiX />
+        <SiX className='text-sm'/>
       </a>
       <a
         href="https://youtube.com/watch?v=U1TvvhV7NBM&feature=shared"
@@ -159,7 +159,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className="hover:text-red-600 transition"
       >
-        <FaYoutube />
+        <FaYoutube className='text-sm'/>
       </a>
       <a
         href="https://www.instagram.com/invites/contact/?igsh=rd4wqglt4ujv&utm_content=xlzw37g"
@@ -167,7 +167,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className="hover:text-pink-600 transition"
       >
-        <FaInstagram />
+        <FaInstagram className='text-sm'/>
       </a>
     </div>
       </div>
