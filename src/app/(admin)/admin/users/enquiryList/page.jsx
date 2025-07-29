@@ -17,6 +17,7 @@ export default function AdminEnquiries() {
         const res = await apiGet("/enquiries/all");
         console.log("Enquiries", res);
         setEnquiries(res);
+        setTotalPages(res.totalPages);
       } catch (err) {
         toast.error("Failed to load enquiries");
         console.error(err);
@@ -26,7 +27,7 @@ export default function AdminEnquiries() {
     };
 
     fetchEnquiries();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

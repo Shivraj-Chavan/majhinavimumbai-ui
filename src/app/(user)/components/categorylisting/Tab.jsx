@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import CONFIG from "@/constance";
 import { FaAddressBook, FaBuilding, FaCity, FaCommentDots, FaEnvelope, FaGlobe, FaInfoCircle, FaMapMarkerAlt, FaMapPin, FaPhoneAlt, FaStarHalfAlt, FaWhatsapp } from "react-icons/fa";
 import { MdPhotoLibrary, MdRateReview } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Tab = ({ business, renderStars, setRefreshApi}) => {
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -16,6 +18,9 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
   const [visibleMenu, setVisibleMenu] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showFull, setShowFull] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const images = business.images?.filter((img) => img) || [];
 
   const sections = ["overview", "detail", "reviews", "photos"];
 
@@ -108,6 +113,21 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
   // console.log("review user_id", reviews[0]?.user_id);
   // console.log("currentUserId", currentUserId);
   // console.log("businessOwnerId", businessOwnerId);
+
+  const openModal = (index) => {
+    setCurrentIndex(index);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => setIsOpen(false);
+
+  const prevImage = () => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const nextImage = () => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <div className="space-y-10 scroll-smooth">
@@ -402,25 +422,76 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
 
       {/* Photos */}
       <section id="photos" className="scroll-mt-24">
-        
+      {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <MdPhotoLibrary className="text-purple-500 text-2xl" />
         <h2 className="text-2xl font-semibold text-blue-900">Photos</h2>
       </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {business.images?.length > 0 ? (
-            business.images.filter((img) => img) 
-            .map((img, i) => (
-              <div key={i} className="relative h-40 rounded-lg overflow-hidden">
-                <Image src={`${CONFIG.IMAGE_BASE_URL}${img.url}`} alt={`Photo ${i + 1}`} fill className="object-cover" />
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 col-span-full">No images available.</p>
-          )}
+      {/* Image Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {images.length > 0 ? (
+          images.map((img, i) => (
+            <div
+              key={i}
+              onClick={() => openModal(i)}
+              className="relative h-40 rounded-lg overflow-hidden cursor-pointer"
+            >
+              <Image
+                src={`${CONFIG.IMAGE_BASE_URL}${img.url}`}
+                alt={`Photo ${i + 1}`}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 col-span-full">No images available.</p>
+        )}
+      </div>
+
+      {/* Modal Carousel */}
+      {isOpen && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/15 bg-opacity-80 z-50 flex items-center justify-center">
+          {/* Close Button */}
+         
+
+          {/* Image Viewer */}
+          <div className="relative w-[90vw] h-[80vh] max-w-4xl rounded-xl overflow-hidden ">
+
+          <button
+            onClick={closeModal}
+            className="absolute top-4 right-6 text-white text-3xl z-50"
+          >
+             <RxCross2 className="text-black font-bold"/>
+          </button>
+
+            <Image
+              src={`${CONFIG.IMAGE_BASE_URL}${images[currentIndex].url}`}
+              alt={`Photo ${currentIndex + 1}`}
+              fill
+              className="object-contain"
+            />
+
+            {/* Left Arrow */}
+            <button
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-black text-4xl p-2 bg-opacity-40 hover:bg-opacity-70 z-20"
+            >
+              <IoIosArrowBack />
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-black text-4xl p-2  bg-opacity-40 hover:bg-opacity-70 z-20"
+            >
+              <IoIosArrowForward />
+            </button>
+          </div>
         </div>
-      </section>
+      )}
+    </section>
     </div>
   );
 };

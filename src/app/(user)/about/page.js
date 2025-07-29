@@ -15,14 +15,14 @@ export default function AboutUs() {
       <div className="relative w-full h-[200px] md:h-[500px]">
        
              <Image
-                    src="/nmmc.png"
-                    alt="I Love Majhi Navi Mumbai"
-                    fill
-                    className="object-contain object-[center_-50px] w-full h-full blur-sm brightness-95"
-                    priority
+                src="/nmmc.png"
+                alt="I Love Majhi Navi Mumbai"
+                fill
+                className="object-contain object-[center_-50px] w-full h-full blur-sm brightness-95"
+                priority
                   />
                 
-            <div className="absolute inset-0 flex flex-col justify-center items-center bg-white/15 backdrop-blur-sm text-white px-4 text-center">
+            <div className="absolute inset-0 flex flex-col justify-center items-center bg-black/10 backdrop-blur-sm text-white px-4 text-center">
               <Image src="/logo.png" alt="logo" width={550} height={130} />
             </div>
          

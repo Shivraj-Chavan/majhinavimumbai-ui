@@ -40,18 +40,27 @@ export default function Page({ params }) {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
+
   const { categories = [], loading, error } = useSelector((state) => state.categories);
-  const { businesses, loading: businessesLoading, error: businessesError } = useSelector(
+  const { businesses, totalCount,  loading: businessesLoading, error: businessesError } = useSelector(
     (state) => state.businesses
   );
 
   const limit = 10;
 
   useEffect(() => {
-    if (category && subcategories) {
-      dispatch(fetchBusinesses({ categorySlug: category, subcategoryslug: subcategories }));
+    if (businesses?.totalCount) {
+      const pages = Math.ceil(businesses.totalCount / limit);
+      setTotalPages(pages > 0 ? pages : 1);
     }
-  }, [dispatch, category, subcategories]);
+  }, [businesses?.totalCount, limit]);
+   
+
+  useEffect(() => {
+    if (category && subcategories) {
+      dispatch(fetchBusinesses({ categorySlug: category, subcategoryslug: subcategories, page: currentPage, limit: limit, }));
+    }
+  }, [dispatch, category, subcategories, currentPage, limit]);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -130,19 +139,26 @@ export default function Page({ params }) {
               .map((business) => (
                 <div key={business.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col sm:flex-row gap-4 border border-gray-200">
                   <div className="relative w-full sm:w-48 h-40 rounded-xl mt-5 overflow-hidden bg-gray-100 flex-shrink-0">
+                  <Link href={`/listinginfo/${business.slug}`}>
                     <Image                      
                     src={business?.image_url ? `${CONFIG.IMAGE_BASE_URL}${business?.image_url}`   :"/image.png"}
                     alt={business.name || "Business Image"} fill className="object-cover" />
                     
+                  </Link>
                   </div>
 
                   <div className="flex-1 flex flex-col justify-between">
-                    <div>
+                    
+<div>
+                    <Link href={`/listinginfo/${business.slug}`}>
                       <h3 className="text-xl font-bold text-gray-800">{business.name}</h3>
+                      </Link>
                       <p className="text-sm text-gray-600 mt-1">
-                        {(business.address || "Address")}, {(business.landmark || "Landmark")}
+                        {(business.address)}, {(business.area)}, {(business.landmark)}
                       </p>
                       <p className="text-sm text-gray-600">Pin Code: {business.pin_code}</p>
+
+                     
                       <div className="mt-2 space-y-1">
                         {business.phone && (
                           <p className="flex items-center gap-2 text-sm text-gray-700">
@@ -170,7 +186,6 @@ export default function Page({ params }) {
                         )}
                       </div>
                     </div>
-
                     <div className="mt-2 flex flex-col gap-2">
                       {business.website && (
                         <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline">
@@ -179,16 +194,22 @@ export default function Page({ params }) {
                       )}
 
                       <div className="flex flex-wrap gap-2 mt-2">
-                        <Link href={`/listinginfo/${business.slug}`}>
-                          <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
-                            <FcFinePrint className="text-xl mr-1" />
-                            View Details
-                          </button>
-                        </Link>
-                        <a href={`https://wa.me/+91${business.wp_number}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium text-sm px-4 py-2 rounded-full shadow-lg transition-all hover:scale-105">
-                          <TbBrandWhatsapp className="text-xl" />
-                          WhatsApp
-                        </a>
+                      <Link href={`/listinginfo/${business.slug}`}>
+                      <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-md text-sm shadow flex items-center gap-1 transition-all hover:scale-105">
+                        <FcFinePrint className="text-xl" />
+                        View Details
+                      </button>
+                    </Link>
+
+                    <a
+                      href={`https://wa.me/+91${business.wp_number}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center gap-1 transition-all hover:scale-105"
+                    >
+                      <TbBrandWhatsapp className="text-xl" />
+                      WhatsApp
+                    </a>
                         {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center">
                           <TfiShare className="text-xl mr-1" />
                           Share

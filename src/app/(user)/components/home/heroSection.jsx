@@ -90,7 +90,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
   <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-8 bg-white/15 backdrop-blur h-full">
 
         {/* Left Section */}
-        <div className="w-full md:w-1/2 m-4 sm:m-6 md:mt-16 flex flex-col items-center md:items-start text-center md:text-left">
+        <div className="w-full md:w-1/2 m-4 sm:m-6 md:mt-6 flex flex-col items-center md:items-start text-center md:text-left">
         
         {/* {loading ? (
           <div className="hidden sm:flex items-center gap-2 mb-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mx-auto p-2"> */}
@@ -142,7 +142,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
           <div className="flex flex-col md:flex-row items-center gap-4 mt-6 w-full">
             <Button
               onClick={() => setShowContact(true)}
-              className="relative overflow-hidden bg-gradient-to-r from-green-400 to-green-600 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 group"
+              className="relative  bg-gradient-to-r from-green-400 to-green-600 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 group"
             >
               <div className="absolute inset-0 bg-green-700 opacity-0 group-hover:opacity-10 transition duration-300 rounded-full"></div>
               <div className="flex items-center gap-2 relative z-10">
@@ -202,7 +202,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
         </div>
 
         {/* Category Dropdown  */}
-        <div className="hidden md:flex w-full md:w-1/2 justify-center items-center mt-10 md:mt-0 px-4 md:px-10">
+        <div className="hidden md:flex w-full md:w-1/2 justify-center items-center mt-5 md:mt-0 px-4 md:px-10">
           <div className="w-full max-w-md lg:max-w-lg">
             <CategoryDropdown />
           </div>

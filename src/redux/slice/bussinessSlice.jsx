@@ -2,8 +2,8 @@ import { apiGet } from "@/lib/apiClient";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchBusinesses = createAsyncThunk("businesses/fetchBusinesses",
-async ({categoryslug,subcategoryslug}) => {
-  let url = "/businesses?isVerified=true&limit=40";
+async ({ categoryslug, subcategoryslug, page = 1, limit = 10 }) => {
+    let url = `/businesses?isVerified=true&page=${page}&limit=${limit}`;
 
   if (categoryslug) {
     url += `&categoryslug=${categoryslug}`;
@@ -16,7 +16,6 @@ async ({categoryslug,subcategoryslug}) => {
   return response;
     }
   );
-
 
 const businessesSlice = createSlice({
   name: "businesses",
