@@ -42,7 +42,7 @@ const ShareButton = ({ businessName = "My Business" }) => {
   return (
     <button
       onClick={handleShare}
-      className="flex items-center gap-2 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-all hover:scale-105"
+      className="flex items-center gap-2 px-3 py-1.5 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-all hover:scale-105"
     >
       <TfiShare className="text-lg" />
       {copied ? 'Link Copied!' : 'Share'}

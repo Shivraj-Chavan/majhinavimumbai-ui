@@ -14,6 +14,7 @@ import SearchBar from "./searchBar";
 import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { apiGet } from "@/lib/apiClient";
+import AdsImg from "./adsImg";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -76,6 +77,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
   };
 
   return (
+    <>
     <div className="relative w-full h-[450px] sm:h-[400px] md:h-[600px] overflow-hidden shadow-xl max-w-8xl mx-auto">
   <div className="absolute inset-0 z-0">
     <Image
@@ -207,6 +209,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
             <CategoryDropdown />
           </div>
         </div>
+          
 
         {/* Bouncing arrow */}
         <div onClick={handleScrollDown} className="flex flex-col items-center fixed bottom-4 right-4 z-50 animate-bounce md:hidden">
@@ -219,6 +222,10 @@ const [showSuggestions, setShowSuggestions] = useState(false);
 
       {/* Contact Popup */}
       <ContactPopup showContact={showContact} setShowContact={setShowContact} />
+    
+    {/* ADVERTISEMENT IMG */}
     </div>
+    <AdsImg/>
+    </>
   );
 }

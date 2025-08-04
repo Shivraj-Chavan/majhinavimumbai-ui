@@ -195,7 +195,7 @@ export default function Page({ params }) {
 
                       <div className="flex flex-wrap gap-2 mt-2">
                       <Link href={`/listinginfo/${business.slug}`}>
-                      <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-md text-sm shadow flex items-center gap-1 transition-all hover:scale-105">
+                      <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 cursor-pointer rounded-md text-sm shadow flex items-center gap-1 transition-all hover:scale-105">
                         <FcFinePrint className="text-xl" />
                         View Details
                       </button>
@@ -205,7 +205,7 @@ export default function Page({ params }) {
                       href={`https://wa.me/+91${business.wp_number}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm shadow flex items-center gap-1 transition-all hover:scale-105"
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 cursor-pointer rounded-md text-sm shadow flex items-center gap-1 transition-all hover:scale-105"
                     >
                       <TbBrandWhatsapp className="text-xl" />
                       WhatsApp
