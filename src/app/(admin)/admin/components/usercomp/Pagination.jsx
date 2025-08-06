@@ -1,54 +1,64 @@
 import React from 'react';
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
-  const handlePageClick = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      onPageChange(page);
-    }
+  const pageWindowSize = 5;
+
+  const getPageWindowStart = () => {
+    // Integer division to get window start index (0-based)
+    return Math.floor((currentPage - 1) / pageWindowSize) * pageWindowSize + 1;
   };
 
-  const generatePageNumbers = () => {
-    const pageNumbers = [];
+  const start = getPageWindowStart();
+  const end = Math.min(start + pageWindowSize - 1, totalPages);
 
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        pageNumbers.push(1, 2, 3, '...', totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pageNumbers.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
-      } else {
-        pageNumbers.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
-      }
-    }
+  const visiblePages = [];
+  for (let i = start; i <= end; i++) {
+    visiblePages.push(i);
+  }
 
-    return pageNumbers;
+  const handlePrevBlock = () => {
+    const prevStart = Math.max(start - pageWindowSize, 1);
+    onPageChange(prevStart);
   };
 
-  const pageNumbers = generatePageNumbers();
+  const handleNextBlock = () => {
+    const nextStart = start + pageWindowSize;
+    if (nextStart <= totalPages) {
+      onPageChange(nextStart);
+    }
+  };
 
   return (
     <div className="flex justify-center mt-6">
       <div className="flex space-x-2">
-        {/* Previous Page Button */}
-        <button className="px-3 py-1 bg-blue-500 text-white rounded-full" onClick={() => handlePageClick(currentPage - 1)} disabled={currentPage === 1}>
+        {/* Prev Block */}
+        <button
+          onClick={handlePrevBlock}
+          disabled={start === 1}
+          className="px-3 py-1 bg-blue-500 text-white rounded-full disabled:opacity-50"
+        >
           Prev
         </button>
 
-        {/* Page Numbers */}
-        {pageNumbers?.map((page, index) => page === '...' ? (
-            <span key={index} className="px-3 py-1 text-white">...</span>
-          ) : (
-            <button key={index} className={`px-3 py-1 ${currentPage === page ? 'bg-blue-600' : 'bg-blue-500'} text-white rounded-full`}  onClick={() => handlePageClick(page)} >
-              {page}
-            </button>
-          )
-        )}
+        {/* Visible Page Buttons */}
+        {visiblePages.map((page) => (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`px-3 py-1 rounded-full ${
+              currentPage === page ? 'bg-blue-700' : 'bg-blue-500'
+            } text-white`}
+          >
+            {page}
+          </button>
+        ))}
 
-        {/* Next Page Button */}
-        <button className="px-3 py-1 bg-blue-500 text-white rounded-full" onClick={() => handlePageClick(currentPage + 1)} disabled={currentPage === totalPages} >
+        {/* Next Block */}
+        <button
+          onClick={handleNextBlock}
+          disabled={end === totalPages}
+          className="px-3 py-1 bg-blue-500 text-white rounded-full disabled:opacity-50"
+        >
           Next
         </button>
       </div>
