@@ -37,7 +37,7 @@ export default function Page({ params }) {
   const { category, subcategories } = params;
   const dispatch = useDispatch();
   const [sortOrder, setSortOrder] = useState("asc");
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
 
@@ -48,13 +48,20 @@ export default function Page({ params }) {
 
   const limit = 10;
 
-  useEffect(() => {
-    if (businesses?.totalCount) {
-      const pages = Math.ceil(businesses.totalCount / limit);
-      setTotalPages(pages > 0 ? pages : 1);
-    }
-  }, [businesses?.totalCount, limit]);
+  // shanpana
+  // useEffect(() => {
+  //   console.log({businesses})
+  //   if (businesses?.totalCount) {
+  //     const pages = Math.ceil(businesses.totalCount / limit);
+  //     setTotalPages(pages > 0 ? pages : 1);
+  //   }
+  // }, [businesses?.totalCount, limit]);
    
+     useEffect(() => {
+      console.log({businesses})
+         setTotalPages(businesses.totalPages || 0);
+       
+     }, [businesses]);
 
   useEffect(() => {
     if (category && subcategories) {
@@ -227,7 +234,10 @@ export default function Page({ params }) {
       </div>
 
       {/* Pagination */}
+      {
+        totalPages>0 &&
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+      }
     </div>
   );
 }
