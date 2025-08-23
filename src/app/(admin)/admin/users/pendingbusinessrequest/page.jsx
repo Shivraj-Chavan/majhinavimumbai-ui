@@ -19,7 +19,7 @@ export default function PendingUpdates() {
   const [previewImage, setPreviewImage] = useState(null);
   const [businessUsers, setBusinessUsers] = useState([]);
 
-
+  const limit = 10;
   useEffect(() => {
     const fetchBusinessUsers = async () => {
       try {
@@ -143,6 +143,8 @@ export default function PendingUpdates() {
                               src={fullImageUrl}
                               onClick={() => openImagePreview(fullImageUrl)}
                               alt={`image-${idx}`}
+                              width={48}    
+                              height={48}
                               className="w-12 h-12 object-cover rounded-md border cursor-pointer hover:scale-105 transition"
                             />
                           );
@@ -202,6 +204,8 @@ export default function PendingUpdates() {
           <Image
             src={previewImage}
             alt="Preview"
+            width={600}      
+            height={400} 
             className="max-w-full max-h-full rounded-lg shadow-lg"
           />
         </div>

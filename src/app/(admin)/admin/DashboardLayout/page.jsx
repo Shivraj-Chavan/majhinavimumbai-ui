@@ -82,16 +82,16 @@ const [token,setToken]=useState(null)
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex bg-gray-100">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 md:hidden"
+          className="fixed inset-0 z-20 backdrop-blur-sm bg-white/5 bg-opacity-50 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-30 w-72 transform bg-white shadow-lg transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -109,18 +109,22 @@ const [token,setToken]=useState(null)
             </button>
           </div>
 
-          <nav className="flex-1 overflow-y-auto p-4">
+          <nav className="flex-1 p-1 w-[300px]">
             <SidebarMenu />
           </nav>
 
-          <div className="border-t p-4">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-gray-300" />
-              <div className="ml-2">
-                <p className="text-sm font-medium">Admin</p>
-              </div>
+          <div className="border-t border-gray-300 px-4 py-3 mt-6 bg-gradient-to-r from-white to-blue-50 rounded-b-md shadow-inner">
+          <div className="flex items-center">
+            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-orange-400 to-green-300 flex items-center justify-center text-white font-bold shadow-md">
+              A
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-semibold text-gray-800">Admin</p>
+              <p className="text-xs text-gray-500">Super User</p>
             </div>
           </div>
+        </div>
+
         </div>
       </aside>
 
@@ -175,7 +179,7 @@ const [token,setToken]=useState(null)
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 h-full">{children}</main>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import { handleLoginSuccess } from "../navbar/Navbar";
 export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const dispatch = useDispatch();
   const router = useRouter();
-  // const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [name, setName] = useState("");
   const [errors, setErrors] = useState({});
@@ -77,25 +77,25 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     }
   };  
 
-  // const handlePhoneChange = (e) => {
-  //   const value = e.target.value.replace(/\D/g, "");
-  //   if (value.length <= 10) {
-  //     setPhone(value);
-  //     setErrors((prev) => ({ ...prev, phone: "" }));
-  //   }
-  // };
-
-  const handleEmailChange = (e) => {
-    const value = e.target.value.trim();
-    setEmail(value);
-  
-    const gmailRegex = /^[a-zA-Z0-9](?!.*\.\.)[a-zA-Z0-9._%+-]*@gmail\.com$/;
-    if (!gmailRegex.test(value) && !value.endsWith("@majhinavimumbai.com")) {
-      setErrors((prev) => ({ ...prev, email: "Please enter a valid @gmail.com email address." }));
-    } else {
-      setErrors((prev) => ({ ...prev, email: "" }));
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    if (value.length <= 10) {
+      setPhone(value);
+      setErrors((prev) => ({ ...prev, phone: "" }));
     }
   };
+
+  // const handleEmailChange = (e) => {
+  //   const value = e.target.value.trim();
+  //   setEmail(value);
+  
+  //   const gmailRegex = /^[a-zA-Z0-9](?!.*\.\.)[a-zA-Z0-9._%+-]*@gmail\.com$/;
+  //   if (!gmailRegex.test(value) && !value.endsWith("@majhinavimumbai.com")) {
+  //     setErrors((prev) => ({ ...prev, email: "Please enter a valid @gmail.com email address." }));
+  //   } else {
+  //     setErrors((prev) => ({ ...prev, email: "" }));
+  //   }
+  // };
   const handleOtpChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     if (value.length <= 6) {
@@ -122,22 +122,22 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
   };
 
   const handleSendOtp = async () => {
-    // if (phone.length !== 10) {
-    //   setErrors({ phone: "Phone number must be 10 digits" });
-    //   return;
-    // }
+    if (phone.length !== 10) {
+      setErrors({ phone: "Phone number must be 10 digits" });
+      return;
+    }
       let errorMap = {};
     
       // if (!name.trim()) errorMap.name = "Name is required";
 
-      if (!email.trim()) {
-        errorMap.email = "Email is required";
-      } else {
-        const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-        if (!gmailRegex.test(email) && !email.endsWith("@majhinavimumbai.com")) {
-          errorMap.email = "Please enter a valid @gmail.com email address.";
-        }
-      }
+      // if (!email.trim()) {
+      //   errorMap.email = "Email is required";
+      // } else {
+      //   const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      //   if (!gmailRegex.test(email) && !email.endsWith("@majhinavimumbai.com")) {
+      //     errorMap.email = "Please enter a valid @gmail.com email address.";
+      //   }
+      // }
     
       if (Object.keys(errorMap).length > 0) {
         setErrors(errorMap);
@@ -149,9 +149,9 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setIsSendingOtp(true);
     
     try {
-      const response = await apiPost("/otp/send", {name:"", email });
+      const response = await apiPost("/otp/send", {name:"", phone });
       console.log("OTP Sent Response:", response.data);
-      setStatusMessage({ type: "success", message: "OTP sent successfully via Email!" });
+      setStatusMessage({ type: "success", message: "OTP sent successfully via Phone!" });
       setCountdown(30);
       setOtpSent(true);
     } catch (error) {
@@ -189,8 +189,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
 
     try {
-      const data = await apiPost("otp/verify", { name:"", email: email, otp: otp });
-      console.log("Verifying OTP:", { email, otp });
+      const data = await apiPost("otp/verify", { name:"", phone: phone, otp: otp });
+      console.log("Verifying OTP:", { phone, otp });
       console.log("OTP Verify Full Response:", data);
 
        // Extract token and role from the response
@@ -201,7 +201,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       console.log("Extracted Role:", role);
 
       // Create a minimal user object yourself if needed
-      const user = { name:"", email };
+      const user = { name:"", phone };
 
       if (!token) throw new Error("Token not found in response");
 
@@ -219,8 +219,8 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
      // Clear form and close modal 
       setTimeout(() => {
-        // setPhone("");
-        setEmail("");
+        setPhone("");
+        // setEmail("");
         setOtp("");
         setOtpSent(false);
         setCountdown(0);
@@ -270,7 +270,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
           </button>
 
           <p className="italic text-lg text-center font-bold text-blue-700">Welcome</p>
-          <h1 className="text-2xl font-semibold mb-4 text-center">Verify Your Email</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-center">Verify Your Phone Number</h1>
 
          {/* Status Message */}
           {statusMessage.message && (
@@ -296,7 +296,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div> */}
 
-            {/* <div>
+            <div>
               <label className="block text-lg font-medium">Phone Number</label>
               <div className={`flex items-center mt-2 border cursor-pointer ${
                   errors.phone ? "border-red-500" : "border-gray-300"
@@ -312,10 +312,10 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                 {phone.length === 10 && <FaCheckCircle className="text-green-500 mx-2" />}
               </div>
               {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-            </div> */}
+            </div>
 
          {/* Email Input */}
-          <div>
+          {/* <div>
             <label className="block text-lg font-medium">Your Email ID</label>
             <input
               type="email"
@@ -327,7 +327,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
               } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
+          </div> */}
 
           {/* <div className="text-center font-bold text-lg text-blue-700 hover:text-blue-800">
             <h1>Login using Google</h1>
@@ -342,7 +342,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
             </button> */}
 
           {/* Email Submit Button */}
-          {!otpSent && !errors.email && email && (
+          {/* {!otpSent && !errors.phone && phone && (
             <button
               type="button"
               onClick={handleSendOtp}
@@ -360,12 +360,12 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
                 "Submit"
               )}
             </button>
-          )}
+          )} */}
 
 
 
             {/* Send OTP Button */}
-            {/* {phone.length === 10 && !otpSent && (
+            {phone.length === 10 && !otpSent && (
               <button
                 type="button"
                 onClick={handleSendOtp}
@@ -376,7 +376,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
               >
                 Send OTP
               </button>
-            )} */}
+            )}
 
             {otpSent && (
               <>

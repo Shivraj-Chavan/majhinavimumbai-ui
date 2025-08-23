@@ -1,46 +1,24 @@
+// SidebarMenu.jsx
 import React from 'react'
 import SidebarItem from "./SidebarItem"
-import SidebarItemWithSubmenu from './SidebarItemWithSubmenu'
-import SidebarSubItem from './SidebarSubItem'
-import {  LuMenu,LuUsers, LuSettings, LuMail } from "react-icons/lu"
+import { LuUsers, LuSettings, LuMail } from "react-icons/lu"
 
 export default function SidebarMenu() {
   return (
-    <div>
-         <ul className="space-y-1">
-              {/* <SidebarItem icon={<LuSettings className="h-5 w-5" />} title="Dashboard" href="/dashboard" /> */}
-        
-              {/* <SidebarItemWithSubmenu icon={<LuSettings className="h-5 w-5" />} title="Analytics">
-                <SidebarSubItem title="Overview" href="/analytics/overview" />
-                <SidebarSubItem title="Reports" href="/analytics/reports" />
-                <SidebarSubItem title="Metrics" href="/analytics/metrics" />
-              </SidebarItemWithSubmenu> */}
-        
-              {/* <SidebarItemWithSubmenu icon={<LuUsers className="h-5 w-5" />} title="Users"> */}
-                {/* <SidebarSubItem title="Business Users" href="/admin/users/businessUsers" />
-                <SidebarSubItem title="Users" href="/admin/users" />
-                <SidebarSubItem title="Pending Requests" href="/admin/users/pendingRequest" /> */}
-              {/* </SidebarItemWithSubmenu> */}
-        
-              {/* <SidebarItemWithSubmenu icon={<LuMail className="h-5 w-5" />} title="Messages">
-                <SidebarSubItem title="Inbox" href="/messages/inbox" />
-                <SidebarSubItem title="Sent" href="/messages/sent" />
-                <SidebarSubItem title="Drafts" href="/messages/drafts" />
-              </SidebarItemWithSubmenu> */}
-            {/* <h1 className="ms-3 font-bold flex items-center gap-2"> <LuUsers className="h-5 w-5" /> Users</h1> */}
-            <SidebarItem title="Create Users " href="/admin/users/addUsers"/>
-            <SidebarItem title="All Users" href="/admin/users" />
-            <SidebarItem title="Verified Businesses" href="/admin/users/businessUsers" />
-            <SidebarItem title="Pending Business Verification" href="/admin/users/pendingRequest" />
-            <SidebarItem title="Pending Business Update Request" href="/admin/users/pendingbusinessrequest"/>
-            <SidebarItem title="Contact List" href="/admin/users/contactList"/>
-            <SidebarItem title="Review Delete Queries" href="/admin/users/reviewList"/>
-            <SidebarItem title="Enquiry To business" href="/admin/users/enquiryList"/>
-            
+<div className="w-full h-screen px-4 py-6">
+  <h2 className="text-lg font-bold text-gray-600 mb-4 ps-2">Admin Panel</h2>
+  <ul className="space-y-2 overflow-hidden scrollbar-hide">
+    <SidebarItem title="Create Users" href="/admin/users/addUsers" icon={<LuUsers className="h-5 w-5" />} />
+    <SidebarItem title="All Users" href="/admin/users" icon={<LuUsers className="h-5 w-5" />} />
+    <SidebarItem title="Verified Businesses" href="/admin/users/businessUsers" icon={<LuUsers className="h-5 w-5" />} />
+    <SidebarItem title="Pending Business Verification" href="/admin/users/pendingRequest" icon={<LuSettings className="h-5 w-5" />} />
+    <SidebarItem title="Pending Business Update Request" href="/admin/users/pendingbusinessrequest" icon={<LuSettings className="h-5 w-5" />} />
+    <SidebarItem title="Contact List" href="/admin/users/contactList" icon={<LuMail className="h-5 w-5" />} />
+    <SidebarItem title="Review Delete Queries" href="/admin/users/reviewList" icon={<LuMail className="h-5 w-5" />} />
+    <SidebarItem title="Enquiry To business" href="/admin/users/enquiryList" icon={<LuMail className="h-5 w-5" />} />
+  </ul>
+</div>
 
-
-              {/* <SidebarItem icon={<LuSettings className="h-5 w-5" />} title="Settings" href="/settings" /> */}
-            </ul>
-    </div>
   )
 }
+    

@@ -1,6 +1,8 @@
+// SidebarItem.jsx
 import React from 'react'
-import { usePathname } from "next/navigation"
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+
 export default function SidebarItem({ icon, title, href }) {
   const pathname = usePathname()
   const isActive = pathname === href
@@ -9,12 +11,15 @@ export default function SidebarItem({ icon, title, href }) {
     <li>
       <Link
         href={href}
-        className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-          isActive ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-100"
-        }`}
+        className={`flex items-center gap-3 px-2 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+          ${isActive ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-800 hover:bg-blue-50'}
+        `}
       >
-        <span className="mr-3">{icon}</span>
-        <span>{title}</span>
+        <div className="flex items-center gap-2 text-blue-700 whitespace-nowrap overflow-hidden text-ellipsis">
+        {icon}
+        <span className="truncate">{title}</span>
+      </div>
+
       </Link>
     </li>
   )
