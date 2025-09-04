@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "@/redux/slice/categoriesSlice";
 // import AdsImg from "../home/adsImg";
 import AdsImg2 from "../home/adsImg2";
+import AdsImg3 from "../home/adsImg3";
 
 export default function SubcategoryCard() {
   const dispatch = useDispatch();
@@ -54,7 +55,8 @@ export default function SubcategoryCard() {
 
   return (
     <div id="subcategories" className="bg-orange-50">
-      <AdsImg2/>
+      {/* <AdsImg2/> */}
+      <AdsImg3/>
       <div className="max-w-7xl mx-auto px-4 py-10 sm:py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {loading
