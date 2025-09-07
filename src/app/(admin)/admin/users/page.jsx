@@ -1,87 +1,73 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { apiGet, apiPut } from "@/lib/apiClient";
 import { FaUserEdit } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination"; 
+import Pagination from "@/app/(admin)/admin/components/usercomp/Pagination";
 import PopupEditUser from "../components/usercomp/PopupEditUser";
 import { toast } from "react-toastify";
 
 export default function Page() {
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(10);
+  const usersPerPage = 10;
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
 
+  // searchTerm = what's in the input; appliedQuery = what API actually uses
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [appliedQuery, setAppliedQuery] = useState(""); // only updates on Search
 
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Fetch all users initially
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        const data = await apiGet("/users");
-        console.log("Fetched users:", data);
-        setUsers(data);
-        setFilteredUsers(data); // initially both are same
-      } catch (error) {
-        console.log("Error fetching users:", error);
-        toast.error("Failed to fetch users");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
-
-  // Handle search input change (live filtering)
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-
-    if (!value.trim()) {
-      setFilteredUsers(users);
-      return;
-    }
-
-    const filtered = users.filter((user) =>
-      user.name?.toLowerCase().includes(value.toLowerCase()) ||
-      user.email?.toLowerCase().includes(value.toLowerCase()) ||
-      user.business_name?.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredUsers(filtered);
-    setCurrentPage(1);
-  };
-
-  // Optional: Backend search
-  const searchBusinessUser = async () => {
-    if (!searchTerm.trim()) {
-      toast.error("Please enter a search term");
-      return;
-    }
-
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await apiGet(`/users/search?q=${encodeURIComponent(searchTerm)}`);
-      console.log("Search API response:", response);
+      const q = appliedQuery.trim();
+      const data = await apiGet(
+        `/users?page=${currentPage}&limit=${usersPerPage}&q=${encodeURIComponent(q)}`
+      );
 
-      setFilteredUsers(response.data || []);
-      setTotalPages(response.totalPages || 1);
-      setCurrentPage(1);
+      // Expecting { users, totalPages, total, page }
+      const list = data?.users ?? [];
+      const pages =
+        data?.totalPages ??
+        (typeof data?.total === "number"
+          ? Math.max(1, Math.ceil(data.total / usersPerPage))
+          : 1);
+
+      setUsers(list);
+      setTotalPages(pages);
     } catch (error) {
-      console.error("Search error:", error);
-      toast.error("Failed to search users");
+      console.error("Error fetching users:", error);
+      toast.error("Failed to fetch users");
     } finally {
       setLoading(false);
     }
+  }, [appliedQuery, currentPage]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleSearchClick = () => {
+    setCurrentPage(1);
+    setAppliedQuery(searchTerm); // triggers fetch via useEffect
+  };
+
+  const handleSearchEnter = (e) => {
+    if (e.key === "Enter") handleSearchClick();
+  };
+
+  const handleClearSearch = () => {
+    if (!appliedQuery && !searchTerm) return;
+    setSearchTerm("");
+    setAppliedQuery("");
+    setCurrentPage(1);
   };
 
   const handleEditOpen = (user) => {
@@ -90,22 +76,14 @@ export default function Page() {
   };
 
   const handleUpdate = async (id, updatedData) => {
-    console.log("Clicked update for:", id, "with data:", updatedData);
     try {
-      const response = await apiPut(`/users/${id}/profile`, updatedData);
-      console.log("Response after update:", response);
+      await apiPut(`/users/${id}/profile`, updatedData);
       toast.success("User updated successfully");
-
-      setUsers((prevUsers) =>
-        prevUsers.map((user) => (user.id === id ? { ...user, ...response } : user))
-      );
-      setFilteredUsers((prevFiltered) =>
-        prevFiltered.map((user) => (user.id === id ? { ...user, ...response } : user))
-      );
-
+      // Re-fetch current page to keep server as source of truth
+      fetchUsers();
       setShowPopup(false);
     } catch (err) {
-      console.error("Update failed:", err.response?.data || err.message);
+      console.error("Update failed:", err?.response?.data || err?.message);
       toast.error("Failed to update user");
     }
   };
@@ -114,33 +92,35 @@ export default function Page() {
     router.push(`users/businessRegister?ownerId=${userId}`);
   };
 
-  // Pagination
-  const totalPage = Math.ceil(filteredUsers.length / usersPerPage);
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-     {/* Search Box */}
-<div className="relative flex justify-center w-full mb-4">
-  <div className="flex items-center gap-3 border border-gray-200 shadow rounded-lg bg-white max-w-xl w-full px-2 py-2">
-    <input
-      type="text"
-      value={searchTerm}
-      onChange={handleInputChange}
-      placeholder="Search by name, email or business..."
-      className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
-    />
-    <button
-      onClick={searchBusinessUser}
-      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-    >
-      Search
-    </button>
-  </div>
-</div>
-     
+      {/* Search Box */}
+      <div className="relative flex justify-center w-full mb-4">
+        <div className="flex items-center gap-2 border border-gray-200 shadow rounded-lg bg-white max-w-xl w-full px-2 py-2">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleSearchEnter}
+            placeholder="Search by name, email or business..."
+            className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
+          />
+          <button
+            onClick={handleSearchClick}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          >
+            Search
+          </button>
+          <button
+            onClick={handleClearSearch}
+            className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm"
+            title="Clear"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">User Management</h2>
 
       {/* Desktop Table View */}
@@ -148,58 +128,65 @@ export default function Page() {
         <table className="min-w-full text-sm text-left">
           <thead className="bg-white/60 text-gray-700 uppercase text-xs rounded-t-lg">
             <tr>
-              <th className="px-4 py-3">ID</th>
+              <th className="px-4 py-3">Sr. No</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3 text-center">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white/30 backdrop-blur-md">
-            {currentUsers.map((user, index) => (
-              <tr
-                key={`user-${user.id}-${index}`}
-                className="hover:bg-white/50 transition-all duration-300 relative"
-              >
-                <td className="px-4 py-3 font-medium text-gray-800">
-                  {(currentPage - 1) * usersPerPage + index + 1}
-                </td>
-                <td className="px-4 py-3">{user.name}</td>
-                <td className="px-4 py-3">{user.email}</td>
-                <td className="px-4 py-3 space-x-2 flex items-center justify-center">
-                  <button
-                    className={`h-8 px-3 rounded-md text-sm font-semibold ${
-                      !user?.is_active
-                        ? "bg-gray-500 hover:bg-gray-400"
-                        : "bg-orange-500 hover:bg-orange-400"
-                    } text-white`}
-                  >
-                    {!user?.is_active ? "Inactive" : "Active"}
-                  </button>
-
-                  <button
-                    onClick={() => handleEditOpen(user)}
-                    className="h-8 bg-blue-600 hover:bg-blue-500 text-white px-3 rounded text-sm flex items-center justify-center"
-                  >
-                    <FaUserEdit />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleAddBusinessClick(user.id)}
-                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
-                  >
-                    Add Business
-                  </button>
+            {loading ? (
+              <tr>
+                <td colSpan={4} className="text-center py-6 text-gray-600">
+                  Loading...
                 </td>
               </tr>
-            ))}
-
-            {currentUsers.length === 0 && (
+            ) : users.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-4 text-gray-600">
+                <td colSpan={4} className="text-center py-6 text-gray-600">
                   No users found
                 </td>
               </tr>
+            ) : (
+              users.map((user, index) => (
+                <tr
+                  key={`user-${user?.id ?? index}`}
+                  className="hover:bg-white/50 transition-all duration-300 relative"
+                >
+                  <td className="px-4 py-3 font-medium text-gray-800">
+                    {(currentPage - 1) * usersPerPage + index + 1}
+                  </td>
+                  <td className="px-4 py-3">{user?.name ?? "-"}</td>
+                  <td className="px-4 py-3">{user?.email ?? "-"}</td>
+                  <td className="px-4 py-3 space-x-2 flex items-center justify-center">
+                    <span
+                      className={`h-8 px-3 rounded-md text-sm font-semibold flex items-center justify-center ${
+                        !user?.is_active
+                          ? "bg-gray-500 hover:bg-gray-400"
+                          : "bg-orange-500 hover:bg-orange-400"
+                      } text-white`}
+                    >
+                      {!user?.is_active ? "Inactive" : "Active"}
+                    </span>
+
+                    <button
+                      onClick={() => handleEditOpen(user)}
+                      className="h-8 bg-blue-600 hover:bg-blue-500 text-white px-3 rounded text-sm flex items-center justify-center"
+                      title="Edit User"
+                    >
+                      <FaUserEdit />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAddBusinessClick(user.id)}
+                      className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-xs"
+                    >
+                      Add Business
+                    </button>
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
@@ -207,14 +194,18 @@ export default function Page() {
 
       {/* Mobile Card View */}
       <div className="block md:hidden space-y-4">
-        {currentUsers.length > 0 ? (
-          currentUsers.map((user, index) => (
+        {loading ? (
+          <div className="text-center text-gray-600 py-4">Loading...</div>
+        ) : users.length === 0 ? (
+          <div className="text-center text-gray-600 py-4">No users found</div>
+        ) : (
+          users.map((user, index) => (
             <div
-              key={`mobile-user-${user.id}-${index}`}
+              key={`mobile-user-${user?.id ?? index}`}
               className="bg-white rounded-xl shadow-md p-4 border border-gray-200"
             >
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-gray-800">{user.name}</h3>
+                <h3 className="font-semibold text-gray-800">{user?.name ?? "-"}</h3>
                 <span
                   className={`text-xs font-semibold px-2 py-1 rounded ${
                     user?.is_active ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-600"
@@ -225,7 +216,7 @@ export default function Page() {
               </div>
 
               <p className="text-sm text-gray-600 mb-2">
-                <strong>Email:</strong> {user.email}
+                <strong>Email:</strong> {user?.email ?? "-"}
               </p>
 
               <div className="flex gap-2">
@@ -245,19 +236,15 @@ export default function Page() {
               </div>
             </div>
           ))
-        ) : (
-          <div className="text-center text-gray-600 py-4">
-            No users found
-          </div>
         )}
       </div>
 
       {/* Pagination */}
-      {totalPage > 1 && (
+      {totalPages > 1 && !loading && (
         <div className="mt-4">
           <Pagination
             currentPage={currentPage}
-            totalPages={totalPage}
+            totalPages={totalPages}
             onPageChange={(page) => setCurrentPage(page)}
           />
         </div>
