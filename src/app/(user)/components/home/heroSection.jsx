@@ -15,7 +15,6 @@ import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { apiGet } from "@/lib/apiClient";
 import AdsImg from "./adsImg";
-import AdsImg3 from "./adsImg3";
 
 export default function HeroSection() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -226,8 +225,7 @@ const [showSuggestions, setShowSuggestions] = useState(false);
     
     {/* ADVERTISEMENT IMG */}
     </div>
-    {/* <AdsImg/> */}
-    <AdsImg3/>
+    <AdsImg/>
     </>
   );
 }
