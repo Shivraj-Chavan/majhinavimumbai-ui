@@ -68,12 +68,11 @@ export default function SearchBar() {
         onKeyDown={handleKeyPress}
         className="outline-none px-3 py-5 h-12 w-full bg-white text-gray-700 rounded-l-lg"
       />
-
-      <Button
+    <Button
         onClick={handleSearch}
-        className="bg-blue-500 max-w-1/5 text-center hover:bg-blue-600 text-white text-lg cursor-pointer px-4 py-3 rounded-r-lg"
+        className="absolute text-sm right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 !rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm transition-all duration-200"
       >
-        <FiSearch />
+        🔍
       </Button>
 
       {showDropdown && suggestions.length > 0 && (

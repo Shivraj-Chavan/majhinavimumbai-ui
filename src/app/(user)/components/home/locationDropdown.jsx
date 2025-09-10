@@ -9,7 +9,7 @@ export default function LocationDropdown({ location, setLocation, showDropdown, 
   return (
     <div ref={dropdownRef} className="relative"  >
       <div style={{width:"160px",}}
-        className="text-sm flex outline-none items-center bg-white px-3 py-2.5 rounded-l-lg  cursor-pointer"
+        className="text-sm flex outline-none items-center bg-white px-3 py-0 rounded-l-lg cursor-pointer"
         onClick={() => setShowDropdown(!showDropdown)}
       >
         <CiLocationArrow1 className="text-gray-500 text-xl mr-2" />
@@ -17,11 +17,11 @@ export default function LocationDropdown({ location, setLocation, showDropdown, 
       </div>
 
       {showDropdown && (
-        <ul className="absolute left-0 top-10 w-full bg-white  rounded-md shadow-lg z-10">
+        <ul className="absolute left-0 top-10 w-full bg-white rounded-md z-10  mt-[-34px] md:mt-[-5] max-h-48 overflow-y-auto shadow-lg">
           {locations.map((city, index) => (
             <li
               key={index}
-              className="px-3 py-2 hover:bg-gray-200 cursor-pointer"
+              className="px-3 py-1 hover:bg-gray-200 cursor-pointer"
               onClick={() => {
                 setLocation(city);
                 setShowDropdown(false);
