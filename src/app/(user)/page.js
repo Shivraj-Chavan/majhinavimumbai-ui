@@ -9,6 +9,9 @@ import WeOffer from './components/miniaboutSections/weoffer'
 import ChooseUs from './components/miniaboutSections/chooseus'
 import { useDispatch } from 'react-redux'
 import { fetchCategories } from '@/redux/slice/categoriesSlice'
+import HeroSectionnew from './components/home/heroSectionnew'
+import CategoryDropdownnew from './components/home/categoryDropdownnew'
+// import HeroSectionnew from './components/home/heroSectionnew'
 
 export default function Page() {
       const dispatch = useDispatch();
@@ -20,7 +23,8 @@ export default function Page() {
   
   return (
     <div>
-        <HeroSection/>
+        {/* <HeroSection/> */}
+        <HeroSectionnew/>
         <CategorySection/>
         <Subcategory/>
         <About/>
