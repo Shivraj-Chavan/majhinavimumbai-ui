@@ -274,7 +274,7 @@ export default function CategoryDropdownnew() {
 
         {/* Suggestions Dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <ul className="absolute z-50 bg-white border border-gray-200 rounded-xl mt-2 w-full shadow max-h-60 overflow-y-auto">
+          <ul className="absolute z-50 bg-white border border-gray-200 rounded-xl mt-[-72] w-full shadow max-h-60 overflow-y-auto">
             {suggestions.map((item) => (
               <li
                 key={item.id}
