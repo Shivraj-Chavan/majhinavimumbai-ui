@@ -74,7 +74,7 @@ export default function ListingInfo() {
         setBusiness(data.business);
         
       } catch (err) {
-        setError("🤗 Oops ! Your Business is not Verified"|| "Error loading business");
+        setError("⏳ Business verification is in progress. Please allow 24–48 hours for completion."|| "Error loading business");
       } finally {
         setLoading(false);
       }
@@ -114,7 +114,7 @@ export default function ListingInfo() {
   };
 
   if (loading) return <SkeletonLoader />;
-  if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
+  if (error) return <div className="text-center text-2xl font-semibold text-green-700 py-25">{error}</div>;
 
   return (
     <div>
