@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { apiGet } from "@/lib/apiClient";
+import { apiGet, apiPost } from "@/lib/apiClient";
 import Pagination from "../../components/usercomp/Pagination";
+import { LuEyeClosed } from "react-icons/lu";
+import { FaRegEye } from "react-icons/fa";
 
 export default function ContactListPage() {
   const [contacts, setContacts] = useState([]);
@@ -10,14 +12,16 @@ export default function ContactListPage() {
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const res = await apiGet("/contact");
+        const res = await apiGet(`/contact?page=${currentPage}&limit=${limit}`);
         console.log('Contact List:', res);
-        setContacts(res);
+        setContacts(res?.contacts);
         setLoading(false);
+        setTotalPages(res.totalPages || 1);
       } catch (err) {
         setError(err.message || "Failed to fetch contacts");
         setLoading(false);
@@ -25,11 +29,32 @@ export default function ContactListPage() {
     };
 
     fetchContacts();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+    //view/unview
+    const handleToggleView = async (id, currentStatus) => {
+      console.log({currentStatus})
+      if(currentStatus) return 
+      const updatedContacts = contacts.map((contact) =>
+        contact.id === id ? { ...contact, viewed: !currentStatus } : contact
+      );
+      setContacts(updatedContacts); 
+      console.log(updatedContacts)
+  
+      try {
+        await apiPost(`/contact/${id}/toggle-view`, { viewed: !currentStatus });
+        console.log("Status updated successfully");
+      } catch (err) {
+        console.error("Failed to update status:", err);
+  
+        setContacts(contacts);
+        alert("Failed to update view status. Please try again.");
+      }
+    };
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
@@ -54,6 +79,7 @@ export default function ContactListPage() {
                   <th className="px-4 py-3">Phone</th>
                   <th className="px-4 py-3">Enquiry</th>
                   <th className="px-4 py-3">Submitted At</th>
+                  <th className="px-4 py-3">View/Unview</th>
                 </tr>
               </thead>
               <tbody className="bg-white/30 backdrop-blur-md">
@@ -64,27 +90,41 @@ export default function ContactListPage() {
                     <td className="px-4 py-3">{contact.user_name}</td>
                     <td className="px-4 py-3">{contact.phone}</td>
                     <td className="px-4 py-3">{contact.enquiry}</td>
-                    <p className="text-sm text-gray-500 mt-2"> {new Date(contact.created_at).toLocaleString()}</p>
+                    <td className="text-sm text-gray-500 mt-2"> {new Date(contact.created_at).toLocaleString()}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() =>
+                          handleToggleView(contact.id, contact.viewed)
+                        }
+                        className={`px-3 py-1 rounded-xl text-white text-sm font-medium transition-colors duration-300 ${
+                          contact.viewed
+                            ? "bg-green-500 hover:bg-green-600"
+                            : "bg-red-500 hover:bg-red-600"
+                        }`}
+                      >
+                      <div className="flex items-center gap-2">
+                      {contact.viewed ? (
+                        <span className="flex items-center gap-1 font-medium text-white">
+                          <FaRegEye className="text-lg" />
+                          Viewed
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-white font-medium">
+                          <LuEyeClosed className="text-lg" />
+                          Unviewed
+                        </span>
+                      )}
+                    </div>
+                      </button>
+                    </td>
                   </tr>
+                  
                 ))}
               </tbody>
             </table>
           </div>
 
-          {/* Mobile View */}
-          <div className="md:hidden">
-            {contacts.map((contact, index) => (
-              <div key={contact.id} className="mb-4 p-4 bg-white rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold">{contact.company_name}</h3>
-                <p className="text-sm text-gray-600 mt-1"><strong>Name:</strong> {contact.user_name}</p>
-                <p className="text-sm text-gray-600 mt-1"><strong>Phone:</strong> {contact.phone}</p>
-                <p className="text-sm text-gray-600 mt-1"><strong>Enquiry:</strong> {contact.enquiry}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  <strong>Submitted:</strong> {new Date(contact.createdAt).toLocaleString()}
-                </p>
-              </div>
-            ))}
-          </div>
+       
         </div>
       )}
 

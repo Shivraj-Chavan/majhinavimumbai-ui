@@ -1,15 +1,18 @@
 // SidebarItem.jsx
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { apiGet } from '@/lib/apiClient'
 
-export default function SidebarItem({ icon, title, href }) {
+export default function SidebarItem({ icon, title, href, count, loading }) {
   const pathname = usePathname()
   const isActive = pathname === href
+
 
   return (
     <li>
       <Link
+      // Left side
         href={href}
         className={`flex items-center gap-3 px-2 py-2 rounded-lg text-sm font-medium transition-colors duration-200
           ${isActive ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-800 hover:bg-blue-50'}
@@ -19,6 +22,14 @@ export default function SidebarItem({ icon, title, href }) {
         {icon}
         <span className="truncate">{title}</span>
       </div>
+
+      {/* Right side*/}
+      {!loading && count > 0 && (
+        <span className="bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+          {count} 
+        </span>
+      )}
+
 
       </Link>
     </li>

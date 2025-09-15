@@ -212,7 +212,7 @@ const updateVerifiedBusinessList = (updatedBusiness) => {
                     >
                       Manage Images
                     </button>
-                                          <button onClick={() => openModal(user)} className="bg-blue-500 gap-2 items-center flex hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
+                   <button onClick={() => openModal(user)} className="bg-blue-500 gap-2 items-center flex hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
                         <FaRegEye /> View
                       </button>
 

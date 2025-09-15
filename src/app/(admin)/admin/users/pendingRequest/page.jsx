@@ -14,12 +14,16 @@ export default function BusinessUsersPage({business}) {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pendingList, setPendingList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const limit = 10;
   const fetchBusinessUsers = async () => {
     try {
       setLoading(true);
       const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
+      console.log("Current page:", currentPage, "Limit:", limit);
       setBusinessUsers(response.data);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -32,6 +36,52 @@ export default function BusinessUsersPage({business}) {
   useEffect(() => {
     fetchBusinessUsers(currentPage);
   }, [currentPage]);
+
+  const searchBusinessuser = async (name = searchTerm) => {
+    try {
+      setLoading(true);
+      const response = await apiGet(`/businesses?isVerified=false&name=${encodeURIComponent(name)}`);
+      setBusinessUsers(response.data);
+      setTotalPages(response.totalPages);
+      setShowDropdown(false);
+    } catch (error) {
+      console.error("Error fetching business users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+    const fetchSuggestions = async (query) => {
+      if (!query.trim()) {
+        setSuggestions([]);
+        setShowDropdown(false);
+        return;
+      }
+    
+      try {
+        const res = await apiGet(`/businesses/search?q=${encodeURIComponent(query)}`);
+        const data = res.data || [];
+        setSuggestions(data);
+        setShowDropdown(data.length > 0);
+      } catch (err) {
+        console.error("Suggestion fetch failed:", err);
+        setSuggestions([]);
+        setShowDropdown(false);
+      }
+    };    
+
+    const handleInputChange = (e) => {
+      const value = e.target.value;
+      setSearchTerm(value);
+      fetchSuggestions(value);
+    };
+    
+  // When user clicks a suggestion
+  const handleSuggestionClick = (name) => {
+    setSearchTerm(name);
+    searchBusinessuser(name);
+    setShowDropdown(false);
+  };  
  
   const openModal = (business) => {
     setSelectedBusiness(business); 
@@ -69,7 +119,45 @@ export default function BusinessUsersPage({business}) {
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Pending User Request</h2>
+      
+    {/* Searchbar */}
+      <div className="relative flex justify-center w-full">
+  <div className="sm:flex items-center gap-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mb-3 w-full px-2 py-2">
+    <div className="flex w-full relative">
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleInputChange}
+        placeholder="Search by business name..."
+        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+        className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
+      />
+      <button
+        onClick={() => searchBusinessuser()}
+        className="px-4 py-2 bg-blue-600 text-white rounded-r-lg"
+      >
+        Search
+      </button>
+
+      {/* Dropdown Suggestions */}
+      {showDropdown && (
+        <ul className="absolute z-10 top-12 left-0 bg-white rounded-b-md shadow-md max-h-60 overflow-y-auto w-full border border-t-0 border-gray-200">
+          {suggestions.map((item) => (
+            <li
+              key={item.id}
+              onClick={() => handleSuggestionClick(item.name)}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+</div>
+
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800 mt-4">Pending User Request</h2>
 
       {loading ? (
         <div className="text-center text-gray-600">Loading...</div>
@@ -133,4 +221,5 @@ export default function BusinessUsersPage({business}) {
       <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} onVerified={handleVerified} />
     </div>
   );
-}
+    }
+ 

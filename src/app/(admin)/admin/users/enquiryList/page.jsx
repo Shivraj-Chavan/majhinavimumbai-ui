@@ -10,11 +10,12 @@ export default function AdminEnquiries() {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const limit= 10;
 
   useEffect(() => {
     const fetchEnquiries = async () => {
       try {
-        const res = await apiGet("/enquiries/all");
+        const res = await apiGet(`/enquiries/all?page=${currentPage}&limit=${limit}`);
         console.log("Enquiries", res);
         setEnquiries(res);
         setTotalPages(res.totalPages);
@@ -59,7 +60,7 @@ export default function AdminEnquiries() {
                 </tr>
               </thead>
               <tbody className="bg-white/30 backdrop-blur-md">
-                {enquiries.map((enq, i) => (
+                {enquiries?.data?.map((enq, i) => (
                   <tr key={enq.enquiry_id} className="hover:bg-white/50 transition-all duration-300">
                     <td className="px-4 py-3 font-medium text-gray-800">{i + 1}</td>
                     <td className="px-4 py-3">{enq.business_name}</td>
@@ -77,7 +78,7 @@ export default function AdminEnquiries() {
 
           {/* Mobile View */}
           <div className="md:hidden">
-            {enquiries.map((enq, i) => (
+            {enquiries?.data?.map((enq, i) => (
               <div key={enq.enquiry_id} className="mb-4 p-4 bg-white rounded-lg shadow-md">
                 <p className="text-sm text-gray-600">#{i + 1}</p>
                 <h3 className="text-lg font-semibold text-gray-800">
