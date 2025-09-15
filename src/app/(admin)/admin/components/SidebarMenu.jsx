@@ -37,7 +37,7 @@ export default function SidebarMenu() {
     <SidebarItem title="Pending Business Verification" href="/admin/users/pendingRequest" icon={<LuSettings className="h-5 w-5" />} count={stats.pendingVerifications || 0} loading={false}  />
     <SidebarItem title="Pending Business Update Request" href="/admin/users/pendingbusinessrequest" icon={<LuSettings className="h-5 w-5" />} count={stats.pendingUpdates || 0} loading={false}/>
     <SidebarItem title="Contact List" href="/admin/users/contactList" icon={<LuMail className="h-5 w-5"/>} count={stats.unviewedContacts || 0} loading={false} />
-    <SidebarItem title="Review Delete Queries" href="/admin/users/reviewList" icon={<LuMail className="h-5 w-5" />} count={stats.reviewDeleteRequests || 0} loading={false}/>
+    <SidebarItem title="Review Delete Queries" href="/admin/users/reviewList" icon={<LuMail className="h-5 w-5" />} loading={false}/>
     <SidebarItem title="Enquiry To business" href="/admin/users/enquiryList" icon={<LuMail className="h-5 w-5" />} count={stats.businessEnquiries || 0} loading={false}/>
   
   
