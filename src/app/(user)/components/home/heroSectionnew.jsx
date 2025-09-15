@@ -91,6 +91,12 @@ export default function HeroSectionnew() {
     setShowSuggestions(false);
   };
 
+    const handleCategoryClick = (query) => {
+      const encoded = encodeURIComponent(query);
+      // Redirect to external search page with exact category filtering
+      window.location.href = `https://majhinavimumbai.com/search?query=${encoded}&type=category`;
+    }
+
   return (
     <>
       <div className="w-full bg-gradient-to-b from-orange-50 via-white to-white py-12 px-4 sm:px-10 md:px-16 lg:px-24 xl:px-32">
@@ -126,7 +132,7 @@ export default function HeroSectionnew() {
             <div className="bg-white shadow-lg rounded-2xl cursor-pointer px-3 py-4 text-center flex flex-col items-start w-24 sm:w-32 md:w-35">
               <div className="flex items-center gap-1 sm:gap-2">
                 <FaStar className="text-yellow-400 text-xl sm:text-2xl" />
-                <div className="text-sm sm:text-lg font-extrabold text-gray-800">25k+</div>
+                <div className="text-sm sm:text-lg font-extrabold text-gray-800">5k+</div>
               </div>
               <div className="text-xs sm:text-sm text-gray-500 mt-1 ml-4">Reviews</div>
             </div>
@@ -144,7 +150,7 @@ export default function HeroSectionnew() {
             <div className="bg-white shadow-lg rounded-2xl cursor-pointer px-3 py-4 text-center flex flex-col items-start w-24 sm:w-32 md:w-35">
               <div className="flex items-center gap-1 sm:gap-2">
                 <FaHeart className="text-pink-500 text-xl sm:text-2xl" />
-                <div className="text-sm sm:text-lg font-extrabold text-gray-800">100k+</div>
+                <div className="text-sm sm:text-lg font-extrabold text-gray-800">25k+</div>
               </div>
               <div className="text-xs sm:text-sm text-gray-500 mt-1 ml-4">Users</div>
             </div>
@@ -187,7 +193,7 @@ export default function HeroSectionnew() {
                 },
                 ].map((category) => (
                 <span
-                key={category.label}
+                key={category.label} onClick={() => handleCategoryClick(category.label)}
                 className={`${category.bg} flex items-center gap-2 text-sm px-4 py-2 rounded-full shadow-sm cursor-pointer hover:shadow-md transition`}
                 >
                 {category.icon}

@@ -137,6 +137,12 @@ export default function CategoryDropdownnew() {
     setShowWarning(false);
   };
 
+  const handlePopularClick = (query) => {
+    const encoded = encodeURIComponent(query);
+    // Redirect to your site’s search endpoint
+    window.location.href = `https://majhinavimumbai.com/search?query=${encoded}`;
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 mt-6 space-y-5 relative">
       {/* Title */}

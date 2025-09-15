@@ -85,21 +85,7 @@ export default function Navbar() {
     setShowSearch(true);
   }, [pathname]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target)
-      ) {
-        setOpenProfile(false);
-      }
-    };
-  
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+
 
   // Initialize user session if token exists
   useEffect(() => {
@@ -110,50 +96,34 @@ export default function Navbar() {
     }
   }, [dispatch, isLoggedIn]);
 
-  // Close menu or dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (mobileMenu && mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
-        setMobileMenu(false);
-      }
-      if (openProfile && profileRef.current && !profileRef.current.contains(e.target)) {
+    const handleClickOutside = (event) => {
+      // Close profile dropdown
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setOpenProfile(false);
       }
+  
+      // Close mobile menu
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMobileMenu(false);
+      }
+  
+      // Close location dropdown
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+  
+      // Close search suggestions dropdown (if you want this separate, use its own state)
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target)) {
+        // setShowSearchDropdown(false); // ✅ safer than killing showSearch
+      }
     };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [mobileMenu, openProfile]);
-
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    // Close profile dropdown
-    if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
-      setOpenProfile(false);
-    }
-
-    // Close mobile menu
-    if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
-      setMobileMenu(false);
-    }
-
-    // Close location dropdown
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false);
-    }
-
-    // Close search suggestions dropdown
-    if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target)) {
-      // Make sure search dropdown is open before closing
-      setShowSearch(false); // or set a separate showSearchDropdown state if needed
-    }
-  };
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, [mobileMenu, openProfile, showDropdown, showSearch]);
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   
 
   const handleBusinessClick = () => {
@@ -166,6 +136,8 @@ useEffect(() => {
   };
 
   const handleLogout = () => {
+    console.log("trigger");
+    
     localStorage.clear();
     dispatch(logout());
     setOpenProfile(false);
@@ -174,6 +146,7 @@ useEffect(() => {
   };
 
   const handleNavigate = (path) => {
+    console.log("Navigating to path ",path)
     router.push(path);
     setOpenProfile(false);
     setMobileMenu(false);
@@ -262,7 +235,7 @@ useEffect(() => {
                 Login
               </button>
             ) : (
-              <div className="relative" ref={profileRef}>
+              <div className="relative  z-50" ref={profileRef}>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -317,7 +290,7 @@ useEffect(() => {
                           </li>                          
                       <li>
                         <button
-                          onClick={handleLogout}
+                          onClick={()=>handleLogout()}
                           className="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-50"
                         >
                           <RiLogoutBoxLine className="text-lg" /> Logout
@@ -438,7 +411,7 @@ useEffect(() => {
                     LOGIN
                   </button>
                 ) : (
-              <div className="relative" ref={profileRef}>
+              <div className="relative  z-50" ref={profileRef}>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -457,7 +430,9 @@ useEffect(() => {
 
                     {/* Mobile Profile Dropdown */}
                     {openProfile && (
-                      <div className="absolute right-0 mt-2 w-36 bg-gradient-to-tl from-green-100 via-white to-orange-100 rounded-xl shadow-xl ring-1 ring-gray-200 z-50">
+                      <div 
+                      onClick={(e) => e.stopPropagation()} 
+                      className="absolute right-0 mt-2 w-36 bg-gradient-to-tl from-green-100 via-white to-orange-100 rounded-xl shadow-xl ring-1 ring-gray-200 z-50">
                         <ul className="py-1 text-sm text-gray-700">
                           <li>
                             <button
@@ -485,7 +460,7 @@ useEffect(() => {
                           </li>
                           <li>
                             <button
-                              onClick={handleLogout}
+                              onClick={()=>handleLogout()}
                               className="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-50"
                             >
                               <RiLogoutBoxLine className="text-lg" /> Logout
