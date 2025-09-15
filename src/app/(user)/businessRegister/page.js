@@ -304,12 +304,13 @@ export default function BusinessRegister({ ownerId }) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Business Name */}
         <div className="md:col-span-6">
-          <Input label="Business Name" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
+          <Input label="Business Name" required={true} value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
         </div>
+
 
         {/* Category */}
         <div className="md:col-span-6">
-          <label className="block text-gray-700 mb-1">Category</label>
+          <label className="block text-gray-700 mb-1 font-medium">Category<span className="text-red-500">*</span></label>
           <select
             ref={categoryRef}
             value={selectedCategory}
@@ -327,14 +328,13 @@ export default function BusinessRegister({ ownerId }) {
 
         {/* Subcategory */}
         <div className="md:col-span-6">
-          <label className="block text-gray-700 mb-1">Subcategory</label>
+          <label className="block text-gray-700 mb-1 font-medium">Subcategory<span className="text-red-500">*</span></label>
           <select
             value={selectedSubcategory}
             onFocus={handleSubcategoryFocus}
             onChange={handleSubcategoryChange}
             disabled={!filteredSubcategories.length}
-            className={`w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 ${
-              showWarning ? "border-red-500 ring-red-400" : "border-gray-300 ring-orange-400"
+            className={`w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 ${showWarning ? "border-red-500 ring-red-400" : "border-gray-300 ring-orange-400"
             }`}
           >
             <option value="" disabled>
@@ -351,7 +351,7 @@ export default function BusinessRegister({ ownerId }) {
 
         {/* Other Fields */}
         <div className="md:col-span-6">
-          <Input label="Pincode" value={formData.pin_code} onChange={(e) => handleInputChange("pin_code", e.target.value)} />
+          <Input label="Pincode" required={true}  value={formData.pin_code} onChange={(e) => handleInputChange("pin_code", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
@@ -379,7 +379,7 @@ export default function BusinessRegister({ ownerId }) {
         </div> */}
 
       <div className="md:col-span-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Phone<span className="text-red-500">*</span></label>
         <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
           <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
           <input
@@ -399,7 +399,7 @@ export default function BusinessRegister({ ownerId }) {
       </div>
 
       <div className="md:col-span-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number<span className="text-red-500">*</span></label>
         <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
           <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
           <input
@@ -419,7 +419,7 @@ export default function BusinessRegister({ ownerId }) {
       </div>
 
         <div className="md:col-span-6">
-          <Input label="Email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
+          <Input label="Email" required={true} value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
@@ -602,8 +602,7 @@ export default function BusinessRegister({ ownerId }) {
       <button
         type="submit"
         disabled={submitting}
-        className={`w-full mt-10 px-4 py-3 rounded-xl shadow-md font-bold text-lg text-white transition-transform ${
-          submitting
+        className={`w-full mt-10 px-4 py-3 rounded-xl shadow-md font-bold text-lg text-white transition-transform ${submitting
             ? "bg-blue-400 cursor-not-allowed"
             : "bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 hover:scale-105"
         }`}
@@ -639,7 +638,7 @@ export default function BusinessRegister({ ownerId }) {
 
 
       {/* Success Modal */}
-      <SuccessModal isOpen={isSuccessModalOpen}  onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" />
+      <SuccessModal isOpen={isSuccessModalOpen} ownerId={ownerId} onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" />
     </form>
   );
 }
