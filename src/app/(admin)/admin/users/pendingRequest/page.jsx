@@ -6,26 +6,29 @@ import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 
-export default function BusinessUsersPage({business}) {
+export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pendingList, setPendingList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const limit = 10;
-  const fetchBusinessUsers = async () => {
+
+  // 🔹 Unified fetch function (works for both normal + search)
+  const fetchBusinessUsers = async (page = currentPage, name = searchTerm) => {
     try {
       setLoading(true);
-      const response = await apiGet(`/businesses?isVerified=false&page=${currentPage}&limit=${limit}`);
-      console.log("Current page:", currentPage, "Limit:", limit);
-      setBusinessUsers(response.data);
-      setTotalPages(response.totalPages);
+      let url = `/businesses?isVerified=false&page=${page}&limit=${limit}`;
+      if (name) url += `&name=${encodeURIComponent(name)}`;
+
+      const response = await apiGet(url);
+      setBusinessUsers(response.data || []);
+      setTotalPages(response.totalPages || 1);
     } catch (error) {
       console.error("Error fetching business users:", error);
     } finally {
@@ -33,81 +36,80 @@ export default function BusinessUsersPage({business}) {
     }
   };
 
+  // 🔹 Initial + on page change
   useEffect(() => {
-    fetchBusinessUsers(currentPage);
+    fetchBusinessUsers(currentPage, searchTerm);
   }, [currentPage]);
 
-  const searchBusinessuser = async (name = searchTerm) => {
-    try {
-      setLoading(true);
-      const response = await apiGet(`/businesses?isVerified=false&name=${encodeURIComponent(name)}`);
-      setBusinessUsers(response.data);
-      setTotalPages(response.totalPages);
+  // 🔹 Search handler
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchBusinessUsers(1, searchTerm);
+  };
+
+  // 🔹 Clear search
+  const handleClearSearch = () => {
+    if (!searchTerm) return;
+    setSearchTerm("");
+    setCurrentPage(1);
+    fetchBusinessUsers(1, "");
+  };
+
+  const fetchSuggestions = async (query) => {
+    if (!query.trim()) {
+      setSuggestions([]);
       setShowDropdown(false);
-    } catch (error) {
-      console.error("Error fetching business users:", error);
-    } finally {
-      setLoading(false);
+      return;
+    }
+    try {
+      // Example suggestion API
+      // const res = await apiGet(`/businesses/search?q=${encodeURIComponent(query)}`);
+      // const data = res.data || [];
+      const data = []; // <- keep empty if not using suggestion API
+      setSuggestions(data);
+      setShowDropdown(data.length > 0);
+    } catch (err) {
+      console.error("Suggestion fetch failed:", err);
+      setSuggestions([]);
+      setShowDropdown(false);
     }
   };
-  
-    const fetchSuggestions = async (query) => {
-      if (!query.trim()) {
-        setSuggestions([]);
-        setShowDropdown(false);
-        return;
-      }
-    
-      try {
-        const res = await apiGet(`/businesses/search?q=${encodeURIComponent(query)}`);
-        const data = res.data || [];
-        setSuggestions(data);
-        setShowDropdown(data.length > 0);
-      } catch (err) {
-        console.error("Suggestion fetch failed:", err);
-        setSuggestions([]);
-        setShowDropdown(false);
-      }
-    };    
 
-    const handleInputChange = (e) => {
-      const value = e.target.value;
-      setSearchTerm(value);
-      fetchSuggestions(value);
-    };
-    
-  // When user clicks a suggestion
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    fetchSuggestions(value);
+  };
+
   const handleSuggestionClick = (name) => {
     setSearchTerm(name);
-    searchBusinessuser(name);
+    setCurrentPage(1);
+    fetchBusinessUsers(1, name);
     setShowDropdown(false);
-  };  
- 
-  const openModal = (business) => {
-    setSelectedBusiness(business); 
-    setModalOpen(true); 
   };
- 
-  const closeModal = () => {  
-    setModalOpen(false);  
+
+  const openModal = (business) => {
+    setSelectedBusiness(business);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
     setSelectedBusiness(null);
-  }; 
- 
+  };
+
   const handlePageChange = (page) => {
-    setCurrentPage(page); 
+    setCurrentPage(page);
   };
 
   const handleVerified = async (id) => {
-    setPendingList((prev) =>
-      prev.filter((biz) => biz.id !== verifiedBusinessId)
-    );
     try {
       const response = await apiPut(`/businesses/${id}`, { isVerified: true });
       if (response && response.success) {
         setBusinessUsers((prev) => prev.filter((biz) => biz.id !== id));
         alert("Business verified successfully");
-        await fetchBusinessUsers(currentPage); 
-        closeModal(); 
+        await fetchBusinessUsers(currentPage, searchTerm);
+        closeModal();
       } else {
         alert("Failed to verify business");
       }
@@ -119,45 +121,52 @@ export default function BusinessUsersPage({business}) {
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-      
-    {/* Searchbar */}
+      {/* Searchbar */}
       <div className="relative flex justify-center w-full">
-  <div className="sm:flex items-center gap-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mb-3 w-full px-2 py-2">
-    <div className="flex w-full relative">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={handleInputChange}
-        placeholder="Search by business name..."
-        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-        className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
-      />
-      <button
-        onClick={() => searchBusinessuser()}
-        className="px-4 py-2 bg-blue-600 text-white rounded-r-lg"
-      >
-        Search
-      </button>
-
-      {/* Dropdown Suggestions */}
-      {showDropdown && (
-        <ul className="absolute z-10 top-12 left-0 bg-white rounded-b-md shadow-md max-h-60 overflow-y-auto w-full border border-t-0 border-gray-200">
-          {suggestions.map((item) => (
-            <li
-              key={item.id}
-              onClick={() => handleSuggestionClick(item.name)}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+        <div className="sm:flex items-center gap-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mb-3 w-full px-2 py-2">
+          <div className="flex w-full relative">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleInputChange}
+              placeholder="Search by business name..."
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+              className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
+            />
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 bg-blue-600 text-white"
             >
-              {item.name}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  </div>
-</div>
+              Search
+            </button>
+            <button
+              onClick={handleClearSearch}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-r-lg text-gray-700 text-sm"
+              title="Clear"
+            >
+              Clear
+            </button>
+            {/* Dropdown Suggestions */}
+            {showDropdown && (
+              <ul className="absolute z-10 top-12 left-0 bg-white rounded-b-md shadow-md max-h-60 overflow-y-auto w-full border border-t-0 border-gray-200">
+                {suggestions.map((item) => (
+                  <li
+                    key={item.id}
+                    onClick={() => handleSuggestionClick(item.name)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {item.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
 
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800 mt-4">Pending User Request</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800 mt-4">
+        Pending User Request
+      </h2>
 
       {loading ? (
         <div className="text-center text-gray-600">Loading...</div>
@@ -175,20 +184,27 @@ export default function BusinessUsersPage({business}) {
                   <th className="px-4 py-3">Phone</th>
                   <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3 text-center">Action</th>
-                </tr> 
-              </thead> 
-              <tbody className="bg-white/30 backdrop-blur-md ">
+                </tr>
+              </thead>
+              <tbody className="bg-white/30 backdrop-blur-md">
                 {businessUsers.map((user, index) => (
-                  <tr key={index} className="hover:bg-white/50 transition-all duration-300 gap-3">
-                    <td className="px-4 py-3 font-medium text-gray-800">{(currentPage - 1) * limit + (index + 1)}</td>
+                  <tr
+                    key={index}
+                    className="hover:bg-white/50 transition-all duration-300 gap-3"
+                  >
+                    <td className="px-4 py-3 font-medium text-gray-800">
+                      {(currentPage - 1) * limit + (index + 1)}
+                    </td>
                     <td className="px-4 py-3">{user?.name}</td>
                     <td className="px-4 py-3">{user?.phone}</td>
                     <td className="px-4 py-3">{user?.email}</td>
                     <td className="px-4 py-3 text-center">
-                      <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200">
+                      <button
+                        onClick={() => openModal(user)}
+                        className="bg-blue-500 hover:bg-blue-600 text-white text-md px-4 py-2 rounded-full font-medium shadow-md transition duration-200"
+                      >
                         <FaRegEye />
                       </button>
-
                     </td>
                   </tr>
                 ))}
@@ -199,27 +215,42 @@ export default function BusinessUsersPage({business}) {
           {/* Mobile View */}
           <div className="md:hidden">
             {businessUsers.map((user, index) => (
-              <div key={index} className="mb-4 p-4 bg-white rounded-lg shadow-md">
+              <div
+                key={index}
+                className="mb-4 p-4 bg-white rounded-lg shadow-md"
+              >
                 <h3 className="text-lg font-semibold">{user.name}</h3>
-                <p className="text-sm text-gray-600 mt-1">Email: {user.email}</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Email: {user.email}
+                </p>
                 <div className="mt-4 flex justify-end">
-                  <button onClick={() => openModal(user)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200">
+                  <button
+                    onClick={() => openModal(user)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-md font-medium shadow-md transition duration-200"
+                  >
                     <FaRegEye />
                   </button>
-
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Pagination Component */}
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       )}
 
-      {/* Modal Component */}
-      <BusinessRegisterModal isOpen={modalOpen} onClose={closeModal} business={selectedBusiness} onVerified={handleVerified} />
+      {/* Modal */}
+      <BusinessRegisterModal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        business={selectedBusiness}
+        onVerified={handleVerified}
+      />
     </div>
   );
-    }
- 
+}

@@ -6,7 +6,6 @@ import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 import ManageBusinessImagesModal from "../../components/usercomp/ManageBusinessImagesModal";
-import SearchBar from "@/app/(user)/components/home/searchBar";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
@@ -18,163 +17,127 @@ export default function BusinessUsersPage() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImageBusiness, setSelectedImageBusiness] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
   const limit = 10;
 
-  useEffect(() => {
-    const fetchBusinessUsers = async () => {
-      try {
-        setLoading(true);
-        const response = await apiGet(`/businesses?isVerified=true&page=${currentPage}&limit=${limit}`);
-        console.log("Verified businesses response:", response);
-        setBusinessUsers(response.data); 
-        setTotalPages(response.totalPages); 
-      } catch (error) {
-        console.error("Error fetching business users:", error);
-      } finally { 
-        setLoading(false);
-      }
-    };
-
-    fetchBusinessUsers();
-  }, [currentPage]);
-
-  const searchBusinessuser = async () => {
+  // Common fetch function (handles both search + normal list)
+  const fetchBusinessUsers = async (page = 1, query = "") => {
     try {
       setLoading(true);
-      const response = await apiGet(`/businesses?name=${encodeURIComponent(searchTerm)}`);
-      console.log("businesses response:", response);
-      setBusinessUsers(response.data); 
-      setTotalPages(response.totalPages); 
+      let url = `/businesses?isVerified=true&page=${page}&limit=${limit}`;
+      if (query) {
+        url += `&name=${encodeURIComponent(query)}`;
+      }
+
+      const response = await apiGet(url);
+      console.log("Businesses response:", response);
+
+      setBusinessUsers(response.data);
+      setTotalPages(response.totalPages || 1);
     } catch (error) {
       console.error("Error fetching business users:", error);
-    } finally { 
+    } finally {
       setLoading(false);
     }
   };
 
-  const fetchSuggestions = async (query) => {
-    if (!query.trim()) {
-      setSuggestions([]);
-      setShowDropdown(false);
-      return;
-    }
+  // Initial + pagination load
+  useEffect(() => {
+    fetchBusinessUsers(currentPage, searchTerm);
+  }, [currentPage]);
 
-    try {
-      const res = await apiGet(`/businesses/search?q=${encodeURIComponent(query)}`);
-      const data = res.data || [];
-      setSuggestions(data);
-      setShowDropdown(data.length > 0);
-    } catch (err) {
-      console.error("Suggestion fetch failed:", err);
-      setSuggestions([]);
-      setShowDropdown(false);
-    }
+  const handleSearch = () => {
+    setCurrentPage(1); // reset to first page
+    fetchBusinessUsers(1, searchTerm);
   };
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    fetchSuggestions(value);
-  }
-  // When user clicks a suggestion
-  const handleSuggestionClick = (name) => {
-    setSearchTerm(name);
-    searchBusinessuser(name)
-    setShowDropdown(false);
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setCurrentPage(1);
+    fetchBusinessUsers(1, "");
   };
 
   const openModal = (business) => {
-    setSelectedBusiness(business); 
-    setModalOpen(true); 
+    setSelectedBusiness(business);
+    setModalOpen(true);
   };
- 
-  const closeModal = () => {  
-    setModalOpen(false);  
+
+  const closeModal = () => {
+    setModalOpen(false);
     setSelectedBusiness(null);
-  }; 
- 
+  };
+
   const handlePageChange = (page) => {
-    setCurrentPage(page); 
+    setCurrentPage(page);
   };
 
   const handleOpenImageManager = (business) => {
     setSelectedImageBusiness(business);
     setImageModalOpen(true);
   };
-  
+
   const handleCloseImageManager = () => {
     setImageModalOpen(false);
     setSelectedImageBusiness(null);
   };
 
-const handleDelete = async (id) => {
-  console.log("Deleting business with ID:", id);
-  if (!id) {
-    alert("Invalid business ID");
-    return;
-  }
-
-  try {
-    const data = await apiDelete(`/businesses/${id}`);
-    alert(data.msg || "Business deleted");
-    setBusinessUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));  // delete business from that place
-
-    if (businessUsers.length <= limit) {
-      setCurrentPage((prevPage) => prevPage + 1);
+  const handleDelete = async (id) => {
+    console.log("Deleting business with ID:", id);
+    if (!id) {
+      alert("Invalid business ID");
+      return;
     }
-  } catch (err) {
-    console.log("API Error:", err);
-    alert(err.message);
-  }
-};
 
-const updateVerifiedBusinessList = (updatedBusiness) => {
-  setBusinessUsers((prevUsers) => {
-    const existing = prevUsers.filter((user) => user.id !== updatedBusiness.id);  // Add the new verified business and remove it from the pending list 
-    return [...existing, updatedBusiness];
-  });
-};
+    try {
+      const data = await apiDelete(`/businesses/${id}`);
+      alert(data.msg || "Business deleted");
+      setBusinessUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+
+      if (businessUsers.length <= limit) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    } catch (err) {
+      console.log("API Error:", err);
+      alert(err.message);
+    }
+  };
+
+  const updateVerifiedBusinessList = (updatedBusiness) => {
+    setBusinessUsers((prevUsers) => {
+      const existing = prevUsers.filter((user) => user.id !== updatedBusiness.id);
+      return [...existing, updatedBusiness];
+    });
+  };
 
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-      {/* searchbar */}
-     <div className="relative flex justify-center w-full">
-      <div className="sm:flex items-center gap-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mb-3 w-full px-2 py-2">
-      <div className="flex w-full">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="Search by business name..."
-          className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
-        />
-        <button
-          onClick={searchBusinessuser}
-          className="px-4 py-2 bg-blue-600 text-white rounded-r-lg"
-        >
-          Search
-        </button>
-        </div>
-  
-      {/* Suggestions Dropdown */}
-      {showDropdown && (
-        <ul className="absolute z-10 top-13 bg-white rounded-b-md shadow-md max-h-60 overflow-y-auto">
-          {suggestions.map((item) => (
-            <li
-              key={item.id}
-              onClick={() => handleSuggestionClick(item?.name)}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      {/* Searchbar */}
+      <div className="relative flex justify-center w-full">
+        <div className="sm:flex items-center gap-3 border border-gray-100 shadow rounded-lg bg-white max-w-xl mb-3 w-full px-2 py-2">
+          <div className="flex w-full">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by business name..."
+              className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300"
+            />
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 bg-blue-600 text-white"
             >
-              {item.name}
-            </li>
-          ))}
-        </ul>
-      )}
-         </div>
-           </div>
-             
+              Search
+            </button>
+            <button
+              onClick={handleClearSearch}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-r-lg text-gray-700 text-sm"
+              title="Clear"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Business Users</h2>
       <ManageBusinessImagesModal
         isOpen={imageModalOpen}
