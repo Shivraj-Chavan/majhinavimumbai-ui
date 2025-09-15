@@ -419,7 +419,7 @@ export default function BusinessRegister({ ownerId }) {
       </div>
 
         <div className="md:col-span-6">
-          <Input label="Email" required={true} value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
+          <Input label="Email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
         </div>
 
         <div className="md:col-span-6">
