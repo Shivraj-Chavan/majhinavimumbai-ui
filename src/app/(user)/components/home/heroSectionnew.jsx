@@ -17,6 +17,7 @@ import CategoryDropdown from "./categoryDropdown";
 import AdsImg from "./adsImg";
 import CategoryDropdownnew from "./categoryDropdownnew";
 import AdsImg3 from "./adsImg3";
+import Link from "next/link";
 
 export default function HeroSectionnew() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -91,11 +92,6 @@ export default function HeroSectionnew() {
     setShowSuggestions(false);
   };
 
-    const handleCategoryClick = (query) => {
-      const encoded = encodeURIComponent(query);
-      // Redirect to external search page with exact category filtering
-      window.location.href = `https://majhinavimumbai.com/search?query=${encoded}&type=category`;
-    }
 
   return (
     <>
@@ -177,28 +173,29 @@ export default function HeroSectionnew() {
                 bg: "bg-orange-50 text-orange-700",
                 },
                 {
-                label: "Shopping",
+                label: "Clothing",
                 icon: <FaShoppingBag className="text-green-600" />,
                 bg: "bg-green-50 text-green-700",
                 },
                 {
-                label: "Services",
+                label: "Electronics",
                 icon: <FaConciergeBell className="text-blue-600" />,
                 bg: "bg-blue-50 text-blue-700",
                 },
                 {
-                label: "Education",
+                label: "Retail",
                 icon: <FaGraduationCap className="text-purple-600" />,
                 bg: "bg-purple-50 text-purple-700",
                 },
                 ].map((category) => (
-                <span
-                key={category.label} onClick={() => handleCategoryClick(category.label)}
-                className={`${category.bg} flex items-center gap-2 text-sm px-4 py-2 rounded-full shadow-sm cursor-pointer hover:shadow-md transition`}
-                >
-                {category.icon}
-                <span className="font-medium">{category.label}</span>
-                </span>
+                  <Link
+                  key={category?.label}
+                  href={`/search?query=${category?.label}`}
+                  className={`${category.bg} flex items-center gap-2 text-sm px-4 py-2 rounded-full shadow-sm cursor-pointer hover:shadow-md transition`}
+                  >
+                  {category?.icon}
+                  {category?.label}
+                  </Link>
             ))}
             </div>
             </div>

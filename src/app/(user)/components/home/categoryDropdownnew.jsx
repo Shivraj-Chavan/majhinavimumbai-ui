@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import LocationDropdown from "./locationDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "@/redux/slice/categoriesSlice";
+import Link from "next/link";
 
 export default function CategoryDropdownnew() {
   const [searchInput, setSearchInput] = useState("");
@@ -137,11 +138,6 @@ export default function CategoryDropdownnew() {
     setShowWarning(false);
   };
 
-  const handlePopularClick = (query) => {
-    const encoded = encodeURIComponent(query);
-    // Redirect to your site’s search endpoint
-    window.location.href = `https://majhinavimumbai.com/search?query=${encoded}`;
-  };
 
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 mt-6 space-y-5 relative">
@@ -309,34 +305,34 @@ export default function CategoryDropdownnew() {
         <div className="flex flex-wrap gap-2 justify-center">
           {[
             {
-              label: "Pizza",
+              label: "Cafes",
               color: "bg-orange-100 text-orange-600",
               icon: <FaPizzaSlice className="mr-1 text-sm" />,
             },
             {
-              label: "Salon",
+              label: "Bike Garage",
               color: "bg-green-100 text-green-600",
               icon: <GiComb className="mr-1 text-base" />,
             },
             {
-              label: "Hospital",
+              label: "Uniform",
               color: "bg-blue-100 text-blue-600",
               icon: <FaHospitalSymbol className="mr-1 text-base" />,
             },
             {
-              label: "School",
+              label: "Doctors",
               color: "bg-purple-100 text-purple-600",
               icon: <FaSchool className="mr-1 text-base" />,
             },
           ].map((item) => (
-            <span
+            <Link
               key={item.label}
-              onClick={() => handlePopularClick(item.label)}
+              href={`/search?query=${item?.label}`}
               className={`${item.color} flex items-center px-3 py-1 rounded-full text-xs font-medium cursor-pointer hover:shadow-md transition`}
             >
               {item.icon}
               {item.label}
-            </span>
+            </Link>
           ))}
         </div>
       </div>
