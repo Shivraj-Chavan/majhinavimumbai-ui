@@ -131,6 +131,7 @@ export default function Page() {
               <th className="px-4 py-3">Sr. No</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Phone</th>
               <th className="px-4 py-3 text-center">Action</th>
             </tr>
           </thead>
@@ -158,6 +159,7 @@ export default function Page() {
                   </td>
                   <td className="px-4 py-3">{user?.name ?? "-"}</td>
                   <td className="px-4 py-3">{user?.email ?? "-"}</td>
+                  <td className="px-4 py-3">{user?.phone ?? "-"}</td>
                   <td className="px-4 py-3 space-x-2 flex items-center justify-center">
                     <span
                       className={`h-8 px-3 rounded-md text-sm font-semibold flex items-center justify-center ${
