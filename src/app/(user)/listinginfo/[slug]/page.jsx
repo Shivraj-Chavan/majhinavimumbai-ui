@@ -61,6 +61,7 @@ export default function ListingInfo() {
   const [reviews, setReviews] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [refreshApi,setRefreshApi]=useState(0)
+  const [myReview,setMyReview]=useState(false)
 
 
   useEffect(() => {
@@ -194,7 +195,28 @@ export default function ListingInfo() {
               : `https://${business.website}`
           }
           icon={<FcGlobe />} label="Website" isButton={false} ringColor="blue" />
-          <Actionbtn href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(business.mapLink || business.name || "Your Business Location")}`} icon={<FcDownRight />} label="Directions" ringColor="gray" />
+          {/* <Actionbtn href={`https://www.google.co.in/maps/search/?q=${encodeURIComponent(business.mapLink || business.name || "Your Business Location")}`} icon={<FcDownRight />} label="Directions" ringColor="gray" /> */}
+          {/* <Actionbtn
+            href={`https://www.google.com/maps/dir/?api=1&destination=${business.latitude},${business.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<FcDownRight />}
+            label="Directions"
+            ringColor="gray"
+          /> */}
+          <Actionbtn
+            href={
+              business?.latitude && business?.longitude      
+                ? `https://www.google.com/maps/dir/?api=1&destination=${business.latitude},${business.longitude}`
+                : `https://www.google.com/maps/search/?q=${encodeURIComponent(business?.name || "Your Business Location")}`
+            }
+            target="_blank"
+          label="Directions"
+            rel="noopener noreferrer"
+            icon={<FcDownRight />}
+            ringColor="gray"
+          />                                                                                                                 
+
           <Actionbtn href={`tel:${business.phone}`} icon={<FcCallback />} label="Call" ringColor="green" />
           {/* <Actionbtn icon={<FcBookmark />} label="Save" ringColor="orange" isButton /> */}
         </div>
@@ -202,11 +224,11 @@ export default function ListingInfo() {
         <div className="bg-white rounded-3xl shadow-xl p-5 sm:p-8">
         {/* <Info hours={business.timings} /> */}
           <div className="mt-2">
-          <Tab setRefreshApi={setRefreshApi} business={business} renderStars={renderStars} businessOwnerId={business?.owner_id} currentUserId={currentUserId}/>
+          <Tab setRefreshApi={setRefreshApi} setMyReview={setMyReview} business={business} renderStars={renderStars} businessOwnerId={business?.owner_id} currentUserId={currentUserId}/>
 
           </div>
           <div className="mt-12">
-            <UsersndMsg setRefreshApi={setRefreshApi} setReviews={setReviews} businessId={business.id} />
+            <UsersndMsg myReview={myReview}  setRefreshApi={setRefreshApi} setReviews={setReviews} businessId={business.id} />
           </div>
         </div>
 

@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import { apiPost } from "@/lib/apiClient";
+import { apiPost, apiPut } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import { useDispatch } from 'react-redux';
 import { login as reduxLogin } from '@/redux/slice/userSlice';
-import { handleLoginSuccess } from "../navbar/Navbar";
+import ProfileCompletionPopup from "./profileCompletion";
+import { toast } from "react-toastify";
 
 export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const dispatch = useDispatch();
@@ -15,12 +16,18 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const [otp, setOtp] = useState("");
   const [name, setName] = useState("");
   const [errors, setErrors] = useState({});
-  const [email, setEmail] = useState('');
+  const [useremail, setEmail] = useState('');
   const [countdown, setCountdown] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ type: "", message: "" });
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [showProfileCompletion, setShowProfileCompletion] = useState(false);
+  const [profileData, setProfileData] = useState({ name: "", email: "" });
+  const [profileErrors, setProfileErrors] = useState({});
+  const [isSubmittingProfile, setIsSubmittingProfile] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+
 
   const otpInputRef = useRef(null);
 
@@ -85,17 +92,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     }
   };
 
-  // const handleEmailChange = (e) => {
-  //   const value = e.target.value.trim();
-  //   setEmail(value);
-  
-  //   const gmailRegex = /^[a-zA-Z0-9](?!.*\.\.)[a-zA-Z0-9._%+-]*@gmail\.com$/;
-  //   if (!gmailRegex.test(value) && !value.endsWith("@majhinavimumbai.com")) {
-  //     setErrors((prev) => ({ ...prev, email: "Please enter a valid @gmail.com email address." }));
-  //   } else {
-  //     setErrors((prev) => ({ ...prev, email: "" }));
-  //   }
-  // };
+ 
   const handleOtpChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     if (value.length <= 6) {
@@ -107,17 +104,6 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
   const getFriendlyMessage = (msg) => {
     const lower = msg?.toLowerCase();
     if (!lower) return "Something went wrong. Please try again.";
-
-    // if (lower.includes("invalid otp")) return "The OTP entered is incorrect.";
-    // if (lower.includes("expired")) return "OTP has expired. Please request a new one.";
-    // if (lower.includes("too many attempts")) return "Too many attempts. Try again after some time.";
-    // if (lower.includes("already verified")) return "Your number is already verified.";
-    // if (lower.includes("wait")) return "Please wait before requesting a new OTP.";
-    // if (lower.includes("not registered")) return "This number is not registered.";
-    // if (lower.includes("too many requests")) return "Too many requests. Try again later.";
-    // if (lower.includes("token not found")) return "Authentication failed. Please try again.";
-    // if (lower.includes("invalid phone")) return "Please enter a valid 10-digit phone number.";
-
     return "OTP verification failed. Please try again.";
   };
 
@@ -127,17 +113,6 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       return;
     }
       let errorMap = {};
-    
-      // if (!name.trim()) errorMap.name = "Name is required";
-
-      // if (!email.trim()) {
-      //   errorMap.email = "Email is required";
-      // } else {
-      //   const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-      //   if (!gmailRegex.test(email) && !email.endsWith("@majhinavimumbai.com")) {
-      //     errorMap.email = "Please enter a valid @gmail.com email address.";
-      //   }
-      // }
     
       if (Object.keys(errorMap).length > 0) {
         setErrors(errorMap);
@@ -169,24 +144,14 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  //   if (!errors && name.trim() !== '') {
-  //     console.log('Form submitted:', name);
-  //   } else {
-  //     setErrors('Please enter a valid name.');
-  //   }
-  // };
-
     let newErrors = {};
    
-    // if (!name.trim()) newErrors.name = "Name is required";
-    // if (phone.length !== 10) newErrors.phone = "Phone number must be 10 digits";
     if (!otp || otp.length !== 6) newErrors.otp = "OTP must be 6 digits";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
     setIsVerifyingOtp(true); // <--- add before try
-
 
     try {
       const data = await apiPost("otp/verify", { name:"", phone: phone, otp: otp });
@@ -197,8 +162,9 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       // const { token, role } = data;
       // const user = response?.data?.user;
 
-      const { token, role } = data;
+      const { token, role, isNewUser, name: backendName ,userEmail } = data;
       console.log("Extracted Role:", role);
+      setEmail(userEmail)
 
       // Create a minimal user object yourself if needed
       const user = { name:"", phone };
@@ -208,39 +174,38 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
        // Store token, role, and OTP verification status in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("authRole", role);
-      // localStorage.setItem("email", email);
-      // localStorage.setItem("authUser", JSON.stringify(user));
-      // localStorage.setItem("otpVerified", "true");
-
       // Redux login
       dispatch(reduxLogin({ user, token }));
       
-      // handleLoginSuccess(user, token); // Callback to parent (like Navbar)
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
-     // Clear form and close modal 
-      setTimeout(() => {
-        setPhone("");
-        // setEmail("");
-        setOtp("");
-        setOtpSent(false);
-        setCountdown(0);
-        setStatusMessage({ type: "", message: "" });
-        console.log("Redirecting based on role:", role);
-        setShowModal(false);
+      toast.success("Logged In successfully!");
+     // Clear form fields
+    setPhone("");
+    setOtp("");
+    setOtpSent(false);
+    setCountdown(0);
 
-        if (role === "admin") {
-          console.log("Going to /admin");
-          router.push("/admin");
-        } else if (role === "user") {
-          router.push("/");
-        } else {
-          if (authPurpose === "business") {
-            router.push("/businessRegister");
-          } else {
-            router.push("/"); 
-          }
-        }
-    }, 1000);
+    // Close OTP modal first
+    // setShowModal(false);
+
+     // Close OTP modal before deciding what to show
+     
+     // Decide what to do next
+     if (isNewUser || !backendName || backendName.trim() === "") {
+      // setShowModal(false);     
+      setShowProfileCompletion(true);    
+          
+      } else {
+        setShowProfileCompletion(false);
+        setShowModal(false);
+        // setShowProfileCompletion(false);
+        // EXISTING USER → redirect based on role/authPurpose
+        if (role === "admin") router.push("/admin");
+        else if (role === "user") router.push("/");
+        else if (authPurpose === "business") router.push("/businessRegister");
+        else router.push("/");
+      }
+    
 
     } catch (error) {
       console.error("OTP Verify Error:", error);
@@ -257,180 +222,193 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     
   };
 
+  const handleProfileSubmit = async (e, formData) => {
+    e.preventDefault();
+    console.log("handleProfileSubmit triggered", formData);
+  
+    // Validation directly on formData
+    let errors = {};
+    if (!formData.name.trim()) errors.name = "Name is required";
+  
+    setProfileErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+  
+    try {
+      setIsSubmittingProfile(true);
+  
+      // Make API call with formData
+      const response = await apiPut("/users/profile", formData);
+  
+      console.log("Backend response:", response.data);
+  
+      //  Success message
+      // toast.success("Profile completed successfully!");
+  
+      //  Close the popup
+      setShowProfileCompletion(false);
+      setShowModal(false);
+  
+      //  Redirect to homepage after profile update
+      router.push("/");
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      toast.error("Failed to update profile");
+    } finally {
+      setIsSubmittingProfile(false);
+    }
+  };
+    
+
   return (
     showModal && (
       <div className="fixed inset-0 z-50 flex justify-center items-center bg-white/20 backdrop-blur-sm">
         <div className="bg-white p-8 rounded-2xl shadow-xl w-11/12 max-w-md relative">
-          
+  
+          {/* Close Button */}
           <button
-            onClick={() => setShowModal(false)}
+            onClick={() => {
+              setShowModal(false);
+              setShowProfileCompletion(false);
+            }}
             className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-orange-600 font-bold cursor-pointer"
           >
             &times;
           </button>
-
-          <p className="italic text-lg text-center font-bold text-blue-700">Welcome</p>
-          <h1 className="text-2xl font-semibold mb-4 text-center">Verify Your Phone Number</h1>
-
-         {/* Status Message */}
-          {statusMessage.message && (
-            <div className={`text-center text-sm font-medium mb-4 px-4 py-2 rounded ${
-                statusMessage.type === "success" ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100"
-              }`}>
-              {statusMessage.message}
-            </div>
-          )}
-
-          <form className="space-y-6 mt-5" onSubmit={handleSubmit}>
-          {/* <div>
-              <label className="block text-lg font-medium">Your Full Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={handleNameChange}
-                placeholder="Enter Your Full Name"
-                className={`w-full mt-2 px-4 py-2 border cursor-pointer ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div> */}
-
-            <div>
-              <label className="block text-lg font-medium">Phone Number</label>
-              <div className={`flex items-center mt-2 border cursor-pointer ${
-                  errors.phone ? "border-red-500" : "border-gray-300"
-                } rounded-lg overflow-hidden w-full focus-within:ring-2 focus-within:ring-orange-500`}>
-                <span className="px-3 text-gray-500 border-r border-gray-300 bg-white">+91</span>
-                <input
-                  type="tel"
-                  className="w-full px-4 py-2 outline-none cursor-pointer"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  placeholder="Enter Your Phone Number"
-                />
-                {phone.length === 10 && <FaCheckCircle className="text-green-500 mx-2" />}
-              </div>
-              {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-            </div>
-
-         {/* Email Input */}
-          {/* <div>
-            <label className="block text-lg font-medium">Your Email ID</label>
-            <input
-              type="email"
-              value={email}
-              onChange={handleEmailChange}
-              placeholder="Enter your email address"
-              className={`w-full mt-2 px-4 py-2 border cursor-pointer ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
+  
+          {/* If profile completion needed, show popup instead of OTP */}
+          {showProfileCompletion ? (
+            <ProfileCompletionPopup
+              profileData={profileData}
+              setProfileData={setProfileData}
+              profileErrors={profileErrors}
+              setProfileErrors={setProfileErrors}
+              onSubmit={handleProfileSubmit}
+              initialData={{ name: "", email:useremail|| "" }}
+              onUpdated={(updatedData) => {
+                console.log("Profile updated successfully:", updatedData);
+              }}
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div> */}
-
-          {/* <div className="text-center font-bold text-lg text-blue-700 hover:text-blue-800">
-            <h1>Login using Google</h1>
-          </div> */}
-
-            {/* <button
-              type="button"
-              onClick={handleSendOtp}  
-              className="w-full mt-3 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition"
-            >
-              Submit
-            </button> */}
-
-          {/* Email Submit Button */}
-          {/* {!otpSent && !errors.phone && phone && (
-            <button
-              type="button"
-              onClick={handleSendOtp}
-              disabled={isSendingOtp}
-              className={`w-full mt-3 text-white py-2 rounded-md transition ${
-                isSendingOtp ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
-              }`}
-            >
-              {isSendingOtp ? (
-                <>
-                  Sending OTP
-                  <Spinner />
-                </>
-              ) : (
-                "Submit"
+          ) : (
+            <>
+              <p className="italic text-lg text-center font-bold text-blue-700">Welcome</p>
+              <h1 className="text-2xl font-semibold mb-4 text-center">Verify Your Phone Number</h1>
+  
+              {/* Status Message */}
+              {statusMessage.message && (
+                <div
+                  className={`text-center text-sm font-medium mb-4 px-4 py-2 rounded ${
+                    statusMessage.type === "success"
+                      ? "text-green-600 bg-green-100"
+                      : "text-red-600 bg-red-100"
+                  }`}
+                >
+                  {statusMessage.message}
+                </div>
               )}
-            </button>
-          )} */}
-
-
-
-            {/* Send OTP Button */}
-            {phone.length === 10 && !otpSent && (
-              <button
-                type="button"
-                onClick={handleSendOtp}
-                className={`w-full text-white py-2 rounded-md transition ${
-                  phone.length === 10 && !otpSent ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-300 cursor-not-allowed"
-                }`}
-                disabled={phone.length !== 10 || otpSent}
-              >
-                Send OTP
-              </button>
-            )}
-
-            {otpSent && (
-              <>
+  
+              {/* OTP Form */}
+              <form className="space-y-6 mt-5" onSubmit={handleSubmit}>
+                {/* Phone Number Input */}
                 <div>
-                  <label className="block text-lg font-medium">OTP</label>
-                  <input
-                    type="text"
-                    ref={otpInputRef}
-                    value={otp}
-                    onChange={handleOtpChange}
-                    className={`w-full mt-2 px-4 py-2 border cursor-pointer ${
-                      errors.otp ? "border-red-500" : "border-gray-300"
-                    } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
-                    placeholder="Enter Your OTP"
-                  />
-                  {errors.otp && <p className="text-red-500 text-sm mt-1">{errors.otp}</p>}
-                </div>
-
-                <button
-                    type="submit"
-                    className={`w-full py-2 rounded-md transition text-white ${
-                      isVerifyingOtp ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
-                    }`}
-                    disabled={isVerifyingOtp}
+                  <label className="block text-lg font-medium">Phone Number</label>
+                  <div
+                    className={`flex items-center mt-2 border cursor-pointer ${
+                      errors.phone ? "border-red-500" : "border-gray-300"
+                    } rounded-lg overflow-hidden w-full focus-within:ring-2 focus-within:ring-orange-500`}
                   >
-                    {isVerifyingOtp ? (
-                      <>
-                        Verifying
-                        <Spinner />
-                      </>
-                    ) : (
-                      "Submit"
-                    )}
-                  </button>
-
-                    {/* Resend OTP */}
-                <div className="text-right mt-2">
-                  {countdown > 0 ? (
-                    <p className="text-sm text-gray-600">
-                      Resend OTP in <span className="font-medium text-orange-600">{countdown}s</span>
-                    </p>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleSendOtp}
-                      className="text-md text-blue-700 underline hover:text-blue-500 hover:font-semibold"
-                    >
-                      Resend OTP
-                    </button>
-                  )}
+                    <span className="px-3 text-gray-500 border-r border-gray-300 bg-white">+91</span>
+                    <input
+                      type="tel"
+                      className="w-full px-4 py-2 outline-none cursor-pointer"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && phone.length === 10 && !otpSent) {
+                          e.preventDefault();
+                          handleSendOtp();
+                        }
+                      }}
+                      placeholder="Enter Your Phone Number"
+                    />
+                    {phone.length === 10 && <FaCheckCircle className="text-green-500 mx-2" />}
+                  </div>
+                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                 </div>
-              </>
-            )}
-          </form>
+  
+                {/* Send OTP */}
+                {phone.length === 10 && !otpSent && (
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && phone.length === 10 && !otpSent) {
+                        e.preventDefault();
+                        handleSendOtp();
+                      }
+                    }}
+                    className={`w-full text-white py-2 rounded-md transition ${
+                      phone.length === 10 && !otpSent
+                        ? "bg-orange-500 hover:bg-orange-600"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                    disabled={phone.length !== 10 || otpSent}
+                  >
+                    Send OTP
+                  </button>
+                )}
+  
+                {/* OTP Field + Verify Button */}
+                {otpSent && (
+                  <>
+                    <div>
+                      <label className="block text-lg font-medium">OTP</label>
+                      <input
+                        type="text"
+                        ref={otpInputRef}
+                        value={otp}
+                        onChange={handleOtpChange}
+                        className={`w-full mt-2 px-4 py-2 border cursor-pointer ${
+                          errors.otp ? "border-red-500" : "border-gray-300"
+                        } rounded-md focus:ring-2 focus:ring-orange-500 outline-none`}
+                        placeholder="Enter Your OTP"
+                      />
+                      {errors.otp && <p className="text-red-500 text-sm mt-1">{errors.otp}</p>}
+                    </div>
+  
+                    <button
+                      type="submit"
+                      className={`w-full py-2 rounded-md transition text-white ${
+                        isVerifyingOtp
+                          ? "bg-orange-400 cursor-not-allowed"
+                          : "bg-orange-500 hover:bg-orange-600"
+                      }`}
+                      disabled={isVerifyingOtp}
+                    >
+                      {isVerifyingOtp ? <>Verifying <Spinner /></> : "Submit"}
+                    </button>
+  
+                    {/* Resend OTP */}
+                    <div className="text-right mt-2">
+                      {countdown > 0 ? (
+                        <p className="text-sm text-gray-600">
+                          Resend OTP in{" "}
+                          <span className="font-medium text-orange-600">{countdown}s</span>
+                        </p>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleSendOtp}
+                          className="text-md text-blue-700 underline hover:text-blue-500 hover:font-semibold"
+                        >
+                          Resend OTP
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </form>
+            </>
+          )}
         </div>
       </div>
     )

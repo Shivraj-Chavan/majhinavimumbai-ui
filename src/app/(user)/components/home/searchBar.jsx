@@ -6,9 +6,9 @@ import Button from "../form/Button";
 import { useRouter } from "next/navigation";
 import { apiGet } from "@/lib/apiClient";
 
-export default function SearchBar() {
+export default function SearchBar({value}) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(value || "");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 

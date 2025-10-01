@@ -8,7 +8,7 @@ import Star from '@/app/(user)/components/categorylisting/Star'
 import { toast } from 'react-toastify';
 import { FaCommentDots } from 'react-icons/fa';
 
-export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
+export default function UsersndMsg({ setReviews ,businessId, setRefreshApi,myReview}) {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -34,6 +34,11 @@ export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
     e.preventDefault();
     if (!message.trim()) return;
 
+    if (myReview) {
+      toast.warning("You can add only one review to this business!");
+      return;
+    }
+
     if (rating === 0) {
       toast.error("Please select a rating before submitting !");
       return;
@@ -41,6 +46,8 @@ export default function UsersndMsg({ setReviews ,businessId, setRefreshApi}) {
   
     setSubmitting(true);
     try {
+      const userData = localStorage.getItem("user");
+    const currentUser = userData ? JSON.parse(userData) : null;
       const response = await apiPost('/reviews', {
         rating,
         comment: message,

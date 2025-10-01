@@ -15,6 +15,8 @@ import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import CONFIG from "@/constance";
 import Image from "next/image";
+import LocationPicker from "@/app/(admin)/admin/components/LocationPicker";
+// import PricingPlans from "../components/profileComp/PricingPlans";
 
 export default function BusinessRegister({ ownerId }) {
   const router = useRouter();
@@ -27,7 +29,18 @@ export default function BusinessRegister({ ownerId }) {
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showPricingPopup, setShowPricingPopup] = useState(false);  
+  const [userBusiness, setUserBusiness] = useState(null);
 
+  const daysOfWeek = [
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+  ];
+  const initialTimings = daysOfWeek.map(day => ({
+    day,
+    open: "",
+    close: "",
+    closed: false
+  }));
   const [formData, setFormData] = useState({
     owner_id: null,
     name: "",
@@ -41,110 +54,110 @@ export default function BusinessRegister({ ownerId }) {
     phone: "",
     wp_number: "",
     email: "",
+    description:"",
     website: "",
-    timing:[{ day: "", open: "09:00", close: "18:00" }],
+    latitude: "",
+    longitude: "",
+    timing: initialTimings,
   });
   const dispatch = useDispatch();
   const [selectedPhotos, setSelectedPhotos] = useState([]);
 
-    const { categories, loading, error } = useSelector((state) => state.categories);
-  
-    useEffect(() => {
-      
-      if (categories?.length > 0) {
-        setSubcategoriesData(categories);
-      }else{
-         dispatch(fetchCategories());
-      }
-    }, [categories]);
- 
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const storedOwnerId = localStorage.getItem("ownerId");
-        console.log("ownerId from localStorage:", storedOwnerId);
-        
-        setCheckingOtp(false);
-        // setFormData((prev) => ({
-        //   ...prev,
-        //   owner_id: storedOwnerId,
-        // }));
-      }
-    }, [router]);
-    
-  useEffect(()=>{
-    console.log({"Timing-----":formData.timing})
-  },[formData.timing])
+  const { categories, loading, error } = useSelector((state) => state.categories);
 
   useEffect(() => {
-    console.log("Received ownerId:", ownerId);
+
+    if (categories?.length > 0) {
+      setSubcategoriesData(categories);
+    } else {
+      dispatch(fetchCategories());
+    }
+  }, [categories]);
+
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedOwnerId = localStorage.getItem("ownerId");
+      // console.log("ownerId from localStorage:", storedOwnerId);
+
+      setCheckingOtp(false);
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   owner_id: storedOwnerId,
+      // }));
+    }
+  }, [router]);
+
+  useEffect(() => {
+    // console.log({ "Timing-----": formData.timing })
+  }, [formData.timing])
+
+  useEffect(() => {
+    // console.log("Received ownerId:", ownerId);
     if (ownerId) {
-      setFormData((prev) => ({ ...prev, owner_id: Number(ownerId),}));
+      setFormData((prev) => ({ ...prev, owner_id: Number(ownerId), }));
     }
   }, [ownerId]);
 
-    if (loading) {
-      return <div className="text-center py-10 font-semibold">Loading...</div>;
-    }
-    
-    if (error) {
-      return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
-    }
+  if (loading) {
+    return <div className="text-center py-10 font-semibold">Loading...</div>;
+  }
 
-    const handleTimingChange = (index, field, value, day) => {
-      setFormData((prev) => {
-        const updatedTimings = [...(prev.timing || [])];
-        const existingIndex = updatedTimings.findIndex((t) => t.day === day);
-    
-        if (existingIndex >= 0) {
-          updatedTimings[existingIndex] = {
-            ...updatedTimings[existingIndex],
-            [field]: value,
-          };
-    
-          // If "closed" is checked, reset times
-          if (field === "closed" && value === true) {
-            updatedTimings[existingIndex].open = "";
-            updatedTimings[existingIndex].close = "";
-          }
-        } else {
-          const newEntry = { day, open: "", close: "", closed: false };
-          newEntry[field] = value;
-          if (field === "closed" && value === true) {
-            newEntry.open = "";
-            newEntry.close = "";
-          }
-          updatedTimings.push(newEntry);
+  if (error) {
+    return <div className="text-center py-10 text-red-500 font-semibold">{error}</div>;
+  }
+
+  const handleTimingChange = (index, field, value, day) => {
+    setFormData((prev) => {
+      const updatedTimings = [...(prev.timing || [])];
+      const existingIndex = updatedTimings.findIndex((t) => t.day === day);
+
+      if (existingIndex >= 0) {
+        updatedTimings[existingIndex] = {
+          ...updatedTimings[existingIndex],
+          [field]: value,
+        };
+
+        // If "closed" is checked, reset times
+        if (field === "closed" && value === true) {
+          updatedTimings[existingIndex].open = "";
+          updatedTimings[existingIndex].close = "";
         }
-    
-        return { ...prev, timing: updatedTimings };
-      });
-    };
+      } else {
+        const newEntry = { day, open: "", close: "", closed: false };
+        newEntry[field] = value;
+        if (field === "closed" && value === true) {
+          newEntry.open = "";
+          newEntry.close = "";
+        }
+        updatedTimings.push(newEntry);
+      }
 
-    const clearTiming = (day) => {
-      setFormData((prev) => {
-        const updatedTimings = (prev.timing || []).map((t) =>
-          t.day === day ? { ...t, open: "", close: "", closed: false } : t
-        );
-        return { ...prev, timing: updatedTimings };
-      });
-    };
-    
-  
-  const handleInputChange = (label,value) => {
+      return { ...prev, timing: updatedTimings };
+    });
+  };
+
+  const clearTiming = (day) => {
+    setFormData((prev) => {
+      const updatedTimings = (prev.timing || []).map((t) =>
+        t.day === day ? { ...t, open: "", close: "", closed: false } : t
+      );
+      return { ...prev, timing: updatedTimings };
+    });
+  };
+
+
+  const handleInputChange = (label, value) => {
     setFormData((prev) => ({ ...prev, [label]: value }));
   };
 
-  const daysOfWeek = [
-    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
-  ];
-  
+
   // const handleTimingChange = (index, field, value) => {
   //   const updatedTimings = [...formData.timing];
   //   updatedTimings[index][field] = value;
   //   setFormData({ ...formData, timing: updatedTimings });
   // };
-  
+
   // const addTiming = () => {
   //   setFormData((prev) => ({ ...prev,
   //     timing: [...prev.timing, { day: "", open: "09:00", close: "18:00" }],
@@ -159,10 +172,10 @@ export default function BusinessRegister({ ownerId }) {
   const handleCategoryChange = (e) => {
     const selectedSlug = e.target.value;
     setSelectedCategory(selectedSlug);
-    setSelectedSubcategory(""); 
-    console.log({selectedSlug})
+    setSelectedSubcategory("");
+    // console.log({ selectedSlug })
     const category = subcategoriesData.find((cat) => cat.id == selectedSlug);
-    console.log({category})
+    // console.log({ category })
     setFilteredSubcategories(category ? category.subcategories : []);
   };
 
@@ -187,39 +200,49 @@ export default function BusinessRegister({ ownerId }) {
       toast.error(validationResult);
       return;
     }
+
+     // Validate before sending
+     if (!formData.latitude || !formData.longitude) {
+      alert("Please select a location on the map.");
+      return;
+    }    
+    // console.log("Sending to API:", formData);
+
     if (!selectedCategory) {
       toast.error("Please select category .");
       return;
     }
-    setSubmitting(true); 
+    setSubmitting(true);
 
     const finalData = {
       ...formData,
       category_id: selectedCategory,
-    subcategory_id: selectedSubcategory,
+      subcategory_id: selectedSubcategory,
     };
-    console.log("Data submitting to server:", finalData.timing);
+    // console.log("Data submitting to server:", finalData.timing);
 
     try {
-      const registeredBusiness=await apiPost("/businesses", finalData);
-      console.log('bussiness',finalData);
+      const registeredBusiness = await apiPost("/businesses", finalData);
+      // console.log('bussiness', finalData);
       
       if (selectedPhotos.length > 0) {
-              const formPhotos = new FormData();
-              selectedPhotos.forEach((file) => formPhotos.append("photos", file));
-      
-              const token = localStorage.getItem("token");
-              const photoUploadUrl = `${CONFIG.API_BASE_URL}/businesses/${registeredBusiness.id}/photos`;
-             
-              await axios.post(photoUploadUrl, formPhotos, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-            }
-            toast.success("Bussiness Registered Successfully!");
-            setSuccessModalOpen(true);
+        const formPhotos = new FormData();
+        selectedPhotos.forEach((file) => formPhotos.append("photos", file));
 
+        const token = localStorage.getItem("token");
+        const photoUploadUrl = `${CONFIG.API_BASE_URL}/businesses/${registeredBusiness.id}/photos`;
+
+        await axios.post(photoUploadUrl, formPhotos, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      toast.success("Bussiness Registered Successfully!");
+      setSuccessModalOpen(true);
+      setUserBusiness(registeredBusiness);
+      // setShowPricingPopup(true);
+      setTimeout(() => {
       setFormData({
         owner_id: "",
         name: "",
@@ -233,29 +256,32 @@ export default function BusinessRegister({ ownerId }) {
         phone: "",
         wp_number: "",
         email: "",
-        website: "",
         description: "",
+        website: "",
         timing: [{ day: "", open: "09:00", close: "18:00" }],
+        latitude:'',
+        longitude:'',       
       });
-      console.log("Submitting formData:", formData);
+      // console.log("Submitting formData:", formData);
 
       setSelectedCategory("");
       setSelectedSubcategory("");
       setSelectedPhotos([]);
+    }, 300);
 
     } catch (error) {
       console.log("Submission Error:", error?.response?.data?.error);
       toast.error(error?.response?.data?.error || "Error submitting form.");
-    }finally {
-      setSubmitting(false); // ✅ Stop loader
+    } finally {
+      setSubmitting(false);
     }
   };
   const handleChange = (e) => {
     const { name, files, type } = e.target;
-  
+
     if (type === "file" && name === "photos") {
       const newFiles = Array.from(files);
-  
+
       // Validate file size
       for (let file of newFiles) {
         if (file.size > 2 * 1024 * 1024) {
@@ -263,18 +289,18 @@ export default function BusinessRegister({ ownerId }) {
           return;
         }
       }
-  
+
       // Combine existing + new files
       const totalFilesCount = selectedPhotos.length + newFiles.length;
       if (totalFilesCount > 2) {
         toast.error("You can upload a maximum of 2 photos");
         return;
       }
-  
+
       const filesWithPreview = newFiles.map((file) =>
         Object.assign(file, { preview: URL.createObjectURL(file) })
       );
-  
+
       setSelectedPhotos((prev) => [...prev, ...filesWithPreview]);
     }
   };
@@ -284,10 +310,18 @@ export default function BusinessRegister({ ownerId }) {
     if (fileToDelete?.preview) {
       URL.revokeObjectURL(fileToDelete.preview);
     }
-  
+
     setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
   };
-
+  const handleLocationSelect = (latlng) => {
+    // console.log({ lat: latlng.lat, lng: latlng.lng });
+    setFormData(prev => ({
+      ...prev,
+      latitude: latlng.lat,
+      longitude: latlng.lng,
+    }));
+  };
+  
   if (checkingOtp) return null;
 
   return (
@@ -335,7 +369,7 @@ export default function BusinessRegister({ ownerId }) {
             onChange={handleSubcategoryChange}
             disabled={!filteredSubcategories.length}
             className={`w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 ${showWarning ? "border-red-500 ring-red-400" : "border-gray-300 ring-orange-400"
-            }`}
+              }`}
           >
             <option value="" disabled>
               {filteredSubcategories.length ? "Select Subcategory" : "Choose a category first"}
@@ -378,45 +412,45 @@ export default function BusinessRegister({ ownerId }) {
           <Input label="WhatsApp Number" value={formData.wp_number} onChange={(e) => handleInputChange("wp_number", e.target.value)} />
         </div> */}
 
-      <div className="md:col-span-6">
+        <div className="md:col-span-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Phone<span className="text-red-500">*</span></label>
-        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-          <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
-          <input
-            type="tel"
-            maxLength={10}
-            value={formData.phone}
-            onChange={(e) => {
-              const input = e.target.value.replace(/\D/g, ""); 
-              if (input.length <= 10) {
-                handleInputChange("phone", input);
-              }
-            }}
-            className="w-full px-1 py-2 focus:outline-none"
-            placeholder="Enter 10-digit number"
-          />
+          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+            <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
+            <input
+              type="tel"
+              maxLength={10}
+              value={formData.phone}
+              onChange={(e) => {
+                const input = e.target.value.replace(/\D/g, "");
+                if (input.length <= 10) {
+                  handleInputChange("phone", input);
+                }
+              }}
+              className="w-full px-1 py-2 focus:outline-none"
+              placeholder="Enter 10-digit number"
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="md:col-span-6">
+        <div className="md:col-span-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number<span className="text-red-500">*</span></label>
-        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-          <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
-          <input
-            type="tel"
-            maxLength={10}
-            value={formData.wp_number}
-            onChange={(e) => {
-              const input = e.target.value.replace(/\D/g, "");
-              if (input.length <= 10) {
-                handleInputChange("wp_number", input);
-              }
-            }}
-            className="w-full px-1 py-2 focus:outline-none"
-            placeholder="Enter 10-digit number"
-          />
+          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+            <span className=" bg-gray-100 text-gray-700 px-[7px] border-r border-gray-300">+91</span>
+            <input
+              type="tel"
+              maxLength={10}
+              value={formData.wp_number}
+              onChange={(e) => {
+                const input = e.target.value.replace(/\D/g, "");
+                if (input.length <= 10) {
+                  handleInputChange("wp_number", input);
+                }
+              }}
+              className="w-full px-1 py-2 focus:outline-none"
+              placeholder="Enter 10-digit number"
+            />
+          </div>
         </div>
-      </div>
 
         <div className="md:col-span-6">
           <Input label="Email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
@@ -424,180 +458,194 @@ export default function BusinessRegister({ ownerId }) {
 
         <div className="md:col-span-6">
           <Input label="Website" value={formData.website} onChange={(e) => handleInputChange("website", e.target.value)} />
-          </div>
         </div>
-        <div className="pt-5">
-  <label htmlFor="description" className="block mb-1 font-medium">
-    Business Description
-  </label>
-  <textarea
-    id="description"
-    name="description"
-    rows={6}
-    value={formData.description}
-    onChange={(e) => handleInputChange("description", e.target.value)} 
-    className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
-    placeholder="Enter business details..."
-  />
-</div>
+      </div>
+      <div className="pt-5">
+        <label htmlFor="description" className="block mb-1 font-medium">
+          Business Description
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          rows={6}
+          value={formData.description}
+          onChange={(e) => handleInputChange("description", e.target.value)}
+          className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+          placeholder="Enter business details..."
+        />
+      </div>
+      <div className="mt-3">
+        <label htmlFor="location" className="block mb-1 font-medium">
+          Pin your location
+        </label>
+        <p className="text-sm text-gray-500 mb-2">
+        Tap on the map to pin your exact business location.
+      </p>
 
-{/* Business Timings */}
-<div className="w-full">
-  <h3 className="font-semibold text-gray-700 mb-4 mt-6">Business Timings</h3>
+        {/* Location Picker */}
+        <LocationPicker onSelect={handleLocationSelect}
+         
+        />
 
-  {/* Desktop Table View */}
-  <div className="hidden md:block">
-    <table className="w-full text-left border rounded-lg text-sm">
-      <thead className="bg-gray-100 text-gray-700">
-        <tr>
-          <th className="px-4 py-2">#</th>
-          <th className="px-4 py-2">Day</th>
-          <th className="px-4 py-2">Open Time</th>
-          <th className="px-4 py-2">Close Time</th>
-          <th className="px-4 py-2">Closed</th>
-          <th className="px-4 py-2">Status</th>
-          <th className="px-4 py-2">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {daysOfWeek.map((day, index) => {
-          const currentTiming = formData.timing?.find((t) => t.day === day) || {
-            open: "",
-            close: "",
-            closed: false,
-          };
+      </div>
 
-          return (
-            <tr key={day} className="border-b">
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2 font-medium">{day}</td>
-              <td className="px-4 py-2">
-                <input
-                  type="time"
-                  value={currentTiming.open}
-                  disabled={currentTiming.closed}
-                  onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
-                  className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
-                />
-              </td>
-              <td className="px-4 py-2">
-                <input
-                  type="time"
-                  value={currentTiming.close}
-                  disabled={currentTiming.closed}
-                  onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
-                  className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
-                />
-              </td>
-              <td className="px-4 py-2 text-center">
-                <input
-                  type="checkbox"
-                  checked={currentTiming.closed || false}
-                  onChange={(e) => handleTimingChange(index, "closed", e.target.checked, day)}
-                />
-              </td>
-              <td className="px-4 py-2">
-                {currentTiming.closed ? (
-                  <span className="text-gray-600 italic">Closed</span>
-                ) : currentTiming.open && currentTiming.close ? (
-                  <span className="text-green-600 font-semibold">✅ Set</span>
-                ) : (
-                  <span className="text-gray-400">Not Set</span>
-                )}
-              </td>
-              <td className="px-4 py-2">
-                <button
-                  type="button"
-                  onClick={() => clearTiming(day)}
-                  className="text-red-500 hover:underline text-sm"
-                >
-                  Clear
-                </button>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
+      {/* Business Timings */}
+      <div className="w-full">
+        <h3 className="font-semibold text-gray-700 mb-4 mt-6">Business Timings</h3>
 
-  {/* Mobile Card View */}
-  <div className="block md:hidden space-y-4">
-    {daysOfWeek.map((day, index) => {
-      const currentTiming = formData.timing?.find((t) => t.day === day) || {
-        open: "",
-        close: "",
-        closed: false,
-      };
+        {/* Desktop Table View */}
+        <div className="hidden md:block">
+          <table className="w-full text-left border rounded-lg text-sm">
+            <thead className="bg-gray-100 text-gray-700">
+              <tr>
+                <th className="px-4 py-2">#</th>
+                <th className="px-4 py-2">Day</th>
+                <th className="px-4 py-2">Open Time</th>
+                <th className="px-4 py-2">Close Time</th>
+                <th className="px-4 py-2">Closed</th>
+                <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {daysOfWeek.map((day, index) => {
+                const currentTiming = formData.timing?.find((t) => t.day === day) || {
+                  open: "",
+                  close: "",
+                  closed: false,
+                };
 
-      return (
-        <div key={day} className="border border-gray-200 rounded-lg p-4 shadow-sm">
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-medium text-gray-700">{index + 1}. {day}</span>
-            <input
-              type="checkbox"
-              checked={currentTiming.closed || false}
-              onChange={(e) => handleTimingChange(index, "closed", e.target.checked, day)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div>
-              <label className="block text-sm text-gray-600">Open Time</label>
-              <input
-                type="time"
-                value={currentTiming.open}
-                disabled={currentTiming.closed}
-                onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
-                className="border border-gray-300 rounded px-3 py-2 w-full disabled:bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-600">Close Time</label>
-              <input
-                type="time"
-                value={currentTiming.close}
-                disabled={currentTiming.closed}
-                onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
-                className="border border-gray-300 rounded px-3 py-2 w-full disabled:bg-gray-100"
-              />
-            </div>
-
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-sm text-gray-500">
-                {currentTiming.closed ? "Closed" : currentTiming.open && currentTiming.close ? "✅ Set" : "Not Set"}
-              </span>
-              <button
-                type="button"
-                onClick={() => clearTiming(day)}
-                className="text-red-500 text-sm hover:underline"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-</div>
-           <div className="pt-3">
-                      <label className="block text-sm font-medium mb-1">Add up to 2 photos (Each file must be under 2MB)</label>
-                      <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                      {selectedPhotos.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
-                          {selectedPhotos.map((file, idx) => (
-                            <div key={idx} className="relative w-24 h-24 rounded overflow-hidden border border-gray-300">
-                              <Image width={300} height={300} src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
-                              <button type="button" onClick={() => handleDeletePhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full" aria-label="Delete selected photo">
-                                <MdDelete size={16} />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+                return (
+                  <tr key={day} className="border-b">
+                    <td className="px-4 py-2">{index + 1}</td>
+                    <td className="px-4 py-2 font-medium">{day}</td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="time"
+                        value={currentTiming.open}
+                        disabled={currentTiming.closed}
+                        onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
+                        className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="time"
+                        value={currentTiming.close}
+                        disabled={currentTiming.closed}
+                        onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
+                        className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <input
+                        type="checkbox"
+                        checked={currentTiming.closed || false}
+                        onChange={(e) => handleTimingChange(index, "closed", e.target.checked, day)}
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      {currentTiming.closed ? (
+                        <span className="text-gray-600 italic">Closed</span>
+                      ) : currentTiming.open && currentTiming.close ? (
+                        <span className="text-green-600 font-semibold">✅ Set</span>
+                      ) : (
+                        <span className="text-gray-400">Not Set</span>
                       )}
-                    </div>
+                    </td>
+                    <td className="px-4 py-2">
+                      <button
+                        type="button"
+                        onClick={() => clearTiming(day)}
+                        className="text-red-500 hover:underline text-sm"
+                      >
+                        Clear
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="block md:hidden space-y-4">
+          {daysOfWeek.map((day, index) => {
+            const currentTiming = formData.timing?.find((t) => t.day === day) || {
+              open: "",
+              close: "",
+              closed: false,
+            };
+
+            return (
+              <div key={day} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium text-gray-700">{index + 1}. {day}</span>
+                  <input
+                    type="checkbox"
+                    checked={currentTiming.closed || false}
+                    onChange={(e) => handleTimingChange(index, "closed", e.target.checked, day)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div>
+                    <label className="block text-sm text-gray-600">Open Time</label>
+                    <input
+                      type="time"
+                      value={currentTiming.open}
+                      disabled={currentTiming.closed}
+                      onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
+                      className="border border-gray-300 rounded px-3 py-2 w-full disabled:bg-gray-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600">Close Time</label>
+                    <input
+                      type="time"
+                      value={currentTiming.close}
+                      disabled={currentTiming.closed}
+                      onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
+                      className="border border-gray-300 rounded px-3 py-2 w-full disabled:bg-gray-100"
+                    />
+                  </div>
+
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-sm text-gray-500">
+                      {currentTiming.closed ? "Closed" : currentTiming.open && currentTiming.close ? "✅ Set" : "Not Set"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => clearTiming(day)}
+                      className="text-red-500 text-sm hover:underline"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="pt-3">
+        <label className="block text-sm font-medium mb-1">Add up to 2 photos (Each file must be under 2MB)</label>
+        <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+        {selectedPhotos.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
+            {selectedPhotos.map((file, idx) => (
+              <div key={idx} className="relative w-24 h-24 rounded overflow-hidden border border-gray-300">
+                <Image width={300} height={300} src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
+                <button type="button" onClick={() => handleDeletePhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full" aria-label="Delete selected photo">
+                  <MdDelete size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       {/* Submit Button */}
       <button
         type="submit"
@@ -605,7 +653,7 @@ export default function BusinessRegister({ ownerId }) {
         className={`w-full mt-10 px-4 py-3 rounded-xl shadow-md font-bold text-lg text-white transition-transform ${submitting
             ? "bg-blue-400 cursor-not-allowed"
             : "bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 hover:scale-105"
-        }`}
+          }`}
       >
         {submitting ? (
           <div className="flex items-center justify-center gap-2">
@@ -639,6 +687,12 @@ export default function BusinessRegister({ ownerId }) {
 
       {/* Success Modal */}
       <SuccessModal isOpen={isSuccessModalOpen} ownerId={ownerId} onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" />
+      
+      {/* next_phase */}
+      {/* <PricingPlans show={showPricingPopup} onClose={() => setShowPricingPopup(false)} business={userBusiness} onPlanActivated={() => {
+    setShowPricingPopup(false);
+    setSuccessModalOpen(true); 
+  }}/> */}
     </form>
   );
 }

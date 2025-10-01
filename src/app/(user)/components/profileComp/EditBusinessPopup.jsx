@@ -9,7 +9,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CONFIG from './../../../../constance'
 import Image from "next/image";
-export default function EditBusinessPopup({ business, onClose }) {
+import LocationPicker from "@/app/(admin)/admin/components/LocationPicker";
+
+export default function EditBusinessPopup({ business, plan, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -23,12 +25,28 @@ export default function EditBusinessPopup({ business, onClose }) {
     address: "",
     pin_code: "",
     wp_number: "",
+    latitude: null,
+    longitude: null, 
+    is_verified:0 
   });
 
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [existingPhotos, setExistingPhotos] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [showTextarea, setShowTextarea] = useState('');
+  const [maxImageLimit,setMaxImageLimit]=useState(2)
+  // Plan-based image limits
+// const getImageLimitFromPlan = () => {
+//   if (!plan || plan.status !== 'completed') return 2; 
+
+//   const planName = plan.name?.toLowerCase();
+//   if (planName === "silver") return 5;
+//   if (planName === "gold") return 10;
+//   if (planName === "platinum") return 20;
+//   return 2;
+// };
+
+// const maxImageLimit = getImageLimitFromPlan();
 
   useEffect(() => {
     const loadUser=async()=>{
@@ -47,6 +65,26 @@ export default function EditBusinessPopup({ business, onClose }) {
       selectedPhotos.forEach((file) => URL.revokeObjectURL(file.preview));
     };
   }, [selectedPhotos]);
+
+  useEffect(()=>{
+    const getImageLimitFromPlan = () => {
+      if (!plan) return 2;
+    
+      switch (plan.name?.toLowerCase()) {
+        case "silver":
+          return 5;
+        case "gold":
+          return 10;
+        case "platinum":
+          return 20;
+        default:
+          return 2; // free or unknown plan
+      }
+    };
+    
+    const limit = getImageLimitFromPlan();
+    setMaxImageLimit(limit)
+  },[plan])
 
   useEffect(() => {
     if (business) {
@@ -72,8 +110,15 @@ export default function EditBusinessPopup({ business, onClose }) {
         sector: business.sector || "",
         landmark: business.landmark || "",
         pin_code:business.pin_code || "",
-
+        latitude: business.latitude || null,
+        longitude: business.longitude || null,
+        is_verified:business.is_verified || 0
       });
+      console.log("Initial map coordinates:", {
+        latitude: business.latitude,
+        longitude: business.longitude,
+      });
+  
 
       const fullPhotoUrls = (business.images || []).map((image) =>
         image.url.startsWith("http") ? image.url : `${CONFIG.IMAGE_BASE_URL}${image.url}`
@@ -83,8 +128,12 @@ export default function EditBusinessPopup({ business, onClose }) {
     }
   }, [business]);
 
+  // Plan-based image limit function
+
+
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
+    console.log("handleChange triggered:", { name, value, files, type });
 
     // Handle website validation
       let updatedValue = value;
@@ -94,32 +143,47 @@ export default function EditBusinessPopup({ business, onClose }) {
         }
       }
 
-    if (type === "file" && name === "photos") {
-      const newFiles = Array.from(files);
-  
-      // Validate file size
-      for (let file of newFiles) {
-        if (file.size > 5 * 1024 * 1024) { // 5MB in bytes
-          toast.error(`File "${file.name}" exceeds 5MB size limit`);
+      if (type === "file" && name === "photos") {
+        const newFiles = Array.from(files);
+        console.log("New files selected:", newFiles);
+      
+        // Validate file size
+        for (let file of newFiles) {
+          console.log(`Checking file size: ${file.name} (${file.size} bytes)`);
+          if (file.size > 5 * 1024 * 1024) {
+            toast.error(`File "${file.name}" exceeds 5MB size limit`);
+            return;
+          }
+        }
+      
+        // Total count validation (existing + new + already selected)
+          const totalAfterAdd = existingPhotos.length + selectedPhotos.length + newFiles.length;
+          console.log(`Existing: ${existingPhotos.length}, Selected: ${selectedPhotos.length}, New: ${newFiles.length}`);
+          console.log(`Total after adding: ${totalAfterAdd}, Max limit: ${maxImageLimit}`);
+
+        if (totalAfterAdd > maxImageLimit) {
+          console.warn(`Exceeds limit: ${totalAfterAdd} > ${maxImageLimit}`);
+          toast.error(
+            `You can only have ${maxImageLimit} photo${
+              maxImageLimit > 1 ? "s" : ""
+            } for your ${plan?.name || "Free"} plan`
+          );
           return;
         }
-      }
-    
-      // Check total image count (existing + new)
-      if (existingPhotos.length + selectedPhotos.length + newFiles.length > 2) {
-        toast.error("Max 2 photos allowed (existing + new)");
-        return;
-      }
-    
-      const filesWithPreview = newFiles.map((file) =>
-        Object.assign(file, { preview: URL.createObjectURL(file) })
-      );
-    
-      setSelectedPhotos((prev) => [...prev, ...filesWithPreview]);
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+        
+    // Attach previews
+    const filesWithPreview = newFiles.map((file) =>
+      Object.assign(file, { preview: URL.createObjectURL(file) })
+    );
+
+    setSelectedPhotos((prev) => [...prev, ...filesWithPreview]);
+    return;
+  }
+    console.log(`Updating formData field "${name}" →`, updatedValue);
+    // For normal text inputs
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
 
   const handleWebsiteBlur = (e) => {
     const { name, value } = e.target;
@@ -131,7 +195,6 @@ export default function EditBusinessPopup({ business, onClose }) {
     }
   };
   
-
   // Delete Selected or Existing Photos
   const handleDeletePhoto = (index) => {URL.revokeObjectURL(selectedPhotos[index].preview);
     setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
@@ -156,19 +219,20 @@ export default function EditBusinessPopup({ business, onClose }) {
     }
   };
 
-  const handleGetLocation = () => {
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => {
-        const coords = `${pos.coords.latitude}, ${pos.coords.longitude}`;
-        setFormData((prev) => ({ ...prev, location: coords }));
-      },
-      () => toast.error("Failed to get location")
-    );
-  };
+  // const handleGetLocation = () => {
+  //   navigator.geolocation?.getCurrentPosition(
+  //     (pos) => {
+  //       const coords = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+  //       setFormData((prev) => ({ ...prev, location: coords }));
+  //     },
+  //     () => toast.error("Failed to get location")
+  //   );
+  // };
 
   useEffect(()=>{
       console.log({currentUser})
-  },[currentUser])
+  },[currentUser]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("handleSubmit triggered");
@@ -196,6 +260,9 @@ export default function EditBusinessPopup({ business, onClose }) {
         address: business.address,
         pin_code: business.pin_code,
         slug: business.slug,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        is_verified:business.is_verified
       };
       console.log("Payload being submitted:", payload);
 
@@ -280,21 +347,21 @@ export default function EditBusinessPopup({ business, onClose }) {
           <Input label="Business Name" name="name" value={formData.name} onChange={handleChange} required />
           <div>
           <div>
-  <label htmlFor="description" className="block mb-1 font-medium">
-    Business Description
-  </label>
-  <textarea
-    id="description"
-    name="description"
-    rows={6}
-    value={formData.description}
-    onChange={(e) =>
-      setFormData((prev) => ({ ...prev, description: e.target.value }))
-    }
-    className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
-    placeholder="Enter business details..."
-  />
-</div>
+          <label htmlFor="description" className="block mb-1 font-medium">
+            Business Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            rows={6}
+            value={formData.description}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
+            className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+            placeholder="Enter business details..."
+          />
+        </div>
 
          {/* <div>
             {!showTextarea ? (
@@ -373,6 +440,7 @@ export default function EditBusinessPopup({ business, onClose }) {
             );
           })}
         </div>
+
           <Input label="Website" name="website" value={formData.website} onChange={handleChange} onBlur={handleWebsiteBlur} />
           <div className="flex gap-5">
             {/* <Input label="Contact" name="phone" type="tel" value={formData.phone} onChange={handleChange} /> */}
@@ -424,47 +492,106 @@ export default function EditBusinessPopup({ business, onClose }) {
 
           </div>
 
-          <div>
-            <label className="block mb-1 text-sm">Location</label>
+          {/* <div> */}
+            {/* <label className="block mb-1 text-sm">Location</label>
             <div className="flex gap-2">
               <input type="text" name="location" value={formData.location} onChange={handleChange} className="flex-1 border px-4 py-2 rounded" />
               <button type="button" onClick={handleGetLocation} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">
                 Get Location
               </button>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
+          <LocationPicker defaultLocation={ formData.latitude && formData.longitude ? [formData.latitude, formData.longitude] : null }
+            onSelect={(coords) => {
+              console.log("onSelect triggered with coords:", coords);
+              if (!coords || coords.length !== 2) {
+                console.error(" Invalid coordinates received in onSelect:", coords);
+                return;
+              }
 
+              setFormData((prev) => {
+                const updated = { ...prev,
+                  latitude: coords[0],
+                  longitude: coords[1],
+                };
+                console.log("formData updated with new coords:", updated);
+                return updated;
+              });
+            }}
+          />
+
+        {/* Images */}
           {existingPhotos.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium mb-1">Existing Photos</label>
-              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 gap-2 mb-4">
-                {existingPhotos.map((url, idx) => (
-                  <div key={idx} className="relative group w-28 h-28">
-                    <Image src={url} alt={`existing-photo-${idx}`} className="object-cover w-full h-full rounded border border-gray-200" />
-                    <button type="button" onClick={() => handleDeleteExistingPhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition" aria-label="Delete existing photo">
-                      <MdDelete size={14} />
-                    </button>
-                  </div>
-                ))}
+        <div>
+          <label className="block text-sm font-medium mb-1">Existing Photos</label>
+          <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 gap-2 mb-4">
+            {existingPhotos.map((url, idx) => (
+              <div key={idx} className="relative group w-28 h-28">
+                <Image
+                  src={url}
+                  alt={`existing-photo-${idx}`}
+                  className="object-cover w-full h-full rounded border border-gray-200"
+                  width={112}
+                  height={112}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDeleteExistingPhoto(idx)}
+                  className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition"
+                >
+                  <MdDelete size={14} />
+                </button>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        </div>
+      )}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Add New Photos (max total 2)</label>
-            <input type="file" name="photos" accept="image/*" multiple onChange={handleChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-            {selectedPhotos.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
-                {selectedPhotos.map((file, idx) => (
-                  <div key={idx} className="relative w-24 h-24 rounded overflow-hidden border border-gray-300">
-                    <Image src={file.preview} alt={`preview-${idx}`} className="object-cover w-full h-full" />
-                    <button type="button" onClick={() => handleDeletePhoto(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full" aria-label="Delete selected photo">
-                      <MdDelete size={16} />
-                    </button>
-                  </div>
-                ))}
+          {plan?.status === "completed" && (
+            <p className="text-sm text-green-600 mb-1">
+              You are on the <strong>{plan.name}</strong> Plan – Max {maxImageLimit} images allowed
+            </p>
+          )}
+
+            <label className="block text-sm font-medium mb-1">
+              Add New Photos{" "} <span className="text-gray-500">(max total {maxImageLimit})</span>
+            </label>
+
+            <input
+              type="file"
+              name="photos"
+              accept="image/*"
+              multiple
+              onChange={handleChange}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+
+        {selectedPhotos.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2 max-h-48 overflow-auto">
+            {selectedPhotos.map((file, idx) => (
+              <div
+                key={idx}
+                className="relative w-24 h-24 rounded overflow-hidden border border-gray-300"
+              >
+                <Image
+                  src={file.preview}
+                  alt={`preview-${idx}`}
+                  className="object-cover w-full h-full"
+                  width={96}
+                  height={96}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDeletePhoto(idx)}
+                  className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full"
+                >
+                  <MdDelete size={16} />
+                </button>
               </div>
-            )}
+            ))}
+          </div>
+        )}
           </div>
 
           <button type="submit" className="block w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition">

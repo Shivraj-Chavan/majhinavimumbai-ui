@@ -16,3 +16,20 @@
     animation: fade-in-up 0.25s ease-out;
   }
   
+  @keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  5% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 10s linear infinite;
+  animation-delay: 2s; /* Delay before starting */
+}

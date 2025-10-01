@@ -40,8 +40,8 @@ const PopupEditUser = ({ user, isOpen, onClose, onUpdate }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-md">
-      <div className="bg-white bg-opacity-90 rounded-2xl shadow-xl p-8 w-full max-w-md relative transition-all duration-300">
+    <div className="fixed inset-0  z-50 flex items-center justify-center bg-white/40 backdrop-blur-md">
+      <div className="bg-white mt-35 bg-opacity-90 rounded-2xl shadow-xl p-8 w-full max-w-md relative transition-all duration-300">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-lg">
           <FaTimes />
         </button>

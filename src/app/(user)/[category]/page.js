@@ -185,7 +185,7 @@ export default function Page() {
                     <div className="mt-3 border-t pt-2 text-xs text-gray-600">
                       <div className="font-semibold mb-1 text-gray-700">Timings:</div>
                       <ul className="space-y-1">
-                        {business.timings.map((timing, idx) => (
+                        {business?.timings?.map((timing, idx) => (
                           <li key={idx}>
                             {timing.day}: {timing.open} - {timing.close}
                           </li>

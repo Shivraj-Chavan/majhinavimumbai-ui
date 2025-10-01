@@ -17,7 +17,7 @@ export default function CategoryDropdownnew() {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [warning, setWarning] = useState("");
-  const [location, setLocation] = useState("Navi-Mumbai");
+  const [location, setLocation] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showWarning, setShowWarning] = useState(false);
@@ -30,7 +30,22 @@ export default function CategoryDropdownnew() {
   const wrapperRef = useRef(null);
 
   const { categories, loading, error } = useSelector((state) => state.categories);
-
+  const nodeNames = [
+    "Airoli Node",
+    "Ghansoli Node",
+    "Kopar Khairane Node",
+    "Vashi – Sanpada – Turbhe",
+    "Nerul Node",
+    "Seawoods – CBD Belapur",
+    "Kharghar Node",
+    "Kamothe – Kalamboli",
+    "Taloja Node",
+    "Panvel Region",
+    "Ulwe Node",
+    "Dronagiri Node (JNPT belt)",
+    "Uran Town & Surrounding Villages"
+  ];
+  
    useEffect(() => {
       if (categories?.length === 0) {
         dispatch(fetchCategories());
@@ -78,7 +93,7 @@ export default function CategoryDropdownnew() {
       setWarning("");
 
     if (trimmed.length > 0) {
-      router.push(`/search?query=${encodeURIComponent(trimmed)}`);
+      router.push(`/search?query=${encodeURIComponent(trimmed)}&location=${location}`);
       setShowSuggestions(false);
     }
   };
@@ -206,7 +221,7 @@ export default function CategoryDropdownnew() {
     {/* Dropdown List */}
     {showDropdown && (
       <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto">
-        {["Vashi", "Nerul", "Belapur", "Kharghar", "Panvel", "Koparkhairne", "Ghansoli", "Sanpada", "Belapur (CBD Belapur)", "Seawooods", "Juinagar", "Turbhe", "Airoli","Rabale", "Kamothe", "Ulwe", "Dronagiri", "Taloja","Kalamboli"].map((item) => (
+        {nodeNames?.map((item) => (
           <div
             key={item}
             onClick={() => {

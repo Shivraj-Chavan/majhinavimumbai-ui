@@ -74,7 +74,7 @@ export default function Page() {
     setSelectedUser(user);
     setShowPopup(true);
   };
-
+  
   const handleUpdate = async (id, updatedData) => {
     try {
       await apiPut(`/users/${id}/profile`, updatedData);

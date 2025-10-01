@@ -5,7 +5,7 @@ import { FiPhoneCall, FiMenu, FiX, FiEye, FiSearch } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "@/redux/slice/userSlice";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PopUp from "../home/popUp";
 import { apiGet } from "@/lib/apiClient";
 import { IoBusinessSharp } from "react-icons/io5";
@@ -15,6 +15,7 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { VscFeedback } from "react-icons/vsc";
 import SearchBar from "../home/searchBar";
 import LocationDropdown from "../home/locationDropdown";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -29,16 +30,32 @@ export default function Navbar() {
   const [websiteCount, setWebsiteCount] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [openProfile, setOpenProfile] = useState(false); // for both desktop and mobile profile dropdown
-  const [showSearch, setShowSearch] = useState(false);  
-  const [location, setLocation] = useState("Navi-Mumbai");
+  const [showSearch, setShowSearch] = useState(false);
+  const searchParams = useSearchParams();
+
+  const [location, setLocation] = useState(searchParams.get("location") || "");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("query") || "");
   const mobileMenuRef = useRef(null);
   const profileRef = useRef(null);
   const profileMenuRef = useRef(null);
   const dropdownRef = useRef(null);
   const searchDropdownRef = useRef(null); // For search suggestions
-  const pathname = usePathname(); 
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const query = searchParams.get("query");
+    const locationValue = searchParams.get("location");
+  
+    if (query) {
+      setSearchTerm(query);
+    }
+  
+    if (locationValue) {
+      setLocation(locationValue);
+    }
+  }, [searchParams]);
+  
 
   // Fetch live views
   useEffect(() => {
@@ -49,7 +66,7 @@ export default function Navbar() {
     fetchViews();
   }, []);
 
-   // location and searchbar scroll logic
+  // location and searchbar scroll logic
   //  useEffect(() => {
   //   const handleScroll = () => {
   //     if (window.scrollY > 300) {
@@ -102,29 +119,29 @@ export default function Navbar() {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setOpenProfile(false);
       }
-  
+
       // Close mobile menu
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
         setMobileMenu(false);
       }
-  
+
       // Close location dropdown
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
-  
+
       // Close search suggestions dropdown (if you want this separate, use its own state)
       if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target)) {
         // setShowSearchDropdown(false); // ✅ safer than killing showSearch
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
 
   const handleBusinessClick = () => {
     if (isLoggedIn) {
@@ -137,16 +154,17 @@ export default function Navbar() {
 
   const handleLogout = () => {
     console.log("trigger");
-    
+
     localStorage.clear();
     dispatch(logout());
     setOpenProfile(false);
     setMobileMenu(false);
+    toast.success("You have logged out successfully!")
     router.push("/");
   };
 
   const handleNavigate = (path) => {
-    console.log("Navigating to path ",path)
+    console.log("Navigating to path ", path)
     router.push(path);
     setOpenProfile(false);
     setMobileMenu(false);
@@ -168,41 +186,41 @@ export default function Navbar() {
             <Image src="/logo.png" alt="Logo" width={160} height={50} priority />
           </a>
 
-{/* Compact & Clean Search Bar */}
-{showSearch && (
-  <div className=" sm:flex items-center max-w-lg mx-auto gap-2 p-1 bg-white rounded-full shadow-md transition-transform duration-200 hover:scale-[1.01]">
-    
-    {/* Location Dropdown */}
-    <div className="flex items-center border-r border-gray-300 pr-2">
-      <LocationDropdown
-        location={location}
-        setLocation={setLocation}
-        showDropdown={showDropdown}
-        setShowDropdown={setShowDropdown}
-        dropdownRef={dropdownRef}
-        className="focus:outline-none text-gray-700 font-medium hover:text-blue-500 transition-colors duration-200"
-      />
-    </div>
+          {/* Compact & Clean Search Bar */}
+          {showSearch && (
+            <div className=" sm:flex items-center max-w-lg mx-auto gap-2 p-1 bg-white rounded-full shadow-md transition-transform duration-200 hover:scale-[1.01]">
 
-    {/* Search Input with Button */}
-    <div className="flex-1 relative">
-      <SearchBar
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full pr-10 pl-3 py-2 rounded-full border border-gray-200 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 placeholder-gray-400 text-gray-800 transition-all duration-200"
-        placeholder="Search for services..."
-      />
-      
-      {/* <button
+              {/* Location Dropdown */}
+              <div className="flex items-center border-r border-gray-300 pr-2">
+                <LocationDropdown
+                  location={location}
+                  setLocation={setLocation}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  dropdownRef={dropdownRef}
+                  className="focus:outline-none text-gray-700 font-medium hover:text-blue-500 transition-colors duration-200"
+                />
+              </div>
+
+              {/* Search Input with Button */}
+              <div className="flex-1 relative">
+                <SearchBar
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pr-10 pl-3 py-2 rounded-full border border-gray-200 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 placeholder-gray-400 text-gray-800 transition-all duration-200"
+                  placeholder="Search for services..."
+                />
+
+                {/* <button
         onClick={() => router.push(`/search?query=${searchTerm}`)}
         className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center h-7 w-7 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-sm shadow transition duration-300"
       >
         🔍
       </button> */}
-    </div>
+              </div>
 
-  </div>
-)}
+            </div>
+          )}
 
           {/* Right: All elements */}
           <div className="flex items-center gap-3">
@@ -242,7 +260,7 @@ export default function Navbar() {
                     setOpenProfile((prev) => !prev);
                   }}
                   className="flex items-center gap-2 border border-gray-300 rounded-full p-1 hover:shadow bg-white"
-                > 
+                >
                   <Image
                     src={profileImage}
                     alt="User"
@@ -281,16 +299,16 @@ export default function Navbar() {
                         </button>
                       </li>
                       <li>
-                      <button
-                         onClick={() => handleNavigate("/myenquiries")}
-                         className="flex items-center gap-2 w-full px-4 py-2 hover:bg-blue-50"
+                        <button
+                          onClick={() => handleNavigate("/myenquiries")}
+                          className="flex items-center gap-2 w-full px-4 py-2 hover:bg-blue-50"
                         >
                           <VscFeedback className="text-lg" /> My Enquiries
-                          </button>
-                          </li>                          
+                        </button>
+                      </li>
                       <li>
                         <button
-                          onClick={()=>handleLogout()}
+                          onClick={() => handleLogout()}
                           className="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-50"
                         >
                           <RiLogoutBoxLine className="text-lg" /> Logout
@@ -313,10 +331,10 @@ export default function Navbar() {
             </a>
 
             {/* Live Views */}
-          <div className="flex items-center gap-1 text-gray-700">
-            <FiEye className="text-lg text-blue-600" />
-            <span className="text-sm font-medium">{websiteCount}</span>
-          </div>
+            <div className="flex items-center gap-1 text-gray-700">
+              <FiEye className="text-lg text-blue-600" />
+              <span className="text-sm font-medium">{websiteCount}</span>
+            </div>
 
             <button
               onClick={(e) => {
@@ -336,63 +354,63 @@ export default function Navbar() {
               ref={mobileMenuRef}
               className="top-full left-0 right-0 w-full bg-white p-3 z-50"
             >
-             {/* Phone Number (Above Search Bar) */}
-            <div className="flex items-center justify-center mb-2">
-              <div className="flex items-center text-green-600 font-semibold text-sm">
-                <FiPhoneCall className="mr-1 text-base" />
-                +91 91524 18196
+              {/* Phone Number (Above Search Bar) */}
+              <div className="flex items-center justify-center mb-2">
+                <div className="flex items-center text-green-600 font-semibold text-sm">
+                  <FiPhoneCall className="mr-1 text-base" />
+                  +91 91524 18196
+                </div>
               </div>
-            </div>
 
- {/* Mobile Search Bar */}
-{/* <div className="flex items-center gap-2 rounded-full bg-white px-2 py-1 mb-4 transition-all duration-300 focus-within:shadow-md"> */}
+              {/* Mobile Search Bar */}
+              {/* <div className="flex items-center gap-2 rounded-full bg-white px-2 py-1 mb-4 transition-all duration-300 focus-within:shadow-md"> */}
 
-{/* Location Dropdown - compact */}
-<div className="flex items-center gap-2 rounded-full bg-white shadow-sm px-2 py-1 mb-4 transition-all duration-300 focus-within:shadow-md">
+              {/* Location Dropdown - compact */}
+              <div className="flex items-center gap-2 rounded-full bg-white shadow-sm px-2 py-1 mb-4 transition-all duration-300 focus-within:shadow-md">
 
-  {/* Location Icon + Dropdown */}
-  <div className="flex items-center justify-center w-12 relative border-r border-gray-300 pr-2">
-    <button
-      type="button"
-      onClick={() => setShowDropdown((prev) => !prev)}
-      className="text-gray-600 hover:text-gray-800 text-lg"
-    >
-      <CiLocationArrow1 className="text-gray-500 text-xl mr-2" />
-    </button>
+                {/* Location Icon + Dropdown */}
+                <div className="flex items-center justify-center w-12 relative border-r border-gray-300 pr-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowDropdown((prev) => !prev)}
+                    className="text-gray-600 hover:text-gray-800 text-lg"
+                  >
+                    <CiLocationArrow1 className="text-gray-500 text-xl mr-2" />
+                  </button>
 
-    {showDropdown && (
-      <div className="absolute top-10 left-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-        <LocationDropdown
-          showDropdown={showDropdown}
-          setShowDropdown={setShowDropdown}
-          dropdownRef={dropdownRef}
-          className="focus:outline-none text-gray-800 text-sm"
-        />
-      </div>
-    )}
-  </div>
+                  {showDropdown && (
+                    <div className="absolute top-10 left-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                      <LocationDropdown
+                        showDropdown={showDropdown}
+                        setShowDropdown={setShowDropdown}
+                        dropdownRef={dropdownRef}
+                        className="focus:outline-none text-gray-800 text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
 
-  {/* Search Input */}
-  <div className="flex-1 relative">
-    <SearchBar
-      type="text"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full rounded-full bg-gray-50 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-blue-400"
-      placeholder="Search services..."
-    />
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <SearchBar
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full rounded-full bg-gray-50 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-blue-400"
+                    placeholder="Search services..."
+                  />
 
-    {/* Search Button */}
-    <button
-      onClick={() => router.push(`/search?query=${searchTerm}`)}
-      className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center h-7 w-7 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow text-sm transition duration-300"
-    >
-      🔍
-    </button>
-  </div>
-</div>
+                  {/* Search Button */}
+                  <button
+                    onClick={() => router.push(`/search?query=${searchTerm}&location=${location}`)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center h-7 w-7 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow text-sm transition duration-300"
+                  >
+                    🔍
+                  </button>
+                </div>
+              </div>
 
-{/* </div> */}
+              {/* </div> */}
 
               {/* Add Business + Login/Profile */}
               <div className="flex justify-between gap-3">
@@ -411,28 +429,28 @@ export default function Navbar() {
                     LOGIN
                   </button>
                 ) : (
-              <div className="relative  z-50" ref={profileRef}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenProfile((prev) => !prev);
-                  }}
-                  className="flex items-center gap-2 border border-gray-300 rounded-full p-1 hover:shadow bg-white"
-                >
-                  <Image
-                    src={profileImage}
-                    alt="User"
-                    width={36}
-                    height={36}
-                    className="rounded-full object-cover"
-                  />
-                </button>
+                  <div className="relative  z-50" ref={profileRef}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenProfile((prev) => !prev);
+                      }}
+                      className="flex items-center gap-2 border border-gray-300 rounded-full p-1 hover:shadow bg-white"
+                    >
+                      <Image
+                        src={profileImage}
+                        alt="User"
+                        width={36}
+                        height={36}
+                        className="rounded-full object-cover"
+                      />
+                    </button>
 
                     {/* Mobile Profile Dropdown */}
                     {openProfile && (
-                      <div 
-                      onClick={(e) => e.stopPropagation()} 
-                      className="absolute right-0 mt-2 w-36 bg-gradient-to-tl from-green-100 via-white to-orange-100 rounded-xl shadow-xl ring-1 ring-gray-200 z-50">
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute right-0 mt-2 w-36 bg-gradient-to-tl from-green-100 via-white to-orange-100 rounded-xl shadow-xl ring-1 ring-gray-200 z-50">
                         <ul className="py-1 text-sm text-gray-700">
                           <li>
                             <button
@@ -460,7 +478,7 @@ export default function Navbar() {
                           </li>
                           <li>
                             <button
-                              onClick={()=>handleLogout()}
+                              onClick={() => handleLogout()}
                               className="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-50"
                             >
                               <RiLogoutBoxLine className="text-lg" /> Logout

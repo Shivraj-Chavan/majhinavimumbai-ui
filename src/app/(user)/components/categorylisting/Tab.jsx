@@ -10,7 +10,7 @@ import { MdPhotoLibrary, MdRateReview } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const Tab = ({ business, renderStars, setRefreshApi}) => {
+const Tab = ({ business, renderStars, setRefreshApi,setMyReview}) => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [businessOwnerId, setBusinessOwnerId] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -155,7 +155,7 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
               {preview}...{" "}
               <button
                 onClick={() => setShowFull(true)}
-                className="text-black font-semibold underline text-sm inline"
+                className="text-black font-semibold underline text-md inline"
               >
                 Read more
               </button>
@@ -166,7 +166,7 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
               {isLong && (
                 <button
                   onClick={() => setShowFull(false)}
-                  className="text-black font-semibold underline text-sm inline"
+                  className="text-black font-semibold underline text-md inline"
                 >
                   Read less
                 </button>
@@ -319,43 +319,48 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
 
       {/* Timing */}
       <section id="timings" className="scroll-mt-24 mb-10">
-            <h2 className="text-2xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
-              🕒 Business Timings
-            </h2>
+        <h2 className="text-2xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
+          🕒 Business Timings
+        </h2>
 
-            {business.timing ? (() => {
-              let timings = [];
+        {/*  Ensure business and timing exist before parsing */}
+        {business?.timing ? (() => {
+          let timings = [];
 
-              try {
-                timings = typeof business.timing === "string"
-                  ? JSON.parse(business.timing)
-                  : business.timing;
-              } catch (err) {
-                console.error("Failed to parse timing data", err);
-                return <p className="text-red-600">Invalid timing format</p>;
-              }
+          try {
+            timings = typeof business.timing === "string"
+              ? JSON.parse(business.timing)
+              : business.timing;
 
-              return timings?.length > 0 ? (
-                <ul className="text-sm md:text-base space-y-1">
-            {timings.map((t, i) => {
-              const isClosed = t.closed || !t.open || !t.close;
-              return (
-                <li key={i} className="flex items-center py-1 px-2">
-                  <span className="w-32 font-medium text-gray-700">{t.day}</span>
-                  <span className={isClosed ? "text-red-600 font-semibold" : "text-gray-800"}>
-                    {isClosed ? "Closed" : `${t.open} - ${t.close}`}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-              ) : (
-                <p className="text-gray-500">No timing data available.</p>
-              );
-            })() : (
-              <p className="text-gray-500">Timings not provided.</p>
-            )}
-          </section>
+            console.log("Business timing data:", timings);
+          } catch (err) {
+            console.error("Failed to parse timing data", err);
+            return <p className="text-red-600">Invalid timing format</p>;
+          }
+
+          //  Check if we actually have timings
+          return timings?.length > 0 ? (
+            <ul className="text-sm md:text-base space-y-1">
+              {timings?.map((t, i) => {
+                const isClosed = t.closed || !t.open || !t.close;
+                return (
+                  <li key={i} className="flex items-center py-1 px-2">
+                    <span className="w-32 font-medium text-gray-700">{t.day}</span>
+                    <span className={isClosed ? "text-red-600 font-semibold" : "text-gray-800"}>
+                      {isClosed ? "Closed" : `${t.open} - ${t.close}`}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-gray-500">No timing data available.</p>
+          );
+        })() : (
+          <p className="text-gray-500">Timings not provided.</p>
+        )}
+      </section>
+
           <hr className="text-gray-100 mt-5"/>
 
 
@@ -372,9 +377,12 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
           <div className="grid md:grid-cols-2 gap-6">
             {reviews.map((review) => {
               const isReviewer = review.user_id=== currentUserId;
+              if(isReviewer){
+                setMyReview(true)
+              }
               const isBusinessOwner = businessOwnerId === currentUserId;
-              console.log({"koni takla ":review.user_id,"kon bgtay ":currentUserId,"business owner":businessOwnerId})
-                console.log({isReviewer,isBusinessOwner,currentUserId})
+              // console.log({"koni takla ":review.user_id,"kon bgtay ":currentUserId,"business owner":businessOwnerId})
+              // console.log({isReviewer,isBusinessOwner,currentUserId})
                 
               return (
                 <div key={review.id} className="relative bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300">
@@ -382,7 +390,6 @@ const Tab = ({ business, renderStars, setRefreshApi}) => {
                   <p className="text-gray-900 mb-2">{review.comment}</p>
                   <p className="text-yellow-500 flex">{renderStars(review.rating)}</p>
                   <p className="text-sm text-gray-500 mt-2">Date: {new Date(review.created_at).toLocaleString()}</p>
-
                   {/* Three Dots Menu */}
                   {(isReviewer || isBusinessOwner) && (
                     <div className="absolute top-2 right-2">

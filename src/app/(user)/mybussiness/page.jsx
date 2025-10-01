@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import EditBusinessPopup from "@/app/(user)/components/profileComp/EditBusinessPopup";
 import PopUp from "../components/home/popUp";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,12 @@ import { apiGet, apiPut } from "@/lib/apiClient";
 import { GrEdit } from "react-icons/gr";
 import { toast } from "react-toastify";
 import Image from "next/image";
+// import PricingPlans from "../components/profileComp/PricingPlans";
+import { ImCross } from "react-icons/im";
+import { HiMiniStar } from "react-icons/hi2";
+import { TbTargetArrow } from "react-icons/tb";
+import CONFIG from "@/constance";
+// import { BiSolidSelectMultiple } from "react-icons/bi";
 
 export default function MyBusinessPage() {
   const [businesses, setBusinesses] = useState([]); 
@@ -19,45 +25,92 @@ export default function MyBusinessPage() {
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [showPricingPopup, setShowPricingPopup] = useState(false);
+  const [userBusiness, setUserBusiness] = useState(null);
+  // const [plans, setPlans] = useState([]);
+  const [businessList, setBusinessList] = useState([]);
+  // const [selectedPlans, setSelectedPlans] = useState({});
   const router = useRouter();
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-
-      if (!storedToken) {
-        router.push("/");
-        return;
-      } 
   
-    setIsAuthenticated(true);
+  // This comes after all your useState declarations
+const fetchBusiness = useCallback(async () => {
+  try {
+    const res = await apiGet(`/businesses/user`);
+    console.log("businesses:", res);
+    setBusinessList(res || []);
 
-    const fetchBusiness = async () => {
-      try {
-        const res = await apiGet(`/businesses/user`);
-        console.log("businesses:", res);
+    if (res.businesses) {
+      setBusinesses(res.businesses);
+      //next_phase
+      // await fetchSelectedPlans(res.businesses);
+    } else {
+      console.warn("Unexpected response format:", res);
+      setBusinesses([]);
+    }
+  } catch (err) {
+    console.error("Failed to load businesses:", err);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
-        if (res.businesses) {
-          setBusinesses(res.businesses);
-        } else {
-          console.warn("Unexpected response format:", res);
-          setBusinesses([]);
-        }
-      } catch (err) {
-        console.error("Failed to load businesses:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchBusiness();
-  }, []);
+// For selected plan   next_phase 
+// const fetchSelectedPlans = useCallback(async (businessList) => {
+//   if (!Array.isArray(businessList)) {
+//     console.error("businessList is undefined or not an array:", businessList);
+//     return;
+//   } 
+
+//   const planMap = {};
+
+//   await Promise.all(
+//     businessList.map(async (biz) => {
+//       try {
+//         const res = await apiGet(`/plan/selectedplan/${biz.id}`);
+//         console.log('selectedplan', res);
+
+//         if (res && res.name) {
+//           planMap[biz.id] = res; // store by business id
+//         }
+//       } catch (err) {
+//         console.warn(`No plan found for business ${biz.id}`, err);
+//       }
+//     })
+//   );
+
+//   setSelectedPlans(planMap);  
+// }, []); 
+
+
+//next_phase
+// useEffect(() => {
+//   if (businessList && Array.isArray(businessList)) {
+//     fetchSelectedPlans(businessList);
+//   } else {
+//     console.warn("businessList not ready yet:", businessList);
+//   }
+// }, [businessList]);
+
+useEffect(() => {
+  const storedToken = localStorage.getItem("token");
+  setToken(storedToken);
+
+  if (!storedToken) {
+    router.push("/");
+    return;
+  }
+
+  setIsAuthenticated(true);
+  fetchBusiness();
+  // fetchSelectedPlans();
+}, [fetchBusiness]);
+
 
   if (!isAuthenticated) {
     console.log("Rendering popup...");
     return <>{showPopup && <PopUp onClose={() => setShowPopup(false)} />}</>;
   }
-
 
   const handleLoginSuccess = () => {
     const newToken = localStorage.getItem("token");
@@ -126,7 +179,12 @@ export default function MyBusinessPage() {
            You have not added any Business Yet !!
           </p>
         ) : (
-          businesses.map((business) => (
+          businesses.map((business) => {
+            // next_phase
+            // const planDetails = selectedPlans[business.id]; 
+            // console.log("Plan Details for", business.id, planDetails);
+            console.log({business})
+            return (
             <div
               key={business.id}
               className="bg-white rounded-2xl shadow-lg p-6 space-y-6 flex flex-col justify-between"
@@ -134,7 +192,7 @@ export default function MyBusinessPage() {
               <div className="flex flex-col items-center text-center space-y-4">
                 <div className="w-32 h-32 bg-gray-100 rounded-full overflow-hidden shadow-md">
                   <Image
-                    src={business.logoUrl || "/image.png"}
+                   src={business?.images?.length>0 ? `${CONFIG.IMAGE_BASE_URL}${business?.images[0].url}`   :"/image.png"}
                     alt="Business Logo"
                     width={128} 
                     height={128}
@@ -165,13 +223,32 @@ export default function MyBusinessPage() {
                       );
                     })()}
                   </div>
-              </div>
+
+                   {/*SHOW SELECTED PLAN */}
+                   {/* next_phase */}
+                    {/* {planDetails ? (
+                      <div>
+                        <p className="text-md text-green-600 font-semibold">
+                          {planDetails.name}
+                        </p>
+                        <div className="text-sm text-gray-500 mt-1">
+                        <p className="flex gap-1">
+                        Active from {new Date(planDetails.start_date).toLocaleDateString('en-GB')} to {new Date(planDetails.end_date).toLocaleDateString('en-GB')}
+                      </p>
+                       </div>
+                      </div>
+                    ) : (
+                      <p className="flex items-center text-sm gap-2 text-slate-400">
+                     Please choose plan for this Business
+                     </p>
+                    )} */}
+                 </div>
 
               <hr className="border-gray-200" />
 
               <div className="flex justify-center gap-3">
                 <Link href={`/listinginfo/${business.slug}`}>
-                  <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm shadow flex items-center">
+                  <button className="bg-orange-500 hover:bg-orange-600 text-white cursor-pointer px-4 py-2 rounded-lg text-sm shadow flex items-center">
                     <FcFinePrint className="text-xl mr-1" />
                     View Details
                   </button>
@@ -182,20 +259,85 @@ export default function MyBusinessPage() {
                     setBusinessToEdit(business);
                     setShowEditPopup(true);
                   }}
-                  className="bg-green-600 hover:bg-green-700 text-white flex items-center px-4 py-2 rounded-lg text-sm shadow"
+                  className="bg-green-600 hover:bg-green-700 text-white cursor-pointer flex items-center px-2 py-2 rounded-lg text-sm shadow"
                 >
                   <GrEdit className="text-md mr-1" /> Edit
                 </button>
+
+                 {/*Choose Plan button if no completed plan next_phase*/}
+               
+                {/* {planDetails ? (
+                  planDetails.name.toLowerCase() === "free" ? (
+                    <button
+                      onClick={() => {
+                        setUserBusiness(business);
+                        setShowPricingPopup(true);
+                      }}
+                      className="bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm shadow"
+                    >
+                      Upgrade Plan
+                    </button>
+                  ) : (
+                    // <button
+                    //   className="bg-gray-400 cursor-not-allowed px-4 py-2 rounded-lg text-sm shadow text-white"
+                    //   disabled
+                    // >
+                    //   Choose Plan
+                    // </button>
+                    <></>
+                  )
+                ) : (
+                  <button
+                    onClick={() => {
+                      setUserBusiness(business);
+                      setShowPricingPopup(true);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm shadow"
+                  >
+                    Choose Plan
+                  </button>
+                )} */}
+
+      {/* after choose plan switch to Upgrade */}
+        {/* {planDetails ? (
+          <button 
+            onClick={() => {
+              setUserBusiness(business);
+              setShowPricingPopup(true);
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm shadow"
+          >
+            Upgrade Plan
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              setUserBusiness(business);
+              setShowPricingPopup(true);
+            }}
+            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm shadow"
+          >
+            Choose Plan
+          </button>
+        )} */}
               </div>
             </div>
-          ))
+            )
+      })
         )}
       </div>
 
       {/* Edit Popup */}
       {showEditPopup && businessToEdit && (
-        <EditBusinessPopup business={businessToEdit} onClose={() => { setShowEditPopup(false); setBusinessToEdit(null);}} onSave={handleSubmit}/>
+        <EditBusinessPopup business={businessToEdit} 
+        // plan={selectedPlans[businessToEdit?.id]}
+          onClose={() => { setShowEditPopup(false); setBusinessToEdit(null);}} onSave={handleSubmit}/>
       )}
+
+      {/* Payment popup next_phase */}
+      {/* {showPricingPopup && (
+        <PricingPlans show={showPricingPopup} onClose={() => setShowPricingPopup(false)} business={userBusiness} onPlanActivated={fetchBusiness} setSelectedPlans={setSelectedPlans}/>
+      )} */}
     </div>
   );
 }

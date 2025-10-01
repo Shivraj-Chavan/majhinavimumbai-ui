@@ -17,6 +17,7 @@ import CONFIG from "@/constance";
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
+  const location = searchParams.get("location") || "";
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,7 +28,7 @@ export default function SearchPage() {
       if (!query) return;
       setLoading(true);
       try {
-        const res = await apiGet(`/businesses/search?q=${encodeURIComponent(query)}`);
+        const res = await apiGet(`/businesses/search?q=${encodeURIComponent(query)}&location=${location}`);
         console.log('On search',res);
         setResults(res.data || []);
       } catch (err) {
