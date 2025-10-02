@@ -99,7 +99,7 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
             const parsed = Array.isArray(business.timing)
               ? business.timing
               : JSON.parse(business.timing || "[]");
-            console.log({parsed})
+          // console.log({parsed})
             return parsed.filter((t) => t.day && typeof t.day === "string");
           } catch {
             return [];
@@ -114,10 +114,10 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
         longitude: business.longitude || null,
         is_verified:business.is_verified || 0
       });
-      console.log("Initial map coordinates:", {
-        latitude: business.latitude,
-        longitude: business.longitude,
-      });
+    //  console.log("Initial map coordinates:", {
+    //     latitude: business.latitude,
+    //     longitude: business.longitude,
+    //   });
   
 
       const fullPhotoUrls = (business.images || []).map((image) =>
@@ -133,7 +133,7 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
-    console.log("handleChange triggered:", { name, value, files, type });
+  // console.log("handleChange triggered:", { name, value, files, type });
 
     // Handle website validation
       let updatedValue = value;
@@ -145,11 +145,11 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
 
       if (type === "file" && name === "photos") {
         const newFiles = Array.from(files);
-        console.log("New files selected:", newFiles);
+      // console.log("New files selected:", newFiles);
       
         // Validate file size
         for (let file of newFiles) {
-          console.log(`Checking file size: ${file.name} (${file.size} bytes)`);
+        // console.log(`Checking file size: ${file.name} (${file.size} bytes)`);
           if (file.size > 5 * 1024 * 1024) {
             toast.error(`File "${file.name}" exceeds 5MB size limit`);
             return;
@@ -158,8 +158,8 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
       
         // Total count validation (existing + new + already selected)
           const totalAfterAdd = existingPhotos.length + selectedPhotos.length + newFiles.length;
-          console.log(`Existing: ${existingPhotos.length}, Selected: ${selectedPhotos.length}, New: ${newFiles.length}`);
-          console.log(`Total after adding: ${totalAfterAdd}, Max limit: ${maxImageLimit}`);
+        // console.log(`Existing: ${existingPhotos.length}, Selected: ${selectedPhotos.length}, New: ${newFiles.length}`);
+        // console.log(`Total after adding: ${totalAfterAdd}, Max limit: ${maxImageLimit}`);
 
         if (totalAfterAdd > maxImageLimit) {
           console.warn(`Exceeds limit: ${totalAfterAdd} > ${maxImageLimit}`);
@@ -179,7 +179,7 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
     setSelectedPhotos((prev) => [...prev, ...filesWithPreview]);
     return;
   }
-    console.log(`Updating formData field "${name}" →`, updatedValue);
+  // console.log(`Updating formData field "${name}" →`, updatedValue);
     // For normal text inputs
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -230,13 +230,13 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
   // };
 
   useEffect(()=>{
-      console.log({currentUser})
+    // console.log({currentUser})
   },[currentUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handleSubmit triggered");
-    console.log({currentUser})
+  // console.log("handleSubmit triggered");
+  // console.log({currentUser})
     if (!currentUser) {
       toast.error("User not loaded yet");
       return;
@@ -264,19 +264,19 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
         longitude: formData.longitude,
         is_verified:business.is_verified
       };
-      console.log("Payload being submitted:", payload);
+    // console.log("Payload being submitted:", payload);
 
       const isAdmin = currentUser.role === "admin";
-      console.log("Current user role:", currentUser.role);
+    // console.log("Current user role:", currentUser.role);
 
       const endpoint = isAdmin ? `/businesses/${business.id}` : `/businesses/update/${business.id}`;
       // console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
   
       await apiPut(endpoint, payload);
-      console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
+    // console.log(`Sending ${isAdmin ? "ADMIN" : "OWNER"} update to: ${endpoint}`);
 
-      toast.success('Business data submitted successfully')
-      console.log("Business data submitted successfully");
+      // toast.success('Business data submitted successfully')
+    // console.log("Business data submitted successfully");
 
       // Photo upload
       if (selectedPhotos.length > 0) {
@@ -503,7 +503,7 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
           {/* </div> */}
           <LocationPicker defaultLocation={ formData.latitude && formData.longitude ? [formData.latitude, formData.longitude] : null }
             onSelect={(coords) => {
-              console.log("onSelect triggered with coords:", coords);
+            // console.log("onSelect triggered with coords:", coords);
               if (!coords || coords.length !== 2) {
                 console.error(" Invalid coordinates received in onSelect:", coords);
                 return;
@@ -514,7 +514,7 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
                   latitude: coords[0],
                   longitude: coords[1],
                 };
-                console.log("formData updated with new coords:", updated);
+              // console.log("formData updated with new coords:", updated);
                 return updated;
               });
             }}

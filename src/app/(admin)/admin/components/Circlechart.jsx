@@ -11,7 +11,7 @@ import Doughnut from "./ChatWrapper";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function CircleChart({ label, value, total, color = "#4ade80" }) {
-  console.log("Rendering chart with:", { label, value, total });
+  // console.log("Rendering chart with:", { label, value, total });
 
   // Determine custom colors based on label
   let fillColor = color;
