@@ -18,7 +18,7 @@ import Image from "next/image";
 import LocationPicker from "@/app/(admin)/admin/components/LocationPicker";
 // import PricingPlans from "../components/profileComp/PricingPlans";
 
-export default function BusinessRegister({ ownerId }) {
+export default function BusinessRegister({ ownerId , isAdmin = false}) {
   const router = useRouter();
   const [checkingOtp, setCheckingOtp] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -202,10 +202,10 @@ export default function BusinessRegister({ ownerId }) {
     }
 
      // Validate before sending
-     if (!formData.latitude || !formData.longitude) {
+     if (!isAdmin && (!formData.latitude || !formData.longitude)) {
       alert("Please select a location on the map.");
       return;
-    }    
+    }  
     // console.log("Sending to API:", formData);
 
     if (!selectedCategory) {
@@ -325,8 +325,7 @@ export default function BusinessRegister({ ownerId }) {
   if (checkingOtp) return null;
 
   return (
-    <form
-      onSubmit={handleSubmit}
+    <form onSubmit={handleSubmit}
       className="w-full max-w-5xl mx-auto px-6 py-8 md:py-10 bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow mt-10"
     >
       <ToastContainer position="top-right" autoClose={3000} />

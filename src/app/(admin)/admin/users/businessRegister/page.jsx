@@ -9,7 +9,7 @@ const Page = () => {
   const ownerId = searchParams.get("ownerId");
   console.log({ownerId})
  
-  return <BusinessRegister ownerId={ownerId} />;
+  return <BusinessRegister ownerId={ownerId} isAdmin={true}/>;
 };
 
 export default Page;

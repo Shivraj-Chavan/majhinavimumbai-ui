@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 // Fix default icon issue in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -11,20 +11,33 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
 });
 
-const LocationPicker = ({ onSelect, defaultLocation }) => {
+const LocationPicker = (({ onSelect, defaultLocation }) => {
   const [position, setPosition] = useState(defaultLocation || null);
   const [mapCenter, setMapCenter] = useState(defaultLocation || [19.033, 73.0297]);
+  const geoFetched = useRef(false); 
+
   useEffect(() => {
     if (defaultLocation) {
       setPosition(defaultLocation);
       setMapCenter(defaultLocation);
-      onSelect({ lat: defaultLocation[0], lng: defaultLocation[1] });
+      // Do not call onSelect here if it causes parent state to update defaultLocation!
+    } else if (!geoFetched.current && navigator.geolocation) {
+      geoFetched.current = true;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const coords = [pos.coords.latitude, pos.coords.longitude];
+          setMapCenter(coords);
+          setPosition(coords);
+          if (onSelect) onSelect({ lat: coords[0], lng: coords[1] });
+        },
+        (err) => console.warn("Geolocation error:", err)
+      );
     }
-  }, [defaultLocation]);
- 
+  }, [defaultLocation, onSelect]);
 
   useEffect(() => {
-    if (!defaultLocation && navigator.geolocation) {
+    if (!defaultLocation && !geoFetched.current && navigator.geolocation) {
+      geoFetched.current = true; // mark as fetched
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const coords = [pos.coords.latitude, pos.coords.longitude];
@@ -32,12 +45,10 @@ const LocationPicker = ({ onSelect, defaultLocation }) => {
           setPosition(coords);
           onSelect({ lat: coords[0], lng: coords[1] });
         },
-        (err) => {
-          console.warn("Geolocation error:", err);
-        }
+        (err) => console.warn("Geolocation error:", err)
       );
     }
-  }, [defaultLocation]);
+  }, [defaultLocation, onSelect]);
 
  
   const MapClickHandler = () => {
@@ -54,10 +65,13 @@ const LocationPicker = ({ onSelect, defaultLocation }) => {
   const Recenter = ({ center }) => {
     const map = useMap();
     useEffect(() => {
-      map.setView(center, 14);
+      if (center) {
+        map.panTo(center); // panTo does NOT reset zoom
+      }
     }, [center, map]);
     return null;
   };
+  
   return (
     <div className="w-full h-80 rounded-lg overflow-hidden shadow">
       <MapContainer
@@ -74,6 +88,6 @@ const LocationPicker = ({ onSelect, defaultLocation }) => {
       </MapContainer>
     </div>
   );
-};
+});
 
 export default LocationPicker;
