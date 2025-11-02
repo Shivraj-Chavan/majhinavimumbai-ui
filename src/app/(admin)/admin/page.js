@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Users, CheckCircle, Clock, Edit, Mail, AlertCircle, Briefcase } from "lucide-react";
 import { apiGet } from "@/lib/apiClient";
+import DownloadReport from "./components/DownloadReport";
 
 function StatCard({ icon: Icon, label, value, color, bgColor, trend }) {
   return (
@@ -76,6 +77,29 @@ export default function DashboardPage() {
     fetchStats();
   }, []);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await apiGet(`/dashboard/daily-subadmin-stats?ts=${Date.now()}`);
+        console.log('subadmins stats',res);
+        setStats(res); 
+      } catch (err) {
+        console.error("Error fetching dashboard stats:", err);
+        setStats(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  if (loading) return <p>Loading dashboard...</p>;
+  if (!stats) return <p>Failed to load dashboard data</p>;
+
+  // Extract subadmin stats array from the API response
+  const subadminStats = stats?.subadminDailyStats || [];
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
@@ -115,6 +139,7 @@ export default function DashboardPage() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
           <p className="text-gray-600">Monitor and manage your platform metrics</p>
+        <DownloadReport/>
         </div>
 
         {/* Main Stats Grid */}
@@ -190,6 +215,30 @@ export default function DashboardPage() {
             trend="New opportunities"
           />
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+      {subadminStats.length === 0 ? (
+        <p>No subadmin activity today</p>
+      ) : (
+        subadminStats.map((admin) => (
+          <div key={admin.admin_id} className="col-span-1 space-y-2">
+            <StatCard
+              icon={Users}
+              label={`${admin.admin_name} - Approved`}
+              value={admin.approved_businesses || 0}
+              color="text-green-600"
+              bgColor="bg-green-50"
+            />
+            <StatCard
+              icon={CheckCircle}
+              label={`${admin.admin_name} - Registered`}
+              value={admin.registered_users || 0}
+              color="text-blue-600"
+              bgColor="bg-blue-50"
+            />
+          </div>
+        ))
+      )}
+    </div>
       </div>
     </div>
   );

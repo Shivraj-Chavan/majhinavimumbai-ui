@@ -6,12 +6,16 @@ import ContactPopup from "../home/contactPopup"
 import PopUp from '../home/popUp';
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { SiX } from 'react-icons/si';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 export default function Footer() {
   const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [authPurpose, setAuthPurpose] = useState("login");
+  // const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   useEffect(() => {
     // Simulate loading delay, e.g. fetching config or something async
@@ -24,6 +28,61 @@ export default function Footer() {
     <div className={`bg-gray-300 animate-pulse rounded`} style={{ width: width === "full" ? "100%" : width, height: `${height}px`}} />
   );
 
+  // your actual login state
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+     const token = localStorage.getItem("token");
+    //  if (token && !isLoggedIn) {
+    //    const user = { phone: "unknown" };
+    //    dispatch(login({ user, token }));
+    //  }
+   }, [dispatch, isLoggedIn]);
+  
+
+  const handleBusinessClick = () => {
+    if (isLoggedIn) {
+      router.push("/businessRegister");
+    } else {
+      setAuthPurpose("business");
+      setShowModal(true);
+    }
+  };
+
+  const handleScroll = (e, section) => {
+    e.preventDefault();
+  
+    if (pathname === "/") {
+      const element = document.getElementById(section);
+      if (element) {
+        const headerOffset = 80; 
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - headerOffset;
+  
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      router.push(`/#${section}`);
+    }
+  };
+
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      toast.info("Uh, you’re already logged in 😎");
+    } else {
+      setAuthPurpose("login");
+      setShowModal(true);
+    }
+  };
+  
   return (
     <footer className="relative overflow-hidden mt-10">
     {/* Tricolor Header Strip */}
@@ -73,9 +132,23 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <li><Link href="/businessRegister" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Add Your Business</Link></li>
-                <li><Link href="#categories" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Categories</Link></li>
-                <li><Link href="#subcategories" className="text-gray-700 hover:text-blue-700 transition-colors duration-200">Subcategories</Link></li>
+                <li onClick={handleBusinessClick} className="text-gray-700 hover:text-blue-700 cursor-pointer transition-colors duration-200">Add Your Business</li>
+                <li>
+                <button
+                  onClick={(e) => handleScroll(e,"categories")}
+                  className="text-gray-700 hover:text-blue-700 transition-colors duration-200"
+                >
+                  Categories
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={(e) => handleScroll(e,"subcategories")}
+                  className="text-gray-700 hover:text-blue-700 transition-colors duration-200"
+                >
+                  Subcategories
+                </button>
+              </li>
               </>
             )}
           </ul>
@@ -94,7 +167,7 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <li><span onClick={() => setShowModal(true)} className="text-gray-700 hover:text-green-700 transition-colors duration-200 cursor-pointer"> Login </span></li>
+                <li><span onClick={handleLoginClick}  className="text-gray-700 hover:text-green-700 transition-colors duration-200 cursor-pointer"> Login </span></li>
                 {/* <li><Link href="/signup" className="hover:text-blue-700 transition">Signup</Link></li> */}
               </>
             )}

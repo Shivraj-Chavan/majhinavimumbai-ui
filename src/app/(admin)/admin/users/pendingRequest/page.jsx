@@ -5,6 +5,8 @@ import { apiGet, apiPut } from "@/lib/apiClient";
 import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
@@ -18,6 +20,12 @@ export default function BusinessUsersPage() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const limit = 10;
+
+    // Get user role from Redux
+    const currentUser = useSelector((state) => state.auth?.user);
+    const userRole = currentUser?.role?.toLowerCase() || null;
+    const canEdit = ["admin", "sub-admin"].includes(userRole);
+  
 
   // 🔹 Unified fetch function (works for both normal + search)
   const fetchBusinessUsers = async (page = currentPage, name = searchTerm) => {
@@ -103,19 +111,20 @@ export default function BusinessUsersPage() {
   };
 
   const handleVerified = async (id) => {
+    if (!canEdit) return toast.info("You are not authorized to verify businesses.");
     try {
       const response = await apiPut(`/businesses/${id}`, { isVerified: true });
       if (response && response.success) {
         setBusinessUsers((prev) => prev.filter((biz) => biz.id !== id));
-        alert("Business verified successfully");
+        toast.success("Business verified successfully");
         await fetchBusinessUsers(currentPage, searchTerm);
         closeModal();
       } else {
-        alert("Failed to verify business");
+        toast.error("Failed to verify business");
       }
     } catch (error) {
       console.error("Error verifying business:", error);
-      alert("Failed to verify the business");
+      toast.error("Failed to verify the business");
     }
   };
 
@@ -250,6 +259,7 @@ export default function BusinessUsersPage() {
         onClose={closeModal}
         business={selectedBusiness}
         onVerified={handleVerified}
+        isAdmin={canEdit}
       />
     </div>
   );

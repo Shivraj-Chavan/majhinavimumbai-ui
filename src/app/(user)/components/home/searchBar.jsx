@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FiSearch } from "react-icons/fi";
 import Button from "../form/Button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { apiGet } from "@/lib/apiClient";
 
 export default function SearchBar({value}) {
   const router = useRouter();
+  const pathname = usePathname();
+  const containerRef = useRef(null);
   const [query, setQuery] = useState(value || "");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -37,6 +39,38 @@ export default function SearchBar({value}) {
     return () => clearTimeout(delay);
   }, [query]);
 
+  // Clear search bar when route changes
+  useEffect(() => {
+    setQuery("");
+    setSuggestions([]);
+    setShowDropdown(false);
+  }, [pathname]);
+
+  // useEffect(() => {
+  //   const handleRouteChangeComplete = () => {
+  //     setQuery("");
+  //     setSuggestions([]);
+  //     setShowDropdown(false);
+  //   };
+
+  //   router.events?.on("routeChangeComplete", handleRouteChangeComplete);
+
+  //   return () => {
+  //     router.events?.off("routeChangeComplete", handleRouteChangeComplete);
+  //   };
+  // }, [router]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSearch = () => {
     const trimmed = query.trim();
     if (trimmed) {
@@ -58,15 +92,25 @@ export default function SearchBar({value}) {
     setShowDropdown(false);
   };
 
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (containerRef.current && !containerRef.current.contains(e.target)) {
+  //       setShowDropdown(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
+
   return (
-    <div className="relative flex justify-center w-full">
+    <div ref={containerRef}  className="relative flex justify-center w-full">
       <input
         type="text"
         placeholder="Search for services..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyPress}
-        className="outline-none px-3 py-5 h-12 w-full bg-white text-gray-700 rounded-l-lg"
+        className="outline-none cursor-pointer px-3 py-5 h-12 w-full bg-white text-gray-700 rounded-l-lg"
       />
     <Button
         onClick={handleSearch}

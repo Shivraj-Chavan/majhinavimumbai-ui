@@ -6,6 +6,7 @@ import { FaRegEye } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 import ManageBusinessImagesModal from "../../components/usercomp/ManageBusinessImagesModal";
+import { toast } from "react-toastify";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
@@ -89,7 +90,7 @@ export default function BusinessUsersPage() {
 
     try {
       const data = await apiDelete(`/businesses/${id}`);
-      alert(data.msg || "Business deleted");
+      toast.success(data.msg || "Business deleted");
       setBusinessUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
 
       if (businessUsers.length <= limit) {
@@ -97,7 +98,7 @@ export default function BusinessUsersPage() {
       }
     } catch (err) {
       console.log("API Error:", err);
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

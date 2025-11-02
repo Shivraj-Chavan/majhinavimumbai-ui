@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 export default function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const searchRef = useRef(null);
 
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const user = useSelector((state) => state.user.user);
@@ -40,9 +41,9 @@ export default function Navbar() {
   const profileRef = useRef(null);
   const profileMenuRef = useRef(null);
   const dropdownRef = useRef(null);
-  const searchDropdownRef = useRef(null); // For search suggestions
+  const searchDropdownRef = useRef(null);
   const pathname = usePathname();
-
+  // const searchRef = useRef(null);
   useEffect(() => {
     const query = searchParams.get("query");
     const locationValue = searchParams.get("location");
@@ -103,7 +104,6 @@ export default function Navbar() {
   }, [pathname]);
 
 
-
   // Initialize user session if token exists
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -132,7 +132,7 @@ export default function Navbar() {
 
       // Close search suggestions dropdown (if you want this separate, use its own state)
       if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target)) {
-        // setShowSearchDropdown(false); // ✅ safer than killing showSearch
+        // setShowSearchDropdown(false); //  safer than killing showSearch
       }
     };
 
@@ -176,10 +176,56 @@ export default function Navbar() {
     setShowModal(false);
   };
 
+  
+  // Close dropdown if clicked outside
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (
+  //       dropdownRef.current &&
+  //       !dropdownRef.current.contains(event.target) &&
+  //       searchRef.current &&
+  //       !searchRef.current.contains(event.target)
+  //     ) {
+  //       setShowDropdown(false);
+  //     }
+  //   };
+
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        searchRef.current &&
+        !searchRef.current.contains(event.target)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+  
+    const handleScroll = () => {
+      setShowDropdown(false); 
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("touchmove", handleScroll, { passive: true });
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("touchmove", handleScroll);
+    };
+  }, []); 
+  
+  
   return (
-    <nav className="w-full bg-white shadow-md sticky top-0 z-50">
+    <nav className="w-full bg-white shadow-md sticky top-0 z-90">
       <div className="max-w-screen-xl mx-auto px-4 py-2">
-        {/* ================= Desktop View ================= */}
+        {/* Desktop View  */}
         <div className="hidden md:flex items-center justify-between w-full">
           {/* Left: Logo */}
           <a href="/" className="flex items-center">
@@ -204,19 +250,19 @@ export default function Navbar() {
 
               {/* Search Input with Button */}
               <div className="flex-1 relative">
-                <SearchBar
+                <SearchBar  ref={searchDropdownRef}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pr-10 pl-3 py-2 rounded-full border border-gray-200 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 placeholder-gray-400 text-gray-800 transition-all duration-200"
                   placeholder="Search for services..."
                 />
 
-                {/* <button
-        onClick={() => router.push(`/search?query=${searchTerm}`)}
-        className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center h-7 w-7 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-sm shadow transition duration-300"
-      >
-        🔍
-      </button> */}
+            {/* <button
+              onClick={() => router.push(`/search?query=${searchTerm}`)}
+              className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center h-7 w-7 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-sm shadow transition duration-300"
+            >
+              🔍
+            </button> */}
               </div>
 
             </div>

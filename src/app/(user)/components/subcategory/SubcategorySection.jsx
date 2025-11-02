@@ -189,7 +189,7 @@ export default function SubcategoryCard() {
 
                     {/* Show More/Less indicator */}
                     {category.subcategories && category.subcategories.length > 3 && (
-                      <div className="mt-1 py-2 border-t  relative z-50 border-b mb-6 border-gray-100">
+                      <div className="mt-1 py-2 border-t relative z-50 border-b mb-6 border-gray-100">
                         <p className="text-xs text-white text-center">
                           {expandedCategories.has(category.slug)
                             ? `Showing all ${category.subcategories.length} services`

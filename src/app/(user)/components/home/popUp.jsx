@@ -175,7 +175,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
       localStorage.setItem("token", token);
       localStorage.setItem("authRole", role);
       // Redux login
-      dispatch(reduxLogin({ user, token }));
+      dispatch(reduxLogin({ user, token, role }));
       
       setStatusMessage({ type: "success", message: "OTP verified successfully!" });
       toast.success("Logged In successfully!");
@@ -200,13 +200,18 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
         setShowModal(false);
         // setShowProfileCompletion(false);
         // EXISTING USER → redirect based on role/authPurpose
-        if (role === "admin") router.push("/admin");
-        else if (role === "user") router.push("/");
-        else if (authPurpose === "business") router.push("/businessRegister");
-        else router.push("/");
+        if (role === "admin" || role === "sub-admin") {
+          router.push("/admin");
+        } else if (role === "user") {
+          router.push("/");
+        } else if (authPurpose === "business") {
+          router.push("/businessRegister");
+        } else {
+          router.push("/");
+        }
+        console.log("Extracted Role:", role);
       }
     
-
     } catch (error) {
       console.error("OTP Verify Error:", error);
       const backendMsg = error?.response?.data?.msg || error.msg;

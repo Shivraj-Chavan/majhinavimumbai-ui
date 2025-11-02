@@ -19,7 +19,8 @@ export default function DashboardLayout({ children }) {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [authPurpose, setAuthPurpose] = useState("login");
   const [userEmail, setUserEmail] = useState("");
-const [token,setToken]=useState(null)
+  const [userRole,setUserRole]=useState('')
+  const [token,setToken]=useState(null)
   const pathname = usePathname();
   const router = useRouter();
 
@@ -60,7 +61,8 @@ const [token,setToken]=useState(null)
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("authRole");
     const email = localStorage.getItem("email");
-    if (token && role === "admin") {
+    if (token && (role === "admin" || role === "sub-admin")) {
+      setUserRole(role)
       setIsLoggedIn(true);
       setUserEmail(email);
       setShowLoginPopup(false);
@@ -71,6 +73,8 @@ const [token,setToken]=useState(null)
       dispatch(logout());
       router.push("/");
     }
+    // console.log("Auth check → Token:", token, "Role:", role);
+
   }, []);
 
   if (isLoggedIn === null) return <div>Loading...</div>;
@@ -113,7 +117,7 @@ const [token,setToken]=useState(null)
             <SidebarMenu />
           </nav>
 
-          <div className="border-t border-gray-300 px-4 py-3 mt-6 bg-gradient-to-r from-white to-blue-50 rounded-b-md shadow-inner">
+          {/* <div className="border-t border-gray-300 px-4 py-3 mt-6 bg-gradient-to-r from-white to-blue-50 rounded-b-md shadow-inner">
           <div className="flex items-center">
             <div className="h-9 w-9 rounded-full bg-gradient-to-br from-orange-400 to-green-300 flex items-center justify-center text-white font-bold shadow-md">
               A
@@ -123,7 +127,7 @@ const [token,setToken]=useState(null)
               <p className="text-xs text-gray-500">Super User</p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         </div>
       </aside>
@@ -143,7 +147,6 @@ const [token,setToken]=useState(null)
               /> */}
             </div>
           </div>
-
           <div className="flex items-center space-x-3">
             {/* <button className="relative rounded-full p-1 hover:bg-gray-100">
               <LuBell className="h-6 w-6" />
@@ -161,8 +164,8 @@ const [token,setToken]=useState(null)
               {profileOpen && (
                 <div className="absolute right-0 top-full z-10 mt-2 w-56 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
                   <div className="border-b px-4 py-2">
-                    <p className="font-medium">ADMIN</p>
-                    <p className="text-sm text-gray-500">{userEmail || "admin@example.com"}</p>
+                    <p className="font-medium">{userRole}</p>
+                    {/* <p className="text-sm text-gray-500">{userEmail || "admin@example.com"}</p> */}
                   </div>
                   <div className="border-t py-1">
                     <button

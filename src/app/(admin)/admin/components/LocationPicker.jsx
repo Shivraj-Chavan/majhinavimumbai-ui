@@ -1,9 +1,11 @@
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { pincodeGeoCenters as geoCenters} from "@/data/geocodeGeocenters";
+import { toast } from "react-toastify";
 
-// Fix default icon issue in Leaflet
+// Fix default Leaflet marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
@@ -11,83 +13,111 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
 });
 
-const LocationPicker = (({ onSelect, defaultLocation }) => {
+export default function LocationPicker({ onSelect, defaultLocation, pincode, role = "user" , geoCenters = {}}) {
   const [position, setPosition] = useState(defaultLocation || null);
   const [mapCenter, setMapCenter] = useState(defaultLocation || [19.033, 73.0297]);
-  const geoFetched = useRef(false); 
+  const geoFetched = useRef(false);
+  const mapRef = useRef(null);
 
+  // Auto-fetch user location on mount
   useEffect(() => {
-    if (defaultLocation) {
-      setPosition(defaultLocation);
-      setMapCenter(defaultLocation);
-      // Do not call onSelect here if it causes parent state to update defaultLocation!
-    } else if (!geoFetched.current && navigator.geolocation) {
+    if (role === "user" && !geoFetched.current && navigator.geolocation) {
       geoFetched.current = true;
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const coords = [pos.coords.latitude, pos.coords.longitude];
-          setMapCenter(coords);
           setPosition(coords);
-          if (onSelect) onSelect({ lat: coords[0], lng: coords[1] });
+          setMapCenter(coords);
+          onSelect?.({ lat: coords[0], lng: coords[1] });
         },
         (err) => console.warn("Geolocation error:", err)
       );
     }
-  }, [defaultLocation, onSelect]);
+  }, [role, onSelect]);
 
+  // Watch for pincode change → auto pan & zoom
   useEffect(() => {
-    if (!defaultLocation && !geoFetched.current && navigator.geolocation) {
-      geoFetched.current = true; // mark as fetched
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const coords = [pos.coords.latitude, pos.coords.longitude];
-          setMapCenter(coords);
-          setPosition(coords);
-          onSelect({ lat: coords[0], lng: coords[1] });
-        },
-        (err) => console.warn("Geolocation error:", err)
-      );
-    }
-  }, [defaultLocation, onSelect]);
+    if ((role === "admin" || role === "subadmin" || role === "user") && pincode && geoCenters?.[pincode]) {
+      const center = geoCenters[pincode];
+      setPosition(center);
+      setMapCenter(center);
+      onSelect?.({ lat: center[0], lng: center[1] });
 
- 
+      if (mapRef.current) {
+        mapRef.current.flyTo(center, 14, { duration: 1.0 }); // smooth fly to pincode
+      }
+    }
+  }, [role, pincode, onSelect]);
+
+  // Map click handler
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
-        setPosition([e.latlng.lat, e.latlng.lng]);
-        onSelect(e.latlng);
+        const coords = [e.latlng.lat, e.latlng.lng];
+        setPosition(coords);
+        setMapCenter(coords);
+        onSelect?.(e.latlng);
       },
     });
     return position ? <Marker position={position} /> : null;
   };
 
-
-  const Recenter = ({ center }) => {
+  // Recenter component (optional for user / dynamic zoom)
+  const Recenter = ({ center, zoom }) => {
     const map = useMap();
     useEffect(() => {
       if (center) {
-        map.panTo(center); // panTo does NOT reset zoom
+        map.setView(center, zoom);
       }
-    }, [center, map]);
+    }, [center, zoom, map]);
     return null;
   };
-  
+
+  // Button to get current location
+  const handleCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const coords = [pos.coords.latitude, pos.coords.longitude];
+          setPosition(coords);
+          setMapCenter(coords);
+          onSelect?.({ lat: coords[0], lng: coords[1] });
+
+          if (mapRef.current) {
+            mapRef.current.flyTo(coords, 12, { duration: 1.0 }); 
+          }
+        },
+        (err) => toast.error("Failed to fetch location: " + err.message)
+      );
+    } else {
+      toast.error("Geolocation is not supported by your browser.");
+    }
+  };
+
   return (
-    <div className="w-full h-80 rounded-lg overflow-hidden shadow">
+    <div className="relative w-full h-80 rounded-lg overflow-hidden shadow">
       <MapContainer
         center={mapCenter}
-        zoom={12}
+        zoom={role === "user" ? 12 : 14}
         style={{ height: "100%", width: "100%" }}
+        whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
-        <Recenter center={mapCenter} />
+        <Recenter center={mapCenter} zoom={role === "user" ? 12 : 14} />
         <MapClickHandler />
       </MapContainer>
+      
+      {role === "user" && (
+        <button
+          onClick={handleCurrentLocation}
+          className="absolute bottom-3 right-3 bg-white border px-3 py-1.5 rounded-lg shadow-md text-sm font-medium hover:bg-gray-100"
+        >
+          📍 Get Current Location
+        </button>
+      )}
     </div>
   );
-});
-
-export default LocationPicker;
+}

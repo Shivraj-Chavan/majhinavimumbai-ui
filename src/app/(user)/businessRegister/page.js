@@ -205,7 +205,8 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
      if (!isAdmin && (!formData.latitude || !formData.longitude)) {
       alert("Please select a location on the map.");
       return;
-    }  
+    }
+    
     // console.log("Sending to API:", formData);
 
     if (!selectedCategory) {
@@ -313,6 +314,7 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
 
     setSelectedPhotos((prev) => prev.filter((_, i) => i !== index));
   };
+
   const handleLocationSelect = (latlng) => {
     // console.log({ lat: latlng.lat, lng: latlng.lng });
     setFormData(prev => ({
@@ -339,7 +341,6 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
         <div className="md:col-span-6">
           <Input label="Business Name" required={true} value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
         </div>
-
 
         {/* Category */}
         <div className="md:col-span-6">
@@ -482,8 +483,11 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
       </p>
 
         {/* Location Picker */}
-        <LocationPicker onSelect={handleLocationSelect}
-         
+        {/* <LocationPicker onSelect={handleLocationSelect} /> */}
+        <LocationPicker 
+          onSelect={handleLocationSelect} 
+          // role={isAdmin ? "admin" : isSubadmin ? "sub-admin" : "user"} 
+          pincode={formData.pin_code} 
         />
 
       </div>

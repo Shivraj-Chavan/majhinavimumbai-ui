@@ -1,5 +1,8 @@
 import axios from 'axios';
 import CONFIG from './../constance'
+import { logout } from '@/redux/slice/userSlice';
+import { store } from '@/redux/store';
+
 const axiosInstance = axios.create({
   baseURL: CONFIG.API_BASE_URL,
   headers: {
@@ -22,6 +25,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (typeof window !== 'undefined' && error.response?.status === 401) {
+      store.dispatch(logout());
       localStorage.clear();
       window.location.href = "/";
     }

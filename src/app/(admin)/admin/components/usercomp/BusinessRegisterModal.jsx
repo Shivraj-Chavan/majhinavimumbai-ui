@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { addMonths, format, parseISO, isValid } from 'date-fns';
 import LocationPicker from '../LocationPicker';
 
-export default function BusinessRegisterModal({ isOpen, onClose, business, isAdmin = false }) {
+export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -24,9 +24,16 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
   const [success, setSuccess] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  
+
   const dispatch = useDispatch();
   const { categories, loading, error } = useSelector((state) => state.categories);
+  const { user, role } = useSelector((state) => state.user);
+  const effectiveRole = user?.role || role; // prioritize user.role
+const canEdit = effectiveRole ? ["admin", "sub-admin"].includes(effectiveRole.toLowerCase()|| "") : false;  
+
+// console.log("user:", user || "No user in state yet");
+// console.log("canEdit:", canEdit);
+// console.log({effectiveRole});
 
   useEffect(() => {
     if (categories?.length > 0) {
@@ -78,7 +85,6 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
     const endDate = e.target.value;
     setEndDate(endDate);
   };
-
 
 
   const getMonthsFromDuration = (durationStr) => {
@@ -204,6 +210,10 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
   };
 
   const handleSubmit = async () => {
+    if (!canEdit) {
+      toast.error("Unauthorized: only admin/subadmin can edit.");
+      return;
+    }
     try {
       // Update plan only if a plan is selected
       // if (selectedPlan && startDate && endDate) {
@@ -241,7 +251,7 @@ export default function BusinessRegisterModal({ isOpen, onClose, business, isAdm
   
       setIsEditing(false);
       onClose(true);
-      onClose();
+      // onClose();
   
       if (payload.is_verified && typeof onVerified === "function") {
         onVerified(business.id);
@@ -391,7 +401,7 @@ const formatCoord = (coord) => {
                       onChange={(e) => handleTimingChange(index, "day", e.target.value)}
                       className="border rounded px-2 py-1 w-24"
                       placeholder="Day"
-                      readOnly={!isEditing}
+                      readOnly={!isEditing || !canEdit}
                     />
                     {isEditing ? (
                       <>
@@ -527,7 +537,7 @@ const formatCoord = (coord) => {
             rows={6}
             value={formData?.description || ''}
             onChange={handleChange} 
-            disabled={!isEditing}
+            disabled={!isEditing || !canEdit}
             className={`w-full px-4 py-2 border rounded-xl focus:outline-none ${isEditing ? "border-gray-300 focus:ring-2 focus:ring-orange-400" : "bg-gray-100 text-gray-700" }`}
             placeholder="Enter business details..."
           />
@@ -567,6 +577,7 @@ const formatCoord = (coord) => {
                 <button
                   onClick={handleSubmit}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium"
+                  disabled={!canEdit}
                 >
                   Save Changes
                 </button>
@@ -583,12 +594,15 @@ const formatCoord = (coord) => {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-medium"
-              >
-                Edit Business
-              </button>
+              canEdit && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-medium"
+                >
+                  Edit Business
+                </button>
+              )
+              
             )}
           </div>
 

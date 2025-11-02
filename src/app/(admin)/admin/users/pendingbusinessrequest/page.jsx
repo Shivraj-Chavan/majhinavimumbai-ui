@@ -8,6 +8,7 @@ import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterMod
 import Pagination from "../../components/usercomp/Pagination";
 import CONFIG from "@/constance";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 export default function PendingUpdates() {
   const [updates, setUpdates] = useState([]);
@@ -36,12 +37,16 @@ export default function PendingUpdates() {
   
   //   fetchBusinessUsers();
   // }, [currentPage]);
-  
 
-  const fetchUpdates = async (page = 1) => {
+  const currentUser = useSelector((state) => state.auth?.user);
+  const userRole = currentUser?.role?.toLowerCase() || null;
+  const canEdit = ["admin", "sub-admin"].includes(userRole);
+    
+  
+  const fetchUpdates = async (page = currentPage) => {
     try {
       setLoading(true);
-      const res = await apiGet("/businesses/admin/pending");
+      const res = await apiGet(`/businesses/admin/pending?page=${page}&limit=${limit}`);
       const data = res?.data?.data || res?.data || [];
       const pages = res?.data?.totalPages || 1;
       setUpdates(data);
@@ -104,6 +109,9 @@ export default function PendingUpdates() {
   return (
     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg max-w-7xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Pending Business Updates</h2>
+      {/* <span className="text-sm text-gray-500 italic">
+          Role: {userRole.toUpperCase()}
+        </span> */}
 
       {loading ? (
         <div className="text-center text-gray-600">Loading...</div>
@@ -192,7 +200,8 @@ export default function PendingUpdates() {
           if (shouldRefresh) fetchUpdates(currentPage); // <-- refresh list
         }}
         business={selectedBusiness}
-        isAdmin={true}
+        // isAdmin={true}
+        isAdmin={canEdit}
       />
 
       {/* Image Preview Overlay */}

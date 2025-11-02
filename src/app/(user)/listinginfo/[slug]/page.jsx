@@ -206,9 +206,9 @@ export default function ListingInfo() {
           /> */}
           <Actionbtn
             href={
-              business?.latitude && business?.longitude      
-                ? `https://www.google.com/maps/dir/?api=1&destination=${business.latitude},${business.longitude}`
-                : `https://www.google.com/maps/search/?q=${encodeURIComponent(business?.name || "Your Business Location")}`
+              business?.latitude && business?.longitude
+                ? `https://maps.google.com/?daddr=${business.latitude},${business.longitude}`
+                : `https://maps.google.com/?q=${encodeURIComponent(business?.name || "Your Business Location")}`
             }
             target="_blank"
           label="Directions"
