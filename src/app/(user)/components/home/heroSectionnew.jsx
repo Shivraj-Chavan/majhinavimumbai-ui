@@ -95,12 +95,26 @@ export default function HeroSectionnew() {
 
   return (
     <>
-      <div className="w-full bg-gradient-to-b from-orange-50 via-white to-white py-12 px-4 sm:px-10 md:px-16 lg:px-24 xl:px-32">
+      <div className="w-full bg-gradient-to-b from-orange-50 via-white to-white py-0.5 px-4 sm:px-10 md:px-16 lg:px-24 xl:px-32">
+      {/* searchbar */}
+      <div className="order-1 md:hidden w-full">
+        <CategoryDropdownnew />
+      </div>
+
+        {/* Advertisement */}
+            <div className="order-2 md:order-none w-full">
+            <div className="w-full h-48 sm:h-68 md:h-auto">
+              <AdsImg className="w-full h-full object-cover rounded-xl" />
+            </div>
+          </div>
+
+
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
           {/* Left Section */}
           <div className={`w-full md:w-1/2 space-y-6 text-center md:text-left transform transition-all duration-1000 ease-out 
            ${animateLeft ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
             {/* Top label */}
+           <div className="hidden md:block">
             <div>
                 <span className="inline-block 
                 bg-orange-500 text-white text-xs rounded-full px-3 py-2 font-semibold mb-3">
@@ -121,9 +135,11 @@ export default function HeroSectionnew() {
                 Your one-stop destination <span className="text-green-600">for local discoveries.</span>
                 </span>
             </p>
+            </div>
 
             {/* stats */}
-          <div className="flex justify-center md:justify-start gap-4 flex-wrap md:flex-nowrap">
+            <div className="order-3 md:order-none">
+          <div className="flex justify-center md:justify-start gap-4 flex-wrap md:flex-nowrap pt-9">
             {/* Reviews */}
             <div className="bg-white shadow-lg rounded-2xl cursor-pointer px-3 py-4 text-center flex flex-col items-start w-24 sm:w-32 md:w-35">
               <div className="flex items-center gap-1 sm:gap-2">
@@ -137,7 +153,7 @@ export default function HeroSectionnew() {
             <div className="bg-white shadow-lg rounded-2xl cursor-pointer px-3 py-4 text-center flex flex-col items-start w-24 sm:w-32 md:w-35">
               <div className="flex items-center gap-1 sm:gap-2">
                 <FaBuilding className="text-blue-400 text-xl sm:text-2xl"/>
-                <div className="text-sm sm:text-lg font-extrabold text-gray-800">40k+</div>
+                <div className="text-sm sm:text-lg font-extrabold text-gray-800">60K+</div>
               </div>
               <div className="text-xs sm:text-sm text-gray-500 mt-1 ml-4">Businesses</div>
             </div>
@@ -150,6 +166,7 @@ export default function HeroSectionnew() {
               </div>
               <div className="text-xs sm:text-sm text-gray-500 mt-1 ml-4">Users</div>
             </div>
+          </div>
           </div>
 
 
@@ -165,7 +182,7 @@ export default function HeroSectionnew() {
             </div>
 
             {/* Categories */}
-            <div className="flex flex-wrap gap-3 pt-4 justify-center md:justify-start">
+            <div className="flex flex-wrap gap-3 pt-4 justify-center md:justify-start mb-7">
             {[                                              
                 {
                 label: "Restaurants",
@@ -200,28 +217,35 @@ export default function HeroSectionnew() {
             </div>
             </div>
 
+            <div className="flex flex-col md:flex-row gap-4">
+            
+
         {/* Right Section - CategoryDropdown */}
-        <div   className={`w-full md:w-1/2 transform transition-all duration-1000 ease-out 
-    ${animateRight ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
+        <div className="hidden md:block">
+        <div className={`w-full transform transition-all duration-1000 ease-out 
+        ${animateRight ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
         <CategoryDropdownnew />
+        </div>
+        </div>
+
         </div>
 
         </div>
 
         {/* Scroll Hint for Mobile */}
-        <div onClick={handleScrollDown} className="flex flex-col items-center mt-12 md:hidden animate-bounce">
+        {/* <div onClick={handleScrollDown} className="flex flex-col items-center mt-1 md:hidden animate-bounce">
           <span className="text-sm text-gray-600">Scroll Down</span>
           <div className="text-xl text-gray-700 p-2 bg-gray-200 rounded-full">
             <MdOutlineKeyboardDoubleArrowDown />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Contact Popup */}
       <ContactPopup showContact={showContact} setShowContact={setShowContact} />
 
       {/* Ads */}
-      <AdsImg />
+      {/* <AdsImg /> */}
     </>
   );
 }

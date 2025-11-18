@@ -155,14 +155,14 @@ export default function CategoryDropdownnew() {
 
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 mt-6 space-y-5 relative">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-3 md:p-6 mt-6 space-y-1 md:space-y-5 relative">
       {/* Title */}
       <div className="text-center">
-      <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-700 via-blue-400 to-green-600 bg-clip-text text-transparent">
+      <h2 className=" hidden md:block text-2xl font-bold bg-gradient-to-r from-orange-700 via-blue-400 to-green-600 bg-clip-text text-transparent">
         Find What You Need
       </h2>
 
-        <p className="text-sm text-gray-500">Search from thousands of local businesses</p>
+        <p className="hidden md:block text-sm text-gray-500">Search from thousands of local businesses</p>
       </div>
 
       {/* Search Input */}
@@ -192,7 +192,7 @@ export default function CategoryDropdownnew() {
          {/* Location + Category + Subcategory */}
          <div className="space-y-4 relative">
       {/* Location Label */}
-      <label className="block text-sm font-medium text-gray-600 mb-2 mt-3 ms-2">
+      <label className="block text-sm font-medium text-gray-600 mb-1 md:mb-2 mt-2 md:mt-3 ms-2">
         Select Your Location
       </label>
 
@@ -315,6 +315,7 @@ export default function CategoryDropdownnew() {
       </button>
 
        {/* Popular Searches */}
+       <div className="hidden md:block">
        <div className="text-center">
         <p className="text-sm text-gray-500 mb-2">Popular searches:</p>
         <div className="flex flex-wrap gap-2 justify-center">
@@ -350,6 +351,7 @@ export default function CategoryDropdownnew() {
             </Link>
           ))}
         </div>
+      </div>
       </div>
     </div>
   );
