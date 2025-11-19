@@ -7,7 +7,7 @@ import { CiLocationArrow1 } from "react-icons/ci";
 import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FaConciergeBell, FaGraduationCap, FaShoppingBag, FaStar, FaUtensils } from "react-icons/fa";
+import { FaConciergeBell, FaGraduationCap, FaHospitalSymbol, FaPizzaSlice, FaSchool, FaShoppingBag, FaStar, FaUtensils } from "react-icons/fa";
 import { FaBuilding } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
 import ContactPopup from "./contactPopup";
@@ -18,6 +18,7 @@ import AdsImg from "./adsImg";
 import CategoryDropdownnew from "./categoryDropdownnew";
 import AdsImg3 from "./adsImg3";
 import Link from "next/link";
+import { GiComb } from "react-icons/gi";
 
 export default function HeroSectionnew() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -97,14 +98,14 @@ export default function HeroSectionnew() {
     <>
       <div className="w-full bg-gradient-to-b from-orange-50 via-white to-white py-0.5 px-4 sm:px-10 md:px-16 lg:px-24 xl:px-32">
       {/* searchbar */}
-      <div className="order-1 md:hidden w-full">
+      <div className="order-1 md:hidden w-full mt-[-20]">
         <CategoryDropdownnew />
       </div>
 
         {/* Advertisement */}
             <div className="order-2 md:order-none w-full">
-            <div className="w-full h-48 sm:h-68 md:h-auto">
-              <AdsImg className="w-full h-full object-cover rounded-xl" />
+            <div className="w-full h-48 sm:h-68 md:h-auto ">
+              <AdsImg className="w-full h-full object-cover rounded-xl " />
             </div>
           </div>
 
@@ -204,6 +205,26 @@ export default function HeroSectionnew() {
                 icon: <FaGraduationCap className="text-purple-600" />,
                 bg: "bg-purple-50 text-purple-700",
                 },
+                            {
+                              label: "Cafes",
+                              bg: "bg-orange-100 text-orange-600 md:hidden",
+                              icon: <FaPizzaSlice className="mr-1 text-sm text-orange-600" />,
+                            },
+                            {
+                              label: "Bike Garage",
+                              bg: "bg-green-100 text-green-600 md:hidden",
+                              icon: <GiComb className="mr-1 text-base" />,
+                            },
+                            {
+                              label: "Uniform",
+                              bg: "bg-blue-100 text-blue-600 md:hidden",
+                              icon: <FaHospitalSymbol className="mr-1 text-base" />,
+                            },
+                            {
+                              label: "Doctors",
+                              bg: "bg-purple-100 text-purple-600 md:hidden",
+                              icon: <FaSchool className="mr-1 text-base" />,
+                            },
                 ].map((category) => (
                   <Link
                   key={category?.label}
