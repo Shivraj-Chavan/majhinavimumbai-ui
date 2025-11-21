@@ -286,7 +286,7 @@ export default function Footer() {
             <SiX/>
           </a>
           <a
-            href="https://youtube.com/watch?v=U1TvvhV7NBM&feature=shared"
+            href="https://www.youtube.com/channel/UCm2O2wSoLrcLNqeU6mpphhw"
             target="_blank"
             rel="noopener noreferrer"
             className="text-red-600  hover:text-red-700 transition"

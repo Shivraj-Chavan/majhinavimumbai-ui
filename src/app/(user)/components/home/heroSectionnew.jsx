@@ -19,6 +19,8 @@ import CategoryDropdownnew from "./categoryDropdownnew";
 import AdsImg3 from "./adsImg3";
 import Link from "next/link";
 import { GiComb } from "react-icons/gi";
+import adsvideo from "./adsvideo";
+import Adsvideo from "./adsvideo";
 
 export default function HeroSectionnew() {
   const [location, setLocation] = useState("Navi-Mumbai");
@@ -105,12 +107,13 @@ export default function HeroSectionnew() {
         {/* Advertisement */}
             <div className="order-2 md:order-none w-full">
             <div className="w-full h-48 sm:h-68 md:h-auto ">
-              <AdsImg className="w-full h-full object-cover rounded-xl " />
+              {/* <AdsImg className="w-full h-full object-cover rounded-xl " /> */}
+              <Adsvideo className="w-full h-full object-cover rounded-xl"/>
             </div>
           </div>
 
 
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 mt-[-15]">
           {/* Left Section */}
           <div className={`w-full md:w-1/2 space-y-6 text-center md:text-left transform transition-all duration-1000 ease-out 
            ${animateLeft ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
@@ -140,7 +143,7 @@ export default function HeroSectionnew() {
 
             {/* stats */}
             <div className="order-3 md:order-none">
-          <div className="flex justify-center md:justify-start gap-4 flex-wrap md:flex-nowrap pt-9">
+          <div className="flex justify-center md:justify-start gap-4 flex-wrap md:flex-nowrap">
             {/* Reviews */}
             <div className="bg-white shadow-lg rounded-2xl cursor-pointer px-3 py-4 text-center flex flex-col items-start w-24 sm:w-32 md:w-35">
               <div className="flex items-center gap-1 sm:gap-2">
