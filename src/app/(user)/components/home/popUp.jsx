@@ -151,7 +151,7 @@ export default function PopUp({ showModal, setShowModal, authPurpose }) {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    setIsVerifyingOtp(true); // <--- add before try
+    setIsVerifyingOtp(true); 
 
     try {
       const data = await apiPost("otp/verify", { name:"", phone: phone, otp: otp });

@@ -100,7 +100,7 @@ export default function HeroSectionnew() {
     <>
       <div className="w-full bg-gradient-to-b from-orange-50 via-white to-white py-0.5 px-4 sm:px-10 md:px-16 lg:px-24 xl:px-32">
       {/* searchbar */}
-      <div className="order-1 md:hidden w-full mt-[-20]">
+      <div className="order-1 md:hidden w-full mt-[-20] relative z-50">
         <CategoryDropdownnew />
       </div>
 

@@ -7,7 +7,8 @@ import { useDispatch } from 'react-redux';
 import { fetchCategories } from '@/redux/slice/categoriesSlice';
 import { ToastContainer } from 'react-toastify';
 import Navbarnew from  '@/app/(user)/components/navbar/Navbarnew';
-
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 export default function layout({ children }) {
 
     return (

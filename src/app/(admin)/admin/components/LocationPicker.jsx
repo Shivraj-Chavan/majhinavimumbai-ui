@@ -14,6 +14,7 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function LocationPicker({ onSelect, defaultLocation, pincode, role = "user" , geoCenters = {}}) {
+  // console.log({defaultLocation})
   const [position, setPosition] = useState(defaultLocation || null);
   const [mapCenter, setMapCenter] = useState(defaultLocation || [19.033, 73.0297]);
   const geoFetched = useRef(false);
@@ -21,19 +22,24 @@ export default function LocationPicker({ onSelect, defaultLocation, pincode, rol
 
   // Auto-fetch user location on mount
   useEffect(() => {
-    if (role === "user" && !geoFetched.current && navigator.geolocation) {
-      geoFetched.current = true;
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const coords = [pos.coords.latitude, pos.coords.longitude];
-          setPosition(coords);
-          setMapCenter(coords);
-          onSelect?.({ lat: coords[0], lng: coords[1] });
-        },
-        (err) => console.warn("Geolocation error:", err)
-      );
-    }
-  }, [role, onSelect]);
+    if (role !== "user" || !navigator.geolocation) return;
+  
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = [pos.coords.latitude, pos.coords.longitude];
+  
+        setPosition(coords);
+        setMapCenter(coords);
+        onSelect?.({ lat: coords[0], lng: coords[1] });
+  
+        if (mapRef.current) {
+          mapRef.current.setView(coords, 12);
+        }
+      },
+      (err) => console.warn("Geolocation error:", err)
+    );
+  }, [role]);
+  
 
   // Watch for pincode change → auto pan & zoom
   useEffect(() => {
@@ -72,6 +78,24 @@ export default function LocationPicker({ onSelect, defaultLocation, pincode, rol
     }, [center, zoom, map]);
     return null;
   };
+  useEffect(() => {
+    if (
+      defaultLocation &&
+      Array.isArray(defaultLocation) &&
+      !isNaN(defaultLocation[0]) &&
+      !isNaN(defaultLocation[1])
+    ) {
+      const center = defaultLocation.map(Number);
+  
+      setPosition(center);
+      setMapCenter(center);
+  
+      if (mapRef.current) {
+        mapRef.current.setView(center, 14);
+      }
+    }
+  }, [defaultLocation]);
+  
 
   // Button to get current location
   const handleCurrentLocation = () => {

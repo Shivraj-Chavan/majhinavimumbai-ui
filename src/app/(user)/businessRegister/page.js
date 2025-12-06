@@ -16,7 +16,10 @@ import axios from "axios";
 import CONFIG from "@/constance";
 import Image from "next/image";
 import LocationPicker from "@/app/(admin)/admin/components/LocationPicker";
+import TimePicker from "react-time-picker";
 // import PricingPlans from "../components/profileComp/PricingPlans";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 
 export default function BusinessRegister({ ownerId , isAdmin = false}) {
   const router = useRouter();
@@ -331,12 +334,12 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
       className="w-full max-w-5xl mx-auto px-6 py-8 md:py-10 bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow mt-10"
     >
       <ToastContainer position="top-right" autoClose={3000} />
-      <h1 className="text-center flex items-center justify-center gap-2 font-extrabold text-3xl md:text-4xl text-blue-700 mb-10 tracking-tight font-raleway">
+      <h1 className="text-center flex items-center justify-center gap-2 font-extrabold text-2xl md:text-4xl text-blue-700 mb-5 md:mb-10 tracking-tight font-raleway">
         <FcCollaboration className="text-3xl md:text-4xl" />
         Register Your Business
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6">
         {/* Business Name */}
         <div className="md:col-span-6">
           <Input label="Business Name" required={true} value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
@@ -523,22 +526,33 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
                     <td className="px-4 py-2">{index + 1}</td>
                     <td className="px-4 py-2 font-medium">{day}</td>
                     <td className="px-4 py-2">
-                      <input
-                        type="time"
-                        value={currentTiming.open}
-                        disabled={currentTiming.closed}
-                        onChange={(e) => handleTimingChange(index, "open", e.target.value, day)}
-                        className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
-                      />
+                    <div className="w-full">
+
+  <TimePicker
+    onChange={(value) => handleTimingChange(index, "open", value, day)}
+    value={currentTiming.open}
+    format="hh:mm a"       
+    disableClock={true}
+    clearIcon={null}
+    clockIcon={null}
+    disabled={currentTiming.closed}
+  />
+</div>
+
                     </td>
                     <td className="px-4 py-2">
-                      <input
-                        type="time"
-                        value={currentTiming.close}
-                        disabled={currentTiming.closed}
-                        onChange={(e) => handleTimingChange(index, "close", e.target.value, day)}
-                        className="border border-gray-300 rounded px-2 py-1 w-full disabled:bg-gray-100"
-                      />
+                    <div className="w-full">
+
+<TimePicker
+  onChange={(value) => handleTimingChange(index, "close", value, day)}
+  value={currentTiming.close}
+  format="hh:mm a"       
+  disableClock={true}
+  clearIcon={null}
+  clockIcon={null}
+  disabled={currentTiming.closed}
+/>
+</div>
                     </td>
                     <td className="px-4 py-2 text-center">
                       <input

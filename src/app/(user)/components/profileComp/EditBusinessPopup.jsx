@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import CONFIG from './../../../../constance'
 import Image from "next/image";
 import LocationPicker from "@/app/(admin)/admin/components/LocationPicker";
+import TimePicker from "react-time-picker";
 
 export default function EditBusinessPopup({ business, plan, onClose }) {
   const [formData, setFormData] = useState({
@@ -335,8 +336,8 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
   
   
   return (
-    <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4">
-      <div className="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-6 md:p-8 relative overflow-y-auto max-h-[95vh]">
+    <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex justify-center items-center z-50 px-4 ">
+      <div className="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-6 md:p-8 relative overflow-y-auto max-h-[95vh] mt-30 mb-10">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl" aria-label="Close">
           &times;
         </button>
@@ -441,6 +442,92 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
           })}
         </div>
 
+
+        {/* Timing Section - Mobile Version with AM/PM */}
+        {/* <div className="w-full">
+  <label className="block mb-2 font-semibold text-gray-800 text-lg">
+    Business Timings
+  </label>
+
+  <div className="space-y-1">
+    {[
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ].map((day) => {
+      const timing =
+        formData?.timing?.find((t) => t.day === day) || {
+          open: "",
+          close: "",
+          closed: false,
+        };
+
+      return (
+        <div
+          key={day}
+          className="flex items-center gap-4 py-1 border-b last:border-b-0"
+        >
+          <div className="w-28 font-medium text-gray-700">{day}</div>
+
+          <label className="flex items-center gap-1 text-xs text-gray-600">
+            <input
+              type="checkbox"
+              checked={timing.closed}
+              onChange={(e) =>
+                updateTiming(day, "closed", e.target.checked)
+              }
+            />
+            Closed
+          </label>
+
+          {!timing.closed && (
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-500">Open:</span>
+              <div className="border rounded px-1 py-[2px] text-xs">
+                <TimePicker
+                  onChange={(value) =>
+                    updateTiming(day, "open", value)
+                  }
+                  value={timing.open}
+                  format="hh:mm a"
+                  disableClock={true}
+                  clearIcon={null}
+                  clockIcon={null}
+                />
+              </div>
+            </div>
+          )}
+
+          {!timing.closed && (
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-500">Close:</span>
+              <div className="border rounded px-1 py-[2px] text-xs">
+                <TimePicker
+                  onChange={(value) =>
+                    updateTiming(day, "close", value)
+                  }
+                  value={timing.close}
+                  format="hh:mm a"
+                  disableClock={true}
+                  clearIcon={null}
+                  clockIcon={null}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</div> */}
+
+
+
+
           <Input label="Website" name="website" value={formData.website} onChange={handleChange} onBlur={handleWebsiteBlur} />
           <div className="flex gap-5">
             {/* <Input label="Contact" name="phone" type="tel" value={formData.phone} onChange={handleChange} /> */}
@@ -501,7 +588,12 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
               </button>
             </div> */}
           {/* </div> */}
-          <LocationPicker defaultLocation={ formData.latitude && formData.longitude ? [formData.latitude, formData.longitude] : null }
+          <LocationPicker
+  defaultLocation={
+    formData.latitude && formData.longitude
+      ? [Number(formData.latitude), Number(formData.longitude)]
+      : null
+  }
             onSelect={(coords) => {
             // console.log("onSelect triggered with coords:", coords);
               if (!coords || coords.length !== 2) {
@@ -537,7 +629,7 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
                 <button
                   type="button"
                   onClick={() => handleDeleteExistingPhoto(idx)}
-                  className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition"
+                  className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full transition"
                 >
                   <MdDelete size={14} />
                 </button>

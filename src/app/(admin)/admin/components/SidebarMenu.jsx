@@ -60,7 +60,7 @@ export default function SidebarMenu() {
       <h2 className="text-lg font-bold text-gray-600 mb-4 ps-2">Admin Panel</h2>
       <ul className="space-y-2 overflow-hidden scrollbar-hide">
         {menusToRender.map((item, index) => (
-          <SidebarItem key={index} {...item} loading={loading} />
+          <SidebarItem key={index} {...item} loading={loading}/>
         ))}
       </ul>
     </div>

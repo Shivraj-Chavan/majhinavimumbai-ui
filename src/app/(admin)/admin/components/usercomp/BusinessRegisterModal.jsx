@@ -31,6 +31,20 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const effectiveRole = user?.role || role; // prioritize user.role
 const canEdit = effectiveRole ? ["admin", "sub-admin"].includes(effectiveRole.toLowerCase()|| "") : false;  
 
+
+// const [canEdit, setCanEdit] = useState(false);
+
+// useEffect(() => {
+//   const effectiveRole = user?.role || role;
+//   const editable = ["admin", "sub-admin"].includes(
+//     effectiveRole?.toLowerCase?.() || ""
+//   );
+//   setCanEdit(editable);
+// }, [user, role]);
+// console.log(effectiveRole)
+
+
+
 // console.log("user:", user || "No user in state yet");
 // console.log("canEdit:", canEdit);
 // console.log({effectiveRole});
@@ -302,9 +316,15 @@ const formatCoord = (coord) => {
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-start justify-center p-4 overflow-y-auto sm:items-center">
-        <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all mt-auto">
+  {/* Background image with overlay */}
+  <div
+    className="fixed inset-0 bg-black/40 backdrop-blur-sm bg-center bg-cover bg-fixed"
+    style={{ backgroundImage: "url('/assests/logo.png')" }}
+    aria-hidden="true"
+  />
+
+  <div className="fixed inset-0 flex items-start justify-center p-4 overflow-y-auto sm:items-center">
+    <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all mt-auto">
           {/* Header */}
           <div className="flex justify-between items-center border-b pb-4 mb-4">
             <Dialog.Title className="text-2xl font-semibold text-gray-800">

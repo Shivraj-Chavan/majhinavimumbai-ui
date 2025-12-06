@@ -13,7 +13,7 @@ export default function AdminActionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [query, setQuery] = useState("");
-  const limit = 10;
+  const limit = 15;
 
   // Debounce search
   useEffect(() => {

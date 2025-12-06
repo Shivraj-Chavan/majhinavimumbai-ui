@@ -86,7 +86,7 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex bg-gray-100">
+    <div className="flex bg-gradient-to-br from-orange-200 via-white to-green-200">
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 backdrop-blur-sm bg-white/5 bg-opacity-50 md:hidden"
