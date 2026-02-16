@@ -273,7 +273,7 @@ export default function Navbar() {
             {/* Phone */}
             <div className="flex items-center gap-1 text-green-600 font-semibold text-sm">
               <FiPhoneCall className="text-md" />
-              <span>+91 91524 18196</span>
+              <span>+91 9892 45 8740</span>
             </div>
 
             {/* Live Views */}
@@ -404,7 +404,7 @@ export default function Navbar() {
               <div className="flex items-center justify-center mb-2">
                 <div className="flex items-center text-green-600 font-semibold text-sm">
                   <FiPhoneCall className="mr-1 text-base" />
-                  +91 91524 18196
+                  +91 9892 45 8740
                 </div>
               </div>
 

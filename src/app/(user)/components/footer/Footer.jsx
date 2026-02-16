@@ -208,7 +208,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="font-semibold text-sm text-green-700">📞 Contact:</p>
-                <p className="text-sm text-gray-600">+91 91524 18196</p>
+                <p className="text-sm text-gray-600">+91 9892 45 8740</p>
               </div>
             </div>
           </div>
