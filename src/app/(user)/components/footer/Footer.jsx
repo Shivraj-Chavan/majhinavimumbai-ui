@@ -204,7 +204,7 @@ export default function Footer() {
             <div className="mb-4 md:mb-0 md:w-1/2 space-y-3">
               <div>
                 <p className="font-semibold text-sm text-orange-700">📧 Mail ID:</p>
-                <p className="text-sm text-gray-600">majhinavimumbai@gmail.com</p>
+                <p className="text-sm text-gray-600">info@majhinavimumbai.com</p>
               </div>
               <div>
                 <p className="font-semibold text-sm text-green-700">📞 Contact:</p>
