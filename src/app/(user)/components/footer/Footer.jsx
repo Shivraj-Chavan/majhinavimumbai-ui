@@ -326,7 +326,7 @@ export default function Footer() {
           <div className="text-gray-700">
             <span className="text-orange-600">&copy;</span> {new Date().getFullYear()} <span className="font-semibold text-blue-700">माझी</span> <span className="text-green-600 font-semibold">Navi Mumbai</span>. 
             <span className="text-orange-600"> All Rights Reserved.</span>
-            Owned and operated by <strong className="text-blue-700">Ekagrata Trading LLP</strong>.
+             Developed by <strong className="text-blue-700">Vortex Web Technologies Pvt Ltd</strong>.
           </div>
         )}
       </div>

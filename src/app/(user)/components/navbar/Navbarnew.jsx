@@ -271,10 +271,10 @@ export default function Navbar() {
           {/* Right: All elements */}
           <div className="flex items-center gap-3">
             {/* Phone */}
-            <div className="flex items-center gap-1 text-green-600 font-semibold text-sm">
+            {/* <div className="flex items-center gap-1 text-green-600 font-semibold text-sm">
               <FiPhoneCall className="text-md" />
               <span>+91 8693 88 8693</span>
-            </div>
+            </div> */}
 
             {/* Live Views */}
             <div className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs font-medium">
@@ -401,12 +401,12 @@ export default function Navbar() {
               className="top-full left-0 right-0 w-full bg-white p-3 z-50"
             >
               {/* Phone Number (Above Search Bar) */}
-              <div className="flex items-center justify-center mb-2">
+              {/* <div className="flex items-center justify-center mb-2">
                 <div className="flex items-center text-green-600 font-semibold text-sm">
                   <FiPhoneCall className="mr-1 text-base" />
                   +91 8693 88 8693
                 </div>
-              </div>
+              </div> */}
 
               {/* Mobile Search Bar */}
               {/* <div className="flex items-center gap-2 rounded-full bg-white px-2 py-1 mb-4 transition-all duration-300 focus-within:shadow-md"> */}

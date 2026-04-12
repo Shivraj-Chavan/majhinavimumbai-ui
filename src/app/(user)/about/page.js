@@ -5,10 +5,37 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import Button from "../components/form/Button";
+import { useDispatch, useSelector } from "react-redux";
+import PopUp from "../components/home/contactPopup";
+import { useRouter } from "next/navigation";
 
 export default function AboutUs() {
-
-
+  const router = useRouter();
+  const [showLogin, setShowLogin] = useState(false);
+   const dispatch = useDispatch();
+   const [authPurpose, setAuthPurpose] = useState("login");
+   const [showModal, setShowModal] = useState(false);
+   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  
+    useEffect(() => {
+       const token = localStorage.getItem("token");
+      //  if (token && !isLoggedIn) {
+      //    const user = { phone: "unknown" };
+      //    dispatch(login({ user, token }));
+      //  }
+     }, [dispatch, isLoggedIn]);
+    
+  
+    const handleClick = () => {
+      console.log("Logged In:", isLoggedIn); 
+      if (isLoggedIn) {
+        router.push("/businessRegister");
+      } else {
+        setAuthPurpose("business");
+        setShowLogin(true);  
+      }
+    };
+  
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
@@ -135,13 +162,35 @@ export default function AboutUs() {
       {/* Call to Action */}
       <div className="bg-green-500 text-white text-center py-12 px-6">
         <h2 className="text-3xl font-bold">Join Us in Making Navi Mumbai Smarter!</h2>
-      
-            <p className="mt-2 text-lg">List your business today and connect with thousands of potential customers.</p>
-            <button className="mt-6 px-6 py-3 bg-white rounded-xl font-semibold text-green-500 shadow-md hover:bg-green-700 hover:text-white">
-              Get Started
-            </button>
-         
+        <p className="mt-2 text-lg">List your business today and connect with thousands of potential customers.</p>
+        <button
+          onClick={handleClick}
+          className="mt-6 px-6 py-3 bg-white rounded-xl font-semibold text-green-500 shadow-md hover:bg-green-700 hover:text-white"
+        >
+          Get Started
+        </button>
       </div>
+      {showLogin && (
+  <>
+    <div 
+      className="fixed inset-0 bg-black/60 z-[10]" 
+      onClick={() => setShowLogin(false)}
+    />
+
+    {/* Modal */}
+    <div className="fixed inset-0 z-[20] flex items-center justify-center">
+      {/* <div className="bg-white rounded-xl shadow-2xl  max-w-md p-6"> */}
+        <PopUp
+          showModal={showLogin}
+          setShowModal={setShowLogin}
+          authPurpose={authPurpose}
+        />
+      {/* </div> */}
+    </div>
+  </>
+)}
+
+
     </div>
   );
 }
