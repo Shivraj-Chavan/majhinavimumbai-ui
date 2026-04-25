@@ -4,14 +4,16 @@ import React, { useState, useEffect } from "react";
 const Adsvideo = () => {
   // Mobile slides
   const slidesMobile = [
-    { type: "image", src: "/assests/add1.jpeg" },
-    { type: "video", src: "/assests/adsvideo.mp4" },
+    { type: "image", src: "/assests/app-soon1.jpg" },
+    { type: "image", src: "/assests/app-soon1.jpg" },
+    // { type: "video", src: "/assests/adsvideo.mp4" },
   ];
 
   // Desktop slides
   const slidesDesktop = [
+    { type: "image", src: "/assests/app-soon1.jpg" },
     { type: "image", src: "/assests/advimg1.jpeg" },
-    { type: "video", src: "/assests/adsvideo.mp4" },
+    // { type: "video", src: "/assests/adsvideo.mp4" },
   ];
 
   const [currentIndexMobile, setCurrentIndexMobile] = useState(0);
