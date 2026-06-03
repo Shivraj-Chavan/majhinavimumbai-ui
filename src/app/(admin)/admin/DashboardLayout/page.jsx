@@ -86,7 +86,7 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex bg-gradient-to-br from-orange-200 via-white to-green-200">
+    <div className="flex bg-gradient-to-br from-cyan-50 via-white to-emerald-50">
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 backdrop-blur-sm bg-white/5 bg-opacity-50 md:hidden"
@@ -113,7 +113,7 @@ export default function DashboardLayout({ children }) {
             </button>
           </div>
 
-          <nav className="flex-1 p-1 w-[300px]">
+          <nav className="flex-1 w-[300px]">
             <SidebarMenu />
           </nav>
 
@@ -133,7 +133,7 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 items-center justify-between border-b bg-white px-4 md:px-6">
+        <header className="flex h-16 items-center justify-between bg-white px-4 md:px-6">
           <div className="flex items-center">
             <button className="mr-4 md:hidden" onClick={() => setSidebarOpen(true)}>
               <LuMenu className="h-6 w-6" />
