@@ -100,7 +100,7 @@ export default function DashboardLayout({ children }) {
         }`}
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-between border-b px-4">
+          <div className="flex h-16 items-center justify-between  px-4">
             
               {/* <div className="h-8 w-8 rounded-md bg-blue-600" /> */}
               {/* <span className="ml-2 text-lg font-semibold">majhiNaviMumbai</span> */}
@@ -133,7 +133,7 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 items-center justify-between bg-white px-4 md:px-6">
+        <header className="flex h-16 items-center justify-between shadow-sm bg-white px-4 md:px-6">
           <div className="flex items-center">
             <button className="mr-4 md:hidden" onClick={() => setSidebarOpen(true)}>
               <LuMenu className="h-6 w-6" />
