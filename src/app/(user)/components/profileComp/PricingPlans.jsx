@@ -238,7 +238,7 @@ useEffect(() => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black/40 flex justify-center items-center p-2 lg:p-4">
+    <div className="fixed  top-[120px] inset-0 z-50 backdrop-blur-sm bg-black/40 flex justify-center items-center p-2 lg:p-4">
       <div className="relative w-full max-w-7xl max-h-[95vh] overflow-y-auto bg-white rounded-xl shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b-2 p-3 lg:p-6 rounded-t-xl z-10">
