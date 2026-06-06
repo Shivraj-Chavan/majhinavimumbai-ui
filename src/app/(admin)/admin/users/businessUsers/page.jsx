@@ -376,6 +376,7 @@ export default function BusinessUsersPage() {
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider">Business Name</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-32">Phone</th>
+              <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-32">Created On</th>
               <th className="px-2 py-1.5 text-center font-semibold text-gray-500 uppercase tracking-wider w-56">Actions</th>
             </tr>
           </thead>
@@ -402,6 +403,15 @@ export default function BusinessUsersPage() {
                   <td className="px-2 py-1 text-gray-400 font-mono">{(currentPage - 1) * limit + index + 1}</td>
                   <td className="px-2 py-1 font-medium text-gray-800">{user?.name ?? "—"}</td>
                   <td className="px-2 py-1 text-gray-500">{user?.phone ?? "—"}</td>
+                  <td className="px-2 py-1 text-gray-500">
+                  {user?.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "—"}
+                </td>
                   <td className="px-2 py-1">
                     <div className="flex items-center justify-center gap-1.5">
                       <button

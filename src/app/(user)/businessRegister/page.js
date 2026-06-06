@@ -17,7 +17,7 @@ import CONFIG from "@/constance";
 import Image from "next/image";
 import LocationPicker from "@/app/(admin)/admin/components/LocationPicker";
 import TimePicker from "react-time-picker";
-// import PricingPlans from "../components/profileComp/PricingPlans";
+import PricingPlans from "../components/profileComp/PricingPlans";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 
@@ -706,10 +706,10 @@ export default function BusinessRegister({ ownerId , isAdmin = false}) {
       <SuccessModal isOpen={isSuccessModalOpen} ownerId={ownerId} onClose={() => setSuccessModalOpen(false)} message="Your business has been successfully registered!" />
       
       {/* next_phase */}
-      {/* <PricingPlans show={showPricingPopup} onClose={() => setShowPricingPopup(false)} business={userBusiness} onPlanActivated={() => {
+      <PricingPlans show={showPricingPopup} onClose={() => setShowPricingPopup(false)} business={userBusiness} onPlanActivated={() => {
     setShowPricingPopup(false);
     setSuccessModalOpen(true); 
-  }}/> */}
+  }}/>
     </form>
   );
 }

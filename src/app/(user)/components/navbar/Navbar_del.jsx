@@ -133,7 +133,7 @@ export default function Navbar() {
     <div className="flex items-center gap-2 text-white">
       <FiPhoneCall className="text-sm" />
       <span className="font-semibold text-sm">
-        +91 91524 18196
+        +91 8693 88 8693
       </span>
     </div>
 

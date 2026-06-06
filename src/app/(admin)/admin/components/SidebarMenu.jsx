@@ -118,7 +118,7 @@ export default function SidebarMenu() {
     { title: "Sub-Admin Actions",                href: "/admin/users/adminActions2",             icon: <LuShield size={17} />,          count: stats.businessadminActions || 0 },
     { title: "Review Delete Queries",            href: "/admin/users/reviewList",               icon: <LuStar size={17} /> },
     { title: "Enquiry To Business",              href: "/admin/users/enquiryList",              icon: <LuMessageSquare size={17} /> },
-    // { title: "Payment & Plans",                  href: "/admin/users/paymentandplans",          icon: <LuCreditCard size={17} /> },
+     { title: "Payment & Plans",                  href: "/admin/users/paymentandplans",          icon: <LuCreditCard size={17} /> },
   ];
 
   const subAdminMenus = [

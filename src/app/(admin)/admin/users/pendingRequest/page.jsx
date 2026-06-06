@@ -317,7 +317,7 @@ export default function BusinessUsersPage() {
 
   useEffect(() => {
     fetchBusinessUsers(currentPage, searchTerm);
-  }, [currentPage]);
+  }, [currentPage,modalOpen]);
 
   const handleSearch = () => {
     setCurrentPage(1);

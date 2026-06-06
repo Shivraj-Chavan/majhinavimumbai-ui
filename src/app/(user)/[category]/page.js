@@ -41,7 +41,7 @@ export default function Page() {
   const { categories = [], loading, error } = useSelector((state) => state.categories);
   const { businesses, loading: businessesLoading, error: businessesError } = useSelector((state) => state.businesses);
   
-  const limit = 10;
+  const limit = 20;
 
   useEffect(() => {
     if (category) {

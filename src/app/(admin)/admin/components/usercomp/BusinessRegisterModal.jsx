@@ -18,8 +18,8 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
   const [newDay, setNewDay] = useState("Monday");
-  // const [plans, setPlans] = useState([]);
-  // const [selectedPlan, setSelectedPlan] = useState("");
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState("");
   const [duration, setDuration] = useState("");
   const [success, setSuccess] = useState(false);
   const [startDate, setStartDate] = useState('');
@@ -116,55 +116,57 @@ const canEdit = effectiveRole ? ["admin", "sub-admin"].includes(effectiveRole.to
     }
   };
 
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await apiGet("/plan/plans");
+        console.log("Plans:", res); 
+  
+        const order = ["Free", "Silver", "Gold", "Platinum"];
+        const plansArray = Array.isArray(res.data) ? res.data : res;
+  
+        const sorted = plansArray.sort(
+          (a, b) => order.indexOf(a.name) - order.indexOf(b.name)
+        );
+        console.log("Sorted plans:", sorted);
+        setPlans(sorted);
+      } catch (err) {
+        console.error("Failed to fetch plans", err);
+        setPlans([]);
+      }
+    };
+  
+    fetchPlans();
+  }, []);
+
   //next_phase
-  // useEffect(() => {
-  //   const fetchSelectedPlan = async () => {
-  //     if (!business?.id) return;
-  //     try {
-  //       const res = await apiGet(`/plan/selectedplan/${business.id}`);
-  //       console.log("Selected Plan for business:", res);
+  useEffect(() => {
+    const fetchSelectedPlan = async () => {
+      if (!business?.id) return;
+      try {
+        const res = await apiGet(`/plan/selectedplan/${business.id}`);
+        console.log("Selected Plan for business:", res);
   
-  //       if (res && res?.id) {
-  //         setSelectedPlan(res.id.toString()); // match with dropdown
-  //         setStartDate(res.start_date?.slice(0,10)); // yyyy-mm-dd format
-  //         setEndDate(res.end_date?.slice(0,10));
+        if (res && res?.id) {
+          setSelectedPlan(res.id.toString()); // match with dropdown
+          setStartDate(res.start_date?.slice(0,10)); // yyyy-mm-dd format
+          setEndDate(res.end_date?.slice(0,10));
   
-  //         // auto detect duration if possible
-  //         const months = getMonthsFromDuration(res.duration);
-  //         if (months) setDuration(res.duration);
-  //       }
-  //     } catch (err) {
-  //       console.warn("No existing plan found for this business");
-  //     }
-  //   };
+          // auto detect duration if possible
+          const months = getMonthsFromDuration(res.duration);
+          if (months) setDuration(res.duration);
+        }
+      } catch (err) {
+        console.warn("No existing plan found for this business");
+      }
+    };
   
-  //   fetchSelectedPlan();
-  // }, [business]);
+    fetchSelectedPlan();
+  }, [business]);
   
 
   // Plans
-  // useEffect(() => {
-  //   const fetchPlans = async () => {
-  //     try {
-  //       const res = await apiGet("/plan/plans");
-  //       console.log("Plans:", res); 
-  
-  //       const order = ["Free", "Silver", "Gold", "Platinum"];
-  //       const plansArray = Array.isArray(res.data) ? res.data : res;
-  
-  //       const sorted = plansArray.sort(
-  //         (a, b) => order.indexOf(a.name) - order.indexOf(b.name)
-  //       );
-  //       console.log("Sorted plans:", sorted);
-  //       setPlans(sorted);
-  //     } catch (err) {
-  //       console.error("Failed to fetch plans", err);
-  //       setPlans([]);
-  //     }
-  //   };
-  
-  //   fetchPlans();
-  // }, []);
+
   
 
   const handleChange = (e) => {
@@ -230,20 +232,20 @@ const canEdit = effectiveRole ? ["admin", "sub-admin"].includes(effectiveRole.to
     }
     try {
       // Update plan only if a plan is selected
-      // if (selectedPlan && startDate && endDate) {
-      //   const selectedPlanObj = plans.find((p) => p.id == selectedPlan);
+      if (selectedPlan && startDate && endDate) {
+        const selectedPlanObj = plans.find((p) => p.id == selectedPlan);
   
-      //   await apiPost("/plan/select-plan", {
-      //     business_id: business?.id,
-      //     plan_id: selectedPlan,
-      //     startDate,
-      //     endDate,
-      //     plan_duration: duration,
-      //     plan_price: selectedPlanObj?.price ?? 0
-      //   });
+        await apiPost("/plan/select-plan", {
+          business_id: business?.id,
+          plan_id: selectedPlan,
+          startDate,
+          endDate,
+          plan_duration: duration,
+          plan_price: selectedPlanObj?.price ?? 0
+        });
   
-      //   toast.success("Plan updated successfully!");
-      // }
+        toast.success("Plan updated successfully!");
+      }
 
      // Ensure lat/lng are floats
      const lat = formData.latitude != null ? parseFloat(formData.latitude) : null;
@@ -493,7 +495,7 @@ const formatCoord = (coord) => {
           </div>
           {/* next_phase */}
           {/* Plan Selection */}
-          {/* <div className="w-full">
+          <div className="w-full">
             <div className="space-y-6 p-4 bg-white rounded-xl shadow-md">
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700">Select a Plan</label>
@@ -540,7 +542,7 @@ const formatCoord = (coord) => {
 
 
             </div>
-          </div> */}
+          </div>
           </div>
 
        </div>

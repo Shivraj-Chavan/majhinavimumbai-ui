@@ -46,7 +46,7 @@ export default function Page({ params }) {
     (state) => state.businesses
   );
 
-  const limit = 10;
+  const limit = 20;
 
   // shanpana
   // useEffect(() => {
