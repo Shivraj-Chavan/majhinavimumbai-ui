@@ -313,12 +313,11 @@ const adminStatCards = [
   }, [searchTerm]);
 
   useEffect(() => {
-    const ADMIN_ID = 2585;
+    const ADMIN_ID = 3460;
   
     const fetchAdminStats = async () => {
       try {
-        const res = await apiGet(`/dashboard/admin-stats?admin_id=${ADMIN_ID}`)
-  
+        const res = await apiGet(`/dashboard/admin-stats?admin_id=${ADMIN_ID}`)  
         setAdminStats(res);
       } catch (err) {
         console.error(err);

@@ -316,8 +316,8 @@ export default function AdminActions2() {
       const fetchAdminStats = async () => {
         try {
           const res = await apiGet(`/dashboard/admin-stats?admin_id=${ADMIN_ID}`)
-    
           setAdminStats(res);
+    
         } catch (err) {
           console.error(err);
         }
@@ -330,7 +330,7 @@ export default function AdminActions2() {
     const fetchActions = async () => {
       try {
         setLoading(true);
-        const ADMIN_ID = 2623;
+        const ADMIN_ID = 240;
 
         const res = await apiGet(
           `/businesses/admin/actions?page=${currentPage}&limit=${limit}&admin_id=${ADMIN_ID}&search=${encodeURIComponent(query)}`
