@@ -29,7 +29,7 @@ export default function PricingPlans({ show, onClose, business }) {
     {
       id: "2",
       name: "Silver",
-      price: "₹100",
+      price: "₹999",
       period: "/year",
       visibility: "1x",
       photos: "5",
@@ -44,7 +44,7 @@ export default function PricingPlans({ show, onClose, business }) {
     {
       id: "3",
       name: "Gold",
-      price: "₹500",
+      price: "₹1999",
       period: "/year",
       visibility: "3x",
       photos: "10",
@@ -59,7 +59,7 @@ export default function PricingPlans({ show, onClose, business }) {
     {
       id: "4",
       name: "Platinum",
-      price: "₹1000",
+      price: "₹2999",
       period: "/year",
       visibility: "24x Top",
       photos: "20",
