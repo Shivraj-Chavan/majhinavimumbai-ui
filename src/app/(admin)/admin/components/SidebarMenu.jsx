@@ -116,6 +116,7 @@ export default function SidebarMenu() {
     { title: "Contact List",                     href: "/admin/users/contactList",              icon: <LuMail size={17} />,            count: stats.unviewedContacts || 0 },
     { title: "Sub-Admin Actions",                href: "/admin/users/adminActions",             icon: <LuShield size={17} />,          count: stats.businessadminActions || 0 },
     { title: "Sub-Admin Actions",                href: "/admin/users/adminActions2",             icon: <LuShield size={17} />,          count: stats.businessadminActions || 0 },
+    { title: "Sub-Admin Actions",                href: "/admin/users/adminActions3",             icon: <LuShield size={17} />,          count: stats.businessadminActions || 0 },
     { title: "Review Delete Queries",            href: "/admin/users/reviewList",               icon: <LuStar size={17} /> },
     { title: "Enquiry To Business",              href: "/admin/users/enquiryList",              icon: <LuMessageSquare size={17} /> },
      { title: "Payment & Plans",                  href: "/admin/users/paymentandplans",          icon: <LuCreditCard size={17} /> },
@@ -125,8 +126,8 @@ export default function SidebarMenu() {
     { title: "Create Users",            href: "/admin/users/addUsers",              icon: <LuUsers size={17} /> },
     { title: "All Users",               href: "/admin/users",                        icon: <LuLayoutDashboard size={17} /> },
     { title: "Verified Businesses",     href: "/admin/users/businessUsers",          icon: <LuBuilding2 size={17} /> },
-    { title: "Pending Verification",    href: "/admin/users/pendingRequest",         icon: <LuClipboardCheck size={17} />, count: stats.pendingVerifications || 0 },
-    { title: "Pending Update Request",  href: "/admin/users/pendingbusinessrequest", icon: <LuRefreshCw size={17} />,      count: stats.pendingUpdates || 0 },
+    // { title: "Pending Verification",    href: "/admin/users/pendingRequest",         icon: <LuClipboardCheck size={17} />, count: stats.pendingVerifications || 0 },
+    // { title: "Pending Update Request",  href: "/admin/users/pendingbusinessrequest", icon: <LuRefreshCw size={17} />,      count: stats.pendingUpdates || 0 },
   ];
 
   const menusToRender =

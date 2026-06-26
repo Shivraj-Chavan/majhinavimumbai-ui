@@ -456,7 +456,7 @@ const formatCoord = (coord) => {
 
           {/* Verification Status */}
           
-          <div className="w-full">
+          {/* <div className="w-full">
             <label className="block text-sm font-medium text-gray-700 mb-1">Verification Status</label>
             {isEditing ? (
               <div className="relative">
@@ -492,10 +492,63 @@ const formatCoord = (coord) => {
                 {formData.is_verified ? "✅ Verified" : "❌ Unverified"}
               </div>
             )}
+          </div> */}
+          
+          {role === "admin" && (
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Verification Status
+            </label>
+
+            {isEditing ? (
+              <div className="relative">
+                <select
+                  name="is_verified"
+                  value={formData.is_verified ? "true" : "false"}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      is_verified: e.target.value === "true",
+                    }))
+                  }
+                  className="block w-full appearance-none border border-gray-300 bg-white py-2 px-3 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  <option value="false">Unverified</option>
+                  <option value="true">Verified</option>
+                </select>
+
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    className="h-4 w-4 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 12a1 1 0 01-.707-.293l-3-3a1 1 0 111.414-1.414L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3A1 1 0 0110 12z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+            ) : (
+              <div
+                className={`text-sm font-semibold px-4 py-2 mt-1 rounded-xl inline-block ${
+                  formData.is_verified
+                    ? "bg-green-100 text-green-800 border border-green-300"
+                    : "bg-red-100 text-red-800 border border-red-300"
+                }`}
+              >
+                {formData.is_verified ? "✅ Verified" : "❌ Unverified"}
+              </div>
+            )}
           </div>
+        )}
+
+
           {/* next_phase */}
           {/* Plan Selection */}
-          <div className="w-full">
+          {/* <div className="w-full">
             <div className="space-y-6 p-4 bg-white rounded-xl shadow-md">
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700">Select a Plan</label>
@@ -542,7 +595,72 @@ const formatCoord = (coord) => {
 
 
             </div>
-          </div>
+          </div> */}
+
+
+          {role === "admin" && (
+            <div className="w-full">
+              <div className="space-y-6 p-4 bg-white rounded-xl shadow-md">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Select a Plan
+                  </label>
+
+                  <select
+                    onChange={(e) => setSelectedPlan(e.target.value)}
+                    value={selectedPlan}
+                    className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Choose Plan
+                    </option>
+
+                    {plans?.map((plan) => (
+                      <option key={plan.id} value={plan.id}>
+                        {plan.name} - ₹{plan.price} / {plan.duration}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Start Date
+                  </label>
+
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                    className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    End Date
+                  </label>
+
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                    className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                {startDate && endDate && (
+                  <div className="mt-4 text-sm text-green-700 font-medium bg-green-100 p-3 rounded-lg">
+                    📆 Active From:{" "}
+                    <strong>{format(new Date(startDate), "dd/MM/yyyy")}</strong>
+                    {" "}to{" "}
+                    <strong>{format(new Date(endDate), "dd/MM/yyyy")}</strong>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           </div>
 
        </div>
