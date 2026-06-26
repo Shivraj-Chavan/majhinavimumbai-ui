@@ -93,7 +93,7 @@ export default function AdminActions2() {
     const fetchActions = async () => {
       try {
         setLoading(true);
-        const ADMIN_ID = 240;
+        const ADMIN_ID = 28151;
 
         const res = await apiGet(
           `/businesses/admin/actions?page=${currentPage}&limit=${limit}&admin_id=${ADMIN_ID}&search=${encodeURIComponent(query)}`
