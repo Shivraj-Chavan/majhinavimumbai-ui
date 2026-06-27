@@ -360,7 +360,7 @@ export default function SearchPage() {
                   <div className="flex-1 flex flex-col justify-between px-3 py-3 min-w-0">
                     <div>
                       {/* Name + PlanBadge */}
-                      <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                      <div className="flex justify-between items-center gap-1.5 flex-wrap mb-0.5">
                         <h3 className="text-sm sm:text-base font-semibold text-gray-900 leading-snug">
                           {business.name}
                         </h3>
