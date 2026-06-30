@@ -261,14 +261,14 @@ export default function AdminActionsPage() {
     todayCreated: 0,
     dailyStats: [],
   });
-  const [adminStats, setAdminStats] = useState({
-    totalBusinesses: 0,
-    monthlyBusinesses: 0,
-    totalCreatedUsers: 0,
-    todayUsers: 0,
-  });
   const limit = 20;
 
+   const [adminStats, setAdminStats] = useState({
+    totalBusinesses: 0,
+      monthlyBusinesses: 0,
+      totalUsers: 0,
+      monthlyUsers: 0,
+    });
   
   const adminStatCards = [
     { label: "Sub-admin Total Businesses", value: stats.totalBusinesses, bg: "bg-white", text: "text-gray-800", dot: "bg-gray-400" },
@@ -281,7 +281,7 @@ export default function AdminActionsPage() {
     },
     {
       label: "Total Businesses",
-      value: adminStats.totalCreatedBusinesses,
+      value: adminStats.totalBusinesses,
       bg: "bg-green-50",
       text: "text-green-600",
       dot: "bg-green-500",
@@ -295,13 +295,14 @@ export default function AdminActionsPage() {
     },
     {
       label: "Total Users",
-      value: adminStats.todayUsers,
+      value: adminStats.totalUsers,
       bg: "bg-emerald-50",
       text: "text-emerald-600",
       dot: "bg-emerald-500",
     },
     { label: "Verified", value: stats.verifiedBusinesses, bg: "bg-emerald-50", text: "text-emerald-600", dot: "bg-emerald-500" },
   ];
+  
 
   useEffect(() => {
     const handler = setTimeout(() => {

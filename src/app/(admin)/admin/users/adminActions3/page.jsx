@@ -25,9 +25,9 @@ export default function AdminActions2() {
   });
   const limit = 20;
    const [adminStats, setAdminStats] = useState({
-    todayBusinesses: 0,
+    totalBusinesses: 0,
       monthlyBusinesses: 0,
-      todayUsers: 0,
+      totalUsers: 0,
       monthlyUsers: 0,
     });
   
@@ -42,7 +42,7 @@ export default function AdminActions2() {
     },
     {
       label: "Total Businesses",
-      value: adminStats.totalCreatedBusinesses,
+      value: adminStats.totalBusinesses,
       bg: "bg-green-50",
       text: "text-green-600",
       dot: "bg-green-500",
@@ -56,7 +56,7 @@ export default function AdminActions2() {
     },
     {
       label: "Total Users",
-      value: adminStats.todayUsers,
+      value: adminStats.totalUsers,
       bg: "bg-emerald-50",
       text: "text-emerald-600",
       dot: "bg-emerald-500",
