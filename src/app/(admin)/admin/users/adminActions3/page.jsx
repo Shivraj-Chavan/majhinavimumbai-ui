@@ -126,7 +126,7 @@ export default function AdminActions2() {
   const handleSearchEnter = (e) => { if (e.key === "Enter") { setQuery(searchTerm); setCurrentPage(1); } };
   const handleSearchClick = () => { setQuery(searchTerm); setCurrentPage(1); };
   const handleClearSearch = () => { setSearchTerm(""); setQuery(""); setCurrentPage(1); };
-  const formatDate = (timestamp) => timestamp ? new Date(timestamp).toLocaleString() : "—";
+  const formatDate = (timestamp) => timestamp ? new Date(timestamp)?.toLocaleString() : "—";
 
   const statCards2 = [
     { label: "Total Businesses", value: stats.totalBusinesses, bg: "bg-white", text: "text-gray-800", dot: "bg-gray-400" },
@@ -163,7 +163,7 @@ export default function AdminActions2() {
   {/* Total Actions */}
   <div className="bg-white border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
     <p className="text-xs text-gray-500 uppercase tracking-wide">
-      Total Actions : <span className="text-blue-700 text-md font-bold">{totalActions.toLocaleString()}</span>
+      Total Actions : <span className="text-blue-700 text-md font-bold">{totalActions?.toLocaleString()}</span>
     </p>
   </div>
 
@@ -228,7 +228,7 @@ export default function AdminActions2() {
       </div>
 
       <p className={`text-xl font-bold ${text}`}>
-        {value.toLocaleString()}
+        {value?.toLocaleString()}
       </p>
     </div>
   ))}

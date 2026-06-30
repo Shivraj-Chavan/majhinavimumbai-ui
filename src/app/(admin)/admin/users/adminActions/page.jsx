@@ -364,7 +364,7 @@ const adminStatCards = [
   const handleSearchEnter = (e) => { if (e.key === "Enter") { setQuery(searchTerm); setCurrentPage(1); } };
   const handleSearchClick = () => { setQuery(searchTerm); setCurrentPage(1); };
   const handleClearSearch = () => { setSearchTerm(""); setQuery(""); setCurrentPage(1); };
-  const formatDate = (timestamp) => timestamp ? new Date(timestamp).toLocaleString() : "—";
+  const formatDate = (timestamp) => timestamp ? new Date(timestamp)?.toLocaleString() : "—";
 
 
 
@@ -405,7 +405,7 @@ const adminStatCards = [
   {/* Total Actions */}
   <div className="bg-white border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
     <p className="text-xs text-gray-500 uppercase tracking-wide">
-      Total Actions : <span className="text-blue-700 text-md font-bold">{totalActions.toLocaleString()}</span>
+      Total Actions : <span className="text-blue-700 text-md font-bold">{totalActions?.toLocaleString()}</span>
     </p>
   </div>
 
@@ -470,7 +470,7 @@ const adminStatCards = [
       </div>
 
       <p className={`text-xl font-bold ${text}`}>
-        {value.toLocaleString()}
+        {value?.toLocaleString()}
       </p>
     </div>
   ))}
