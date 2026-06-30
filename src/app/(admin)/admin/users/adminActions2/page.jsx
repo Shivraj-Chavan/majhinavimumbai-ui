@@ -262,44 +262,44 @@ export default function AdminActions2() {
   });
   const limit = 20;
    const [adminStats, setAdminStats] = useState({
-      totalCreatedBusinesses: 0,
-      todayCreatedBusinesses: 0,
-      totalCreatedUsers: 0,
-      todayCreatedUsers: 0,
+    todayBusinesses: 0,
+      monthlyBusinesses: 0,
+      todayUsers: 0,
+      monthlyUsers: 0,
     });
   
-  const adminStatCards = [
-    { label: "Sub-admin Total Businesses", value: stats.totalBusinesses, bg: "bg-white", text: "text-gray-800", dot: "bg-gray-400" },
-    {
-      label: "Today's Businesses",
-      value: adminStats.todayCreatedBusinesses,
-      bg: "bg-blue-50",
-      text: "text-blue-600",
-      dot: "bg-blue-500",
-    },
-    {
-      label: "Total Businesses",
-      value: adminStats.totalCreatedBusinesses,
-      bg: "bg-green-50",
-      text: "text-green-600",
-      dot: "bg-green-500",
-    },
-    {
-      label: "Today's Users",
-      value: adminStats.todayCreatedUsers,
-      bg: "bg-purple-50",
-      text: "text-purple-600",
-      dot: "bg-purple-500",
-    },
-    {
-      label: "Total Users",
-      value: adminStats.totalCreatedUsers,
-      bg: "bg-emerald-50",
-      text: "text-emerald-600",
-      dot: "bg-emerald-500",
-    },
-    { label: "Verified", value: stats.verifiedBusinesses, bg: "bg-emerald-50", text: "text-emerald-600", dot: "bg-emerald-500" },
-  ];
+    const adminStatCards = [
+      { label: "Sub-admin Total Businesses", value: stats.totalBusinesses, bg: "bg-white", text: "text-gray-800", dot: "bg-gray-400" },
+      {
+        label: "Businesses created this month",
+        value: adminStats.monthlyBusinesses,
+        bg: "bg-blue-50",
+        text: "text-blue-600",
+        dot: "bg-blue-500",
+      },
+      {
+        label: "Total Businesses",
+        value: adminStats.totalCreatedBusinesses,
+        bg: "bg-green-50",
+        text: "text-green-600",
+        dot: "bg-green-500",
+      },
+      {
+        label: "Users created current month",
+        value: adminStats.monthlyUsers,
+        bg: "bg-purple-50",
+        text: "text-purple-600",
+        dot: "bg-purple-500",
+      },
+      {
+        label: "Total Users",
+        value: adminStats.todayUsers,
+        bg: "bg-emerald-50",
+        text: "text-emerald-600",
+        dot: "bg-emerald-500",
+      },
+      { label: "Verified", value: stats.verifiedBusinesses, bg: "bg-emerald-50", text: "text-emerald-600", dot: "bg-emerald-500" },
+    ];
   
 
   useEffect(() => {
