@@ -1,246 +1,11 @@
-// "use client";
-
-// import React, { useEffect, useState } from "react";
-// import Pagination from "../../components/usercomp/Pagination";
-// import { apiGet } from "@/lib/apiClient";
-// import DownloadAdminActions from "../../components/ActionsDownloadReport";
-
-// export default function AdminActionsPage() {
-//   const [actions, setActions] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-//   const [totalPages, setTotalPages] = useState(1);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [query, setQuery] = useState("");
-//   const [stats, setStats] = useState({
-//     totalBusinesses: 0,
-//     verifiedBusinesses: 0,
-//     pendingBusinesses: 0,
-//     subAdmins: 0,
-//     approvedBySubAdmin: 0,
-//     todayCreated: 0,
-//     dailyStats: [],
-//   });
-//   const limit = 15;
-
-//   // Debounce search
-//   useEffect(() => {
-//     const handler = setTimeout(() => {
-//       setQuery(searchTerm);
-//       setCurrentPage(1);
-//     }, 500);
-
-//     return () => clearTimeout(handler);
-//   }, [searchTerm]);
-
-//   // Fetch actions
-//   useEffect(() => {
-//     const fetchActions = async () => {
-//       try {
-//         setLoading(true);
-//         const res = await apiGet(
-//           `/businesses/admin/actions?page=${currentPage}&limit=${limit}&search=${encodeURIComponent(query)}`
-//         );
-//         setActions(res?.actions || []);
-//         setTotalPages(res?.totalPages || 1);
-//       } catch (err) {
-//         setError(err.message || "Failed to fetch admin actions");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchActions();
-//   }, [currentPage, query]);
-
-//   useEffect(() => {
-//     const fetchStats = async () => {
-//       try {
-//           const res = await apiGet("/dashboard");
-//         setStats(res);
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     };
-  
-//     fetchStats();
-//   }, []);
-
-//   const handlePageChange = (page) => setCurrentPage(page);
-
-//   const handleSearchEnter = (e) => {
-//     if (e.key === "Enter") {
-//       setQuery(searchTerm);
-//       setCurrentPage(1);
-//     }
-//   };
-
-//   const handleSearchClick = () => {
-//     setQuery(searchTerm);
-//     setCurrentPage(1);
-//   };
-
-//   const handleClearSearch = () => {
-//     setSearchTerm("");
-//     setQuery("");
-//     setCurrentPage(1);
-//   };
-
-//   const formatDate = (timestamp) =>
-//     timestamp ? new Date(timestamp).toLocaleString() : "-";
-
-//   return (
-//     <div className="p-6 bg-gradient-to-br from-white/30 to-white/30 backdrop-blur-md rounded-2xl shadow-lg">
-//   <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
-   
-//     <h1 className="text-2xl font-semibold text-gray-800"> Admin Actions </h1>
-
-
-//    {/*download excel */}
-//     <div className="flex items-center gap-2 flex-wrap mb-3">
-//       <DownloadAdminActions />
-//     </div>
-//   </div>
-
-
-//    {/* Dashboard Stats */}
-//    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-
-// <div className="bg-white rounded-xl p-4 shadow">
-//   <p className="text-sm text-gray-500">Total Businesses</p>
-//   <h2 className="text-2xl font-bold">
-//     {stats.totalBusinesses}
-//   </h2>
-// </div>
-
-// <div className="bg-green-50 rounded-xl p-4 shadow">
-//   <p className="text-sm text-gray-500">Verified</p>
-//   <h2 className="text-2xl font-bold text-green-600">
-//     {stats.verifiedBusinesses}
-//   </h2>
-// </div>
-
-// <div className="bg-yellow-50 rounded-xl p-4 shadow">
-//   <p className="text-sm text-gray-500">Pending</p>
-//   <h2 className="text-2xl font-bold text-yellow-600">
-//     {stats.pendingBusinesses}
-//   </h2>
-// </div>
-
-// <div className="bg-blue-50 rounded-xl p-4 shadow">
-//   <p className="text-sm text-gray-500">Sub Admins</p>
-//   <h2 className="text-2xl font-bold text-blue-600">
-//     {stats.subAdmins}
-//   </h2>
-// </div>
-
-// <div className="bg-purple-50 rounded-xl p-4 shadow">
-//   <p className="text-sm text-gray-500">Approved</p>
-//   <h2 className="text-2xl font-bold text-purple-600">
-//     {stats.approvedBySubAdmin}
-//   </h2>
-// </div>
-
-// <div className="bg-red-50 rounded-xl p-4 shadow">
-//   <p className="text-sm text-gray-500">Today's Created</p>
-//   <h2 className="text-2xl font-bold text-red-600">
-//     {stats.todayCreated}
-//   </h2>
-// </div>
-
-// </div>
-
-
-//       {/* Search Bar */}
-//       <div className="mb-4 flex justify-center gap-2 flex-wrap">
-//         <input
-//           type="text"
-//           value={searchTerm}
-//           onChange={(e) => setSearchTerm(e.target.value)}
-//           onKeyDown={handleSearchEnter}
-//           placeholder="Search by admin, action, target or business..."
-//           className="flex-grow px-4 py-2 rounded-l-lg focus:outline-none border border-gray-300 min-w-[200px]"
-//         />
-//         <button
-//           onClick={handleSearchClick}
-//           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-//         >
-//           Search
-//         </button>
-//         <button
-//           onClick={handleClearSearch}
-//           className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm"
-//           title="Clear"
-//         >
-//           Clear
-//         </button>
-//       </div>
-
-//       {/* Table */}
-//       {loading ? (
-//         <div className="text-center text-gray-600">Loading...</div>
-//       ) : error ? (
-//         <div className="text-center text-red-500">{error}</div>
-//       ) : actions.length === 0 ? (
-//         <div className="text-center text-gray-500">No actions found.</div>
-//       ) : (
-//         <div className="w-full overflow-x-auto rounded-lg">
-//           <table className="min-w-full text-sm text-left border border-gray-200">
-//             <thead className="bg-white/60 text-gray-700 uppercase text-md">
-//               <tr>
-//                 <th className="px-4 py-3">ID</th>
-//                 <th className="px-4 py-3">Admin</th>
-//                 <th className="px-4 py-3">Action</th>
-//                 <th className="px-4 py-3">Target Type</th>
-//                 <th className="px-4 py-3">Target ID</th>
-//                 <th className="px-4 py-3">Timestamp</th>
-//               </tr>
-//             </thead>
-//             <tbody className="bg-white/30 backdrop-blur-md">
-//               {actions.map((action, index) => (
-//                 <tr
-//                   key={action.id}
-//                   className="hover:bg-white/50 transition-all duration-300"
-//                 >
-//                   <td className="px-4 py-3 font-medium text-gray-800">
-//                     {index + 1 + (currentPage - 1) * limit}
-//                   </td>
-//                   <td className="px-4 py-3">{action.admin_name || action.admin_id}</td>
-//                   <td className="px-4 py-3">{action.action}</td>
-//                   <td className="px-4 py-3">{action.target_type}</td>
-//                   <td className="px-4 py-3">{action.target_id || "-"}</td>
-//                   <td className="px-4 py-3 text-sm text-gray-500">
-//                     {formatDate(action.created_at)}
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-
-//       {/* Pagination */}
-//       <div className="mt-4">
-//         <Pagination
-//           currentPage={currentPage}
-//           totalPages={totalPages}
-//           onPageChange={handlePageChange}
-//         />
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Pagination from "../../components/usercomp/Pagination";
 import { apiGet } from "@/lib/apiClient";
 import DownloadAdminActions from "../../components/ActionsDownloadReport";
+import axios from "axios";
+import CONFIG from "@/constance";
 
 
 export default function AdminActionsPage() {
@@ -252,6 +17,12 @@ export default function AdminActionsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [totalActions, setTotalActions] = useState(0);
   const [query, setQuery] = useState("");
+  const [selectedAdmin, setSelectedAdmin] = useState("");
+  const [admins, setAdmins] = useState([]);
+const [selectedTargetType, setSelectedTargetType] = useState("");
+const [startDate, setStartDate] = useState("");
+const [endDate, setEndDate] = useState("");
+
   const [stats, setStats] = useState({
     totalBusinesses: 0,
     verifiedBusinesses: 0,
@@ -263,17 +34,141 @@ export default function AdminActionsPage() {
   });
   const limit = 20;
 
-   const [adminStats, setAdminStats] = useState({
-    totalBusinesses: 0,
+  //  const [adminStats, setAdminStats] = useState({
+  //   totalBusinesses: 0,
+  //     monthlyBusinesses: 0,
+  //     totalUsers: 0,
+  //     monthlyUsers: 0,
+  //   });
+
+    const [adminStats, setAdminStats] = useState({
+      todayBusinesses: 0,
       monthlyBusinesses: 0,
-      totalUsers: 0,
+      totalBusinesses: 0,
+      todayUsers: 0,
       monthlyUsers: 0,
+      totalUsers: 0,
     });
   
+  // const adminStatCards = [
+  //   { label: "Sub-admin Total Businesses", value: stats.totalBusinesses, bg: "bg-white", text: "text-gray-800", dot: "bg-gray-400" },
+  //   {
+  //     label: "Businesses created this month",
+  //     value: adminStats.monthlyBusinesses,
+  //     bg: "bg-blue-50",
+  //     text: "text-blue-600",
+  //     dot: "bg-blue-500",
+  //   },
+  //   {
+  //     label: "Total Businesses",
+  //     value: adminStats.totalBusinesses,
+  //     bg: "bg-green-50",
+  //     text: "text-green-600",
+  //     dot: "bg-green-500",
+  //   },
+  //   {
+  //     label: "Users created current month",
+  //     value: adminStats.monthlyUsers,
+  //     bg: "bg-purple-50",
+  //     text: "text-purple-600",
+  //     dot: "bg-purple-500",
+  //   },
+  //   {
+  //     label: "Total Users",
+  //     value: adminStats.totalUsers,
+  //     bg: "bg-emerald-50",
+  //     text: "text-emerald-600",
+  //     dot: "bg-emerald-500",
+  //   },
+  //   { label: "Verified", value: stats.verifiedBusinesses, bg: "bg-emerald-50", text: "text-emerald-600", dot: "bg-emerald-500" },
+  // ];
+  
+
+
+    
+  
+const initialMonthDate  = new Date(2026, 5); // June 2026 (0-based month index)
+const currentDate = new Date();
+
+const monthOptions = [];
+
+const tempDate = new Date(initialMonthDate );
+
+while (tempDate <= currentDate) {
+  monthOptions.push({
+    month: tempDate.getMonth() + 1,
+    year: tempDate.getFullYear(),
+    label: tempDate.toLocaleString("default", {
+      month: "long",
+      year: "numeric",
+    }),
+  });
+
+  tempDate.setMonth(tempDate.getMonth() + 1);
+}
+
+const current = monthOptions[monthOptions.length - 1];
+
+const [selectedMonth, setSelectedMonth] = useState(current.month);
+const [selectedYear, setSelectedYear] = useState(current.year);
+
+
+  const downloadExcel = async () => {
+    if (!startDate || !endDate) {
+      alert("Please select Start Date and End Date");
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem("token");
+  
+      console.log({
+        adminId: selectedAdmin,
+        startDate,
+        endDate,
+        targetType: selectedTargetType,
+      });
+  
+      const response = await axios.get(`${CONFIG.API_BASE_URL}/subadmin/export-actions`, {
+        params: {
+          adminId: selectedAdmin || null,
+          startDate,
+          endDate,
+          targetType: selectedTargetType,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob",
+      });
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+  
+      link.href = url;
+      link.download = `SubAdminReport_${startDate}_${endDate}.xlsx`;
+  
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+  
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   const adminStatCards = [
-    { label: "Sub-admin Total Businesses", value: stats.totalBusinesses, bg: "bg-white", text: "text-gray-800", dot: "bg-gray-400" },
     {
-      label: "Businesses created this month",
+      label: "Today's Businesses",
+      value: adminStats.todayBusinesses,
+      bg: "bg-cyan-50",
+      text: "text-cyan-600",
+      dot: "bg-cyan-500",
+    },
+    {
+      label: "Monthly Businesses",
       value: adminStats.monthlyBusinesses,
       bg: "bg-blue-50",
       text: "text-blue-600",
@@ -287,7 +182,14 @@ export default function AdminActionsPage() {
       dot: "bg-green-500",
     },
     {
-      label: "Users created current month",
+      label: "Today's Users",
+      value: adminStats.todayUsers,
+      bg: "bg-orange-50",
+      text: "text-orange-600",
+      dot: "bg-orange-500",
+    },
+    {
+      label: "Monthly Users",
       value: adminStats.monthlyUsers,
       bg: "bg-purple-50",
       text: "text-purple-600",
@@ -300,9 +202,7 @@ export default function AdminActionsPage() {
       text: "text-emerald-600",
       dot: "bg-emerald-500",
     },
-    { label: "Verified", value: stats.verifiedBusinesses, bg: "bg-emerald-50", text: "text-emerald-600", dot: "bg-emerald-500" },
   ];
-  
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -313,26 +213,50 @@ export default function AdminActionsPage() {
   }, [searchTerm]);
 
   useEffect(() => {
-    const ADMIN_ID = 3460;
+    const adminId = selectedAdmin || "";
   
     const fetchAdminStats = async () => {
       try {
-        const res = await apiGet(`/dashboard/admin-stats?admin_id=${ADMIN_ID}`)  
-        setAdminStats(res);
+        // const res = await apiGet(`/dashboard/admin-stats?admin_id=${ADMIN_ID}`)  
+        // setAdminStats(res);
+
+  const url = selectedAdmin
+  ? `/dashboard/admin-stats?admin_id=${selectedAdmin}&month=${selectedMonth}&year=${selectedYear}`
+  : `/dashboard/admin-stats?month=${selectedMonth}&year=${selectedYear}`;
+
+const res = await apiGet(url);
+
+setAdminStats(res);
       } catch (err) {
         console.error(err);
       }
     };
   
     fetchAdminStats();
+  }, [selectedAdmin , selectedMonth, selectedYear]);
+
+  const fetchAdmins = async () => {
+    try {
+      const res = await apiGet("/businesses/admin/admins-list");
+     console.log("fetchAdmins",res)
+      if (res.success) {
+        setAdmins(res.admins || []);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  useEffect(() => {
+    fetchAdmins();
   }, []);
 
   useEffect(() => {
     const fetchActions = async () => {
       try {
         setLoading(true);
-        const ADMIN_ID = 3460;
-
+        // const ADMIN_ID = 3460;
+        const ADMIN_ID = selectedAdmin || "";
         const res = await apiGet(
           `/businesses/admin/actions?page=${currentPage}&limit=${limit}&admin_id=${ADMIN_ID}&search=${encodeURIComponent(query)}`
         );
@@ -346,7 +270,7 @@ export default function AdminActionsPage() {
       }
     };
     fetchActions();
-  }, [currentPage, query]);
+  }, [currentPage, query , selectedAdmin]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -380,39 +304,147 @@ export default function AdminActionsPage() {
   return (
     <div className="p-4 sm:p-5">
      {/* Header Row */}
-<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-
-{/* Left Section */}
-<div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
-
-  {/* Left Side */}
-  <div>
-    <h1 className="text-xl font-semibold text-gray-800 tracking-tight">
-      Admin Actions
-    </h1>
-
-    <p className="text-sm text-gray-500 mt-1">
-      Track all administrative activities and system changes.
-    </p>
-  </div>
-
-
+{/* Header */}
+<div className="mb-4">
+  <h2 className="text-xl font-semibold text-gray-800">Sub Admin</h2>
+  <p className="text-sm text-gray-500 mt-0.5">
+    Track and monitor sub-admin actions and activity across the platform
+  </p>
 </div>
 
 {/* Right Section */}
-<div className="flex flex-wrap items-center gap-3">
+<div className="flex flex-wrap items-center gap-2">
+  {/* Month */}
+  <select
+    value={`${selectedMonth}-${selectedYear}`}
+    onChange={(e) => {
+      const [month, year] = e.target.value.split("-");
+      setSelectedMonth(Number(month));
+      setSelectedYear(Number(year));
+    }}
+    className="h-9 min-w-[150px] rounded-md border border-gray-300 px-2.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+  >
+    {monthOptions.map((item) => (
+      <option
+        key={`${item.month}-${item.year}`}
+        value={`${item.month}-${item.year}`}
+      >
+        {item.label}
+      </option>
+    ))}
+  </select>
 
   {/* Total Actions */}
-  <div className="bg-white border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
+  <div className="h-9 flex items-center bg-white border border-blue-100 rounded-md px-3 shadow-sm whitespace-nowrap">
     <p className="text-xs text-gray-500 uppercase tracking-wide">
-      Total Actions : <span className="text-blue-700 text-md font-bold">{totalActions?.toLocaleString()}</span>
+      Total Actions
+      <span className="ml-1.5 text-blue-700 text-sm font-bold">
+        {totalActions?.toLocaleString()}
+      </span>
     </p>
   </div>
 
-  {/* Search Bar */}
-  <div className="flex items-center gap-1.5 border border-gray-200 bg-white rounded-lg shadow-sm px-2 py-1.5 w-full sm:w-auto sm:min-w-[350px]">
+  {/* Sub Admin */}
+  <select
+    value={selectedAdmin}
+    onChange={(e) => {
+      setSelectedAdmin(e.target.value);
+      setCurrentPage(1);
+    }}
+    className="h-9 min-w-[190px] rounded-md border border-gray-300 px-2.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+  >
+    <option value="">All Sub Admins</option>
+    {admins.map((admin) => (
+      <option key={admin.id} value={admin.id}>
+        {admin.name} ({admin.role})
+      </option>
+    ))}
+  </select>
+
+  {/* Target Type */}
+  <select
+    value={selectedTargetType}
+    onChange={(e) => setSelectedTargetType(e.target.value)}
+    className="h-9 min-w-[110px] rounded-md border border-gray-300 px-2.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+  >
+    <option value="">All Types</option>
+    <option value="user">User</option>
+    <option value="business">Business</option>
+  </select>
+
+  {/* Date Range */}
+  <div className="flex items-center gap-1.5">
+    <input
+      type="date"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      className="h-9 rounded-md border border-gray-300 px-2.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+    />
+    <span className="text-gray-400 text-sm">–</span>
+    <input
+      type="date"
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      className="h-9 rounded-md border border-gray-300 px-2.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+    />
+  </div>
+
+  {/* Export */}
+  <button
+    onClick={downloadExcel}
+    className="h-9 px-4 rounded-md bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-sm transition-colors"
+  >
+    Export Excel
+  </button>
+</div>
+
+{/* Search */}
+<div className="mt-3">
+  <div className="flex items-center mb-5 gap-2 border border-gray-200 bg-white rounded-md shadow-sm px-3 h-12 w-full lg:max-w-md">
     <svg
-      className="w-3.5 h-3.5 text-gray-400 shrink-0"
+      className="w-4 h-4 text-gray-400 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+      />
+    </svg>
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      onKeyDown={handleSearchEnter}
+      placeholder="Search by admin, action, target or business..."
+      className="flex-1 bg-transparent outline-none text-sm"
+    />
+    {searchTerm && (
+      <button
+        onClick={handleClearSearch}
+        className="text-gray-400 hover:text-gray-700 shrink-0"
+      >
+        ✕
+      </button>
+    )}
+    <button
+      onClick={handleSearchClick}
+      className="px-3 h-7 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 shrink-0"
+    >
+      Search
+    </button>
+  </div>
+</div>
+
+{/* Search */}
+{/* <div className="mt-4">
+  <div className="flex items-center gap-2 border border-gray-200 bg-white rounded-lg shadow-sm px-3 py-2 w-full lg:max-w-md">
+
+    <svg
+      className="w-4 h-4 text-gray-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -431,13 +463,13 @@ export default function AdminActionsPage() {
       onChange={(e) => setSearchTerm(e.target.value)}
       onKeyDown={handleSearchEnter}
       placeholder="Search by admin, action, target or business..."
-      className="flex-grow text-xs bg-transparent focus:outline-none text-gray-700 placeholder-gray-400 min-w-0"
+      className="flex-1 bg-transparent outline-none text-sm"
     />
 
     {searchTerm && (
       <button
         onClick={handleClearSearch}
-        className="text-gray-400 hover:text-gray-600 transition-colors"
+        className="text-gray-400 hover:text-gray-700"
       >
         ✕
       </button>
@@ -445,17 +477,13 @@ export default function AdminActionsPage() {
 
     <button
       onClick={handleSearchClick}
-      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors"
+      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
     >
       Search
     </button>
+
   </div>
-
-  <DownloadAdminActions />
-</div>
-
-</div>
-
+</div> */}
 <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-5">
   {adminStatCards.map(({ label, value, bg, text, dot }) => (
     <div
@@ -509,6 +537,7 @@ export default function AdminActionsPage() {
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider">Admin</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase">Business Name</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-28">Target Type</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-24">Target ID</th>
               <th className="px-2 py-1.5 text-left font-semibold text-gray-500 uppercase tracking-wider w-36">Timestamp</th>
@@ -544,6 +573,13 @@ export default function AdminActionsPage() {
                     <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-mono text-[10px]">
                       {action.action}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-700">
+                    {action.target_type === "business"
+                      ? action.business_name
+                      : action.target_type === "user"
+                      ? action.target_user_name
+                      : "-"}
                   </td>
                   <td className="px-2 py-1 text-gray-500">{action.target_type}</td>
                   <td className="px-2 py-1 text-gray-400 font-mono">{action.target_id || "—"}</td>

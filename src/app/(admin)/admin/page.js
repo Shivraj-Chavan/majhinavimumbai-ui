@@ -162,8 +162,25 @@ const {
   
       {/* SUB ADMIN DASHBOARD */}
       {role !== "admin" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+        
+          
+        <StatCard
+            icon={Users}
+            label="Today's Users"
+            value={todayUsers}
+            color="text-green-600"
+            bgColor="bg-green-50"
+          />
+
+          <StatCard
+            icon={Briefcase}
+            label="Today's Businesses"
+            value={todayBusinesses}
+            color="text-emerald-600"
+            bgColor="bg-emerald-50"
+          />
+
           <StatCard
             icon={Users}
             label="Total Users Created"
@@ -264,7 +281,7 @@ const {
             </div>
           </div>
   
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-6">
   
             <StatCard
               icon={Edit}

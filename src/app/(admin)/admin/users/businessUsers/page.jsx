@@ -246,6 +246,14 @@ import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterMod
 import Pagination from "../../components/usercomp/Pagination";
 import ManageBusinessImagesModal from "../../components/usercomp/ManageBusinessImagesModal";
 import { toast } from "react-toastify";
+import {
+  Users,
+  UserPlus,
+  CalendarDays,
+  Building2,
+  Store,
+  TrendingUp,
+} from "lucide-react";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
@@ -259,6 +267,44 @@ export default function BusinessUsersPage() {
   const [searchTerm, setSearchTerm] = useState("");
    const [totalBusinessUsers, setTotalBusinessUsers] = useState(0);
   const limit = 20;
+
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    todayUsers: 0,
+    monthlyUsers: 0,
+    totalBusinesses: 0,
+    todayBusinesses: 0,
+    monthlyBusinesses: 0,
+  });
+  
+  const fetchDashboardStats = async (id) => {
+    const res = await apiGet(`/dashboard/admin-stats?admin_id=${id}`);
+  
+    setStats({
+      totalUsers: res.totalUsers || 0,
+      todayUsers: res.todayUsers || 0,
+      monthlyUsers: res.monthlyUsers || 0,
+      totalBusinesses: res.totalBusinesses || 0,
+      todayBusinesses: res.todayBusinesses || 0,
+      monthlyBusinesses: res.monthlyBusinesses || 0,
+    })
+      // setStats(res);
+    
+  };
+
+  const [adminId, setAdminId] = useState(null);
+
+useEffect(() => {
+  const admin = JSON.parse(localStorage.getItem("admin"));
+  setAdminId(admin?.id);
+}, []);
+
+useEffect(() => {
+  if (adminId) {
+    fetchDashboardStats(adminId);
+  }
+}, [adminId]);
+  
 
   const fetchBusinessUsers = async (page = 1, query = "") => {
     try {
@@ -316,6 +362,48 @@ export default function BusinessUsersPage() {
     });
   };
 
+
+  // const dashboardCards = [
+  //   {
+  //     title: "Total Users",
+  //     value: stats.totalUsers,
+  //     icon: Users,
+  //     color: "bg-blue-500",
+  //   },
+  //   {
+  //     title: "Today's Users",
+  //     value: stats.todayUsers,
+  //     icon: UserPlus,
+  //     color: "bg-green-500",
+  //   },
+  //   {
+  //     title: "Monthly Users",
+  //     value: stats.monthlyUsers,
+  //     icon: CalendarDays,
+  //     color: "bg-purple-500",
+  //   },
+  //   {
+  //     title: "Total Businesses",
+  //     value: stats.totalBusinesses,
+  //     icon: Building2,
+  //     color: "bg-orange-500",
+  //   },
+  //   {
+  //     title: "Today's Businesses",
+  //     value: stats.todayBusinesses,
+  //     icon: Store,
+  //     color: "bg-red-500",
+  //   },
+  //   {
+  //     title: "Monthly Businesses",
+  //     value: stats.monthlyBusinesses,
+  //     icon: TrendingUp,
+  //     color: "bg-indigo-500",
+  //   },
+  // ];
+
+
+
   return (
     <div className="p-4 sm:p-5">
       <ManageBusinessImagesModal
@@ -341,6 +429,38 @@ export default function BusinessUsersPage() {
       Total Users : <span className="text-blue-700 font-bold text-lg">{totalBusinessUsers.toLocaleString()}</span> 
     </p>
   </div>
+
+
+  {/* <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-5 mb-6">
+  {dashboardCards.map((card, index) => {
+    const Icon = card.icon;
+
+    return (
+      <div
+        key={index}
+        className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition-all"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-500 font-medium">
+              {card.title}
+            </p>
+
+            <h3 className="mt-2 text-3xl font-bold text-gray-800">
+              {Number(card.value).toLocaleString()}
+            </h3>
+          </div>
+
+          <div
+            className={`${card.color} w-14 h-14 rounded-xl flex items-center justify-center`}
+          >
+            <Icon className="w-7 h-7 text-white" />
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div> */}
 
         {/* Search Box */}
         <div className="flex items-center gap-1.5 border border-gray-200 bg-white rounded-lg shadow-sm px-2 py-1.5 w-full sm:w-auto sm:min-w-[320px]">

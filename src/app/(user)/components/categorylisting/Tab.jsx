@@ -204,7 +204,9 @@ const Tab = ({ business, renderStars, setRefreshApi,setMyReview}) => {
               <div>
                 <p className="text-sm font-medium text-gray-500">WhatsApp</p>
                 <a
-                  href={`https://wa.me/+91${business.wp_number}`}
+                 href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+                  "Found you on majhinavimumbai.com and your services are exactly what I've been looking for."
+                )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-800 font-semibold hover:text-green-700"
@@ -364,12 +366,12 @@ const Tab = ({ business, renderStars, setRefreshApi,setMyReview}) => {
           <hr className="text-gray-100 mt-5"/>
 
 
-      {/* Reviews */}
-    <section id="reviews" className="scroll-mt-24">
-      <h2 className="text-2xl font-semibold text-blue-900 mb-6 flex items-center gap-2">
-    <FaCommentDots  className="text-yellow-500 text-2xl" />
-    Reviews
-  </h2>
+          {/* Reviews */}
+        <section id="reviews" className="scroll-mt-24">
+          <h2 className="text-2xl font-semibold text-blue-900 mb-6 flex items-center gap-2">
+        <FaCommentDots  className="text-yellow-500 text-2xl" />
+        Reviews
+      </h2>
 
         {loading ? (
           <p className="text-gray-500 text-sm">Loading reviews...</p>

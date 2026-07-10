@@ -495,6 +495,7 @@ const formatCoord = (coord) => {
           </div> */}
           
           {role === "admin" && (
+           <>
           <div className="w-full">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Verification Status
@@ -543,62 +544,8 @@ const formatCoord = (coord) => {
               </div>
             )}
           </div>
-        )}
 
-
-          {/* next_phase */}
-          {/* Plan Selection */}
-          {/* <div className="w-full">
-            <div className="space-y-6 p-4 bg-white rounded-xl shadow-md">
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Select a Plan</label>
-                <select
-              onChange={(e) => setSelectedPlan(e.target.value)}
-              value={selectedPlan}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            >
-              <option value="" disabled>Choose Plan</option>
-              {plans?.map((plan) => (
-                <option key={plan.id} value={plan.id}>
-                  {plan.name} - ₹{plan.price} / {plan.duration}
-                </option>
-              ))}
-            </select>
-
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Start Date</label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">end Date</label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {startDate && endDate && (
-              <div className="mt-4 text-sm text-green-700 font-medium bg-green-100 p-3 rounded-lg">
-                📆 Active From: <strong>{format(new Date(startDate), 'dd/MM/yyyy')}</strong> 
-                to <strong>{format(new Date(endDate), 'dd/MM/yyyy')}</strong>
-              </div>
-            )}
-
-
-            </div>
-          </div> */}
-
-
-          {role === "admin" && (
+         
             <div className="w-full">
               <div className="space-y-6 p-4 bg-white rounded-xl shadow-md">
                 <div className="space-y-2">
@@ -659,7 +606,63 @@ const formatCoord = (coord) => {
                 )}
               </div>
             </div>
+           </>
           )}
+
+
+          {/* next_phase */}
+          {/* Plan Selection */}
+          {/* <div className="w-full">
+            <div className="space-y-6 p-4 bg-white rounded-xl shadow-md">
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">Select a Plan</label>
+                <select
+              onChange={(e) => setSelectedPlan(e.target.value)}
+              value={selectedPlan}
+              className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="" disabled>Choose Plan</option>
+              {plans?.map((plan) => (
+                <option key={plan.id} value={plan.id}>
+                  {plan.name} - ₹{plan.price} / {plan.duration}
+                </option>
+              ))}
+            </select>
+
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">Start Date</label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">end Date</label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                  className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+
+              {startDate && endDate && (
+              <div className="mt-4 text-sm text-green-700 font-medium bg-green-100 p-3 rounded-lg">
+                📆 Active From: <strong>{format(new Date(startDate), 'dd/MM/yyyy')}</strong> 
+                to <strong>{format(new Date(endDate), 'dd/MM/yyyy')}</strong>
+              </div>
+            )}
+
+
+            </div>
+          </div> */}
+
+
+        
 
           </div>
 

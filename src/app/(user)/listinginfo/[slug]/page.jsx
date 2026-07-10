@@ -548,12 +548,20 @@ export default function ListingInfo() {
                 label="Enquiry"
                 variant="orange"
               />
-              <ActionPill
+              {/* <ActionPill
                 href={`https://wa.me/+91${business.wp_number}`}
                 icon={<TbBrandWhatsapp style={{ color: "#25D366" }} />}
                 label="Chat"
                 variant="green"
-              />
+              /> */}
+        <ActionPill
+          href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+            "Found you on majhinavimumbai.com and your services are exactly what I’ve been looking for."
+          )}`}
+          icon={<TbBrandWhatsapp style={{ color: "#25D366" }} />}
+          label="Chat"
+          variant="green"
+        />
               <ActionPill
                 href={directionsHref}
                 icon={<FcDownRight />}

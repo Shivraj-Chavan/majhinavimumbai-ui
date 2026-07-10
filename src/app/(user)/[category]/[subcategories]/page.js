@@ -385,7 +385,9 @@ const BusinessCard = ({ business }) => {
               <div className="flex items-center gap-2 text-xs text-gray-600">
                 <FaWhatsapp className="text-emerald-500 text-sm flex-shrink-0" />
                 <a
-                  href={`https://wa.me/91${business.wp_number}`}
+                  href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+                    "Found you on majhinavimumbai.com and your services are exactly what I've been looking for."
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline hover:text-emerald-700"
@@ -429,7 +431,9 @@ const BusinessCard = ({ business }) => {
 
           {business.wp_number && (
             <a
-              href={`https://wa.me/+91${business.wp_number}`}
+            href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+              "Found you on majhinavimumbai.com and your services are exactly what I've been looking for."
+            )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors"

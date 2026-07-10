@@ -213,14 +213,16 @@ export default function Page() {
 
                     {business.wp_number && (
                       <a
-                        href={`https://wa.me/+91${business.wp_number}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs shadow flex items-center gap-2"
-                      >
-                        <TbBrandWhatsapp className="text-lg" />
-                        {business.wp_number}
-                      </a>
+                      href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+                        "Found you on majhinavimumbai.com and your services are exactly what I've been looking for."
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs shadow flex items-center gap-2"
+                    >
+                      <TbBrandWhatsapp className="text-lg" />
+                      {business.wp_number}
+                    </a>
                     )}
                   </div>
                 </div>

@@ -387,7 +387,9 @@ export default function SearchPage() {
                           <p className="flex items-center gap-1">
                             <FaWhatsapp className="text-green-500 text-xs flex-shrink-0" />
                             <a
-                              href={`https://wa.me/91${business.wp_number}`}
+                              href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+                                "Found you on majhinavimumbai.com and your services are exactly what I've been looking for."
+                              )}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-green-600 text-xs"
@@ -433,7 +435,9 @@ export default function SearchPage() {
 
                       {business.wp_number && (
                         <a
-                          href={`https://wa.me/+91${business.wp_number}`}
+                        href={`https://wa.me/91${business.wp_number}?text=${encodeURIComponent(
+                          "Found you on majhinavimumbai.com and your services are exactly what I've been looking for."
+                        )}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-90 active:scale-95"
@@ -443,7 +447,7 @@ export default function SearchPage() {
                           WhatsApp
                         </a>
                       )}
-
+ 
                       <button
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors hover:bg-gray-50 active:scale-95"
                         style={{ border: "0.5px solid #E8E8E8", color: "#6B7280", background: "transparent" }}
