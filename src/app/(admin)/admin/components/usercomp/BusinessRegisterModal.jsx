@@ -32,6 +32,9 @@ export default function BusinessRegisterModal({ isOpen, onClose, business }) {
 const canEdit = effectiveRole ? ["admin", "sub-admin"].includes(effectiveRole.toLowerCase()|| "") : false;  
 
 
+const canVerify =  role === "admin" || user?.phone === "9326402965";
+
+
 // const [canEdit, setCanEdit] = useState(false);
 
 // useEffect(() => {
@@ -494,7 +497,7 @@ const formatCoord = (coord) => {
             )}
           </div> */}
           
-          {role === "admin" && (
+          {canVerify && (
            <>
           <div className="w-full">
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -514,7 +517,7 @@ const formatCoord = (coord) => {
                   }
                   className="block w-full appearance-none border border-gray-300 bg-white py-2 px-3 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 >
-                  <option value="false">Unverified</option>
+                  <option value="false">Unverified</option> 
                   <option value="true">Verified</option>
                 </select>
 
