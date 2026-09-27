@@ -274,11 +274,12 @@
 
 import React, { useEffect, useState } from "react";
 import { apiGet, apiPut } from "@/lib/apiClient";
-import { FaRegEye } from "react-icons/fa";
+import { FaRegEye, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import BusinessRegisterModal from "../../components/usercomp/BusinessRegisterModal";
 import Pagination from "../../components/usercomp/Pagination";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { Power } from "lucide-react";
 
 export default function BusinessUsersPage() {
   const [businessUsers, setBusinessUsers] = useState([]);
@@ -375,24 +376,36 @@ export default function BusinessUsersPage() {
     setCurrentPage(page);
   };
 
-  const handleVerified = async (id) => {
-    if (!canEdit) return toast.info("You are not authorized to verify businesses.");
+  const handleVerificationToggle = async (business) => {
     try {
-      const response = await apiPut(`/businesses/${id}`, { isVerified: true });
-      if (response && response.success) {
-        setBusinessUsers((prev) => prev.filter((biz) => biz.id !== id));
-        toast.success("Business verified successfully");
+      const newStatus = !business.is_verified;
+  
+      const payload = {
+        ...business,
+        is_verified: newStatus,
+      };
+  
+      const response = await apiPut(
+        `/businesses/${business.id}`,
+        payload
+      );
+  
+      if (response) {
+        toast.success(
+          newStatus
+            ? "Business verified successfully"
+            : "Business unverified successfully"
+        );
+  
         await fetchBusinessUsers(currentPage, searchTerm);
-        closeModal();
-      } else {
-        toast.error("Failed to verify business");
       }
     } catch (error) {
-      console.error("Error verifying business:", error);
-      toast.error("Failed to verify the business");
+      console.error("Verification update error:", error);
+      toast.error(
+        error?.response?.data?.error || "Failed to update verification status"
+      );
     }
   };
-
   return (
     <div className="p-4 sm:p-5">
       {/* Header Row */}
@@ -406,7 +419,7 @@ export default function BusinessUsersPage() {
       Total Users : <span className="text-blue-700 font-bold text-lg">{totalBusinesses.toLocaleString()}</span> 
     </p>
   
-  </div>
+  </div> 
 
         {/* Search Box */}
         <div className="relative flex items-center gap-1.5 border border-gray-200 bg-white rounded-lg shadow-sm px-2 py-1.5 w-full sm:w-auto sm:min-w-[320px]">
@@ -499,23 +512,47 @@ export default function BusinessUsersPage() {
                 <tr
                   key={index}
                   className="hover:bg-blue-50/40 transition-colors duration-150"
-                >
-                  <td className="px-2 py-1 text-gray-400 font-mono">
-                    {(currentPage - 1) * limit + index + 1}
-                  </td>
+                > 
+                <td className="px-2 py-1 text-gray-400 font-mono">
+  {(currentPage - 1) * limit + index + 1}
+</td>
+ 
                   <td className="px-2 py-1 font-medium text-gray-800">{user?.name ?? "—"}</td>
                   <td className="px-2 py-1 text-gray-500">{user?.phone ?? "—"}</td>
                   <td className="px-2 py-1 text-gray-500 max-w-[200px] truncate">{user?.email ?? "—"}</td>
                   <td className="px-2 py-1 text-center">
-                    <button
-                      onClick={() => openModal(user)}
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[11px] font-medium transition-colors"
-                      title="View Business"
-                    >
-                      <FaRegEye className="w-2.5 h-2.5" />
-                      View
-                    </button>
-                  </td>
+  <div className="flex items-center justify-center gap-1.5">
+
+    {/* Verification Toggle */}
+
+    <button
+  onClick={() => handleVerificationToggle(user)}
+  className={`inline-flex items-center justify-center w-7 h-7 rounded-md transition-colors ${
+    user?.is_verified
+      ? "bg-green-100 text-green-600 hover:bg-green-200"
+      : "bg-red-100 text-red-500 hover:bg-red-200"
+  }`}
+  title={user?.is_verified ? "Unverify Business" : "Verify Business"}
+>
+  {user?.is_verified ? (
+    <Power className="w-4 h-4" />
+  ) : (
+    <Power className="w-4 h-4" />
+  )}
+</button>
+
+    {/* View */}
+    <button
+      onClick={() => openModal(user)}
+      className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[11px] font-medium transition-colors"
+      title="View Business"
+    >
+      <FaRegEye className="w-2.5 h-2.5" />
+      View
+    </button>
+
+  </div>
+</td>
                 </tr>
               ))
             )}
@@ -591,7 +628,7 @@ export default function BusinessUsersPage() {
         isOpen={modalOpen}
         onClose={closeModal}
         business={selectedBusiness}
-        onVerified={handleVerified}
+        onVerified={handleVerificationToggle}
         isAdmin={canEdit}
       />
     </div>
