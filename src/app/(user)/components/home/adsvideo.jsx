@@ -4,8 +4,9 @@ import React, { useState, useEffect } from "react";
 const Adsvideo = () => {
   // Mobile slides
   const slidesMobile = [
-    { type: "image", src: "/assests/app-soon1.jpg" },
-    { type: "image", src: "/assests/app-soon1.jpg" },
+    // { type: "image", src: "/assests/app-soon1.jpg" },
+    // { type: "image", src: "/assests/app-soon1.jpg" },
+    { type: "image", src: "/assests/Navratri.png" },
 
   
     // { type: "video", src: "/assests/adsvideo.mp4" },
@@ -13,8 +14,11 @@ const Adsvideo = () => {
 
   // Desktop slides
   const slidesDesktop = [
-    { type: "image", src: "/assests/app-soon1.jpg" },
-    { type: "image", src: "/assests/advimg1.jpeg" },
+    // { type: "image", src: "/assests/app-soon1.jpg" },
+    // { type: "image", src: "/assests/advimg1.jpeg" },
+    { type: "image", src: "/assests/Navratri.png" },
+
+
     // { type: "video", src: "/assests/adsvideo.mp4" },
 
 
