@@ -6,7 +6,7 @@ const Adsvideo = () => {
   const slidesMobile = [
     // { type: "image", src: "/assests/app-soon1.jpg" },
     // { type: "image", src: "/assests/app-soon1.jpg" },
-    { type: "image", src: "/assests/Navratri.png" },
+    { type: "image", src: "/assests/Navratrimobile.png" },
 
   
     // { type: "video", src: "/assests/adsvideo.mp4" },
