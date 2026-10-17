@@ -286,7 +286,7 @@ export default function Footer() {
             <SiX/>
           </a>
           <a
-            href="https://www.youtube.com/channel/UCm2O2wSoLrcLNqeU6mpphhw"
+            href="https://www.youtube.com/@majhinavimumbai"
             target="_blank"
             rel="noopener noreferrer"
             className="text-red-600  hover:text-red-700 transition"
@@ -294,7 +294,7 @@ export default function Footer() {
             <FaYoutube />
           </a>
           <a
-            href="https://www.instagram.com/invites/contact/?igsh=rd4wqglt4ujv&utm_content=xlzw37g"
+            href="https://www.instagram.com/majhi_navimumbai?cplk=dzN0ZHYwbXJ3bjcy"
             target="_blank"
             rel="noopener noreferrer"
             className="text-pink-600 hover:text-pink-700 transition"

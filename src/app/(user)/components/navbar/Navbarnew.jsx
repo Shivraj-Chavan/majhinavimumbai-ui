@@ -16,6 +16,7 @@ import { VscFeedback } from "react-icons/vsc";
 import SearchBar from "../home/searchBar";
 import LocationDropdown from "../home/locationDropdown";
 import { toast } from "react-toastify";
+import AppDownloadButton from "../Appdownloadbutton";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -282,6 +283,7 @@ export default function Navbar() {
               <span>Live Views: {websiteCount}</span>
             </div>
 
+
             {/* Add Business */}
             <button
               onClick={handleBusinessClick}
@@ -315,6 +317,8 @@ export default function Navbar() {
                     className="rounded-full object-cover transition-transform duration-300 ease-out hover:-translate-y-1 hover:scale-100 active:translate-y-0"
                   />
                 </button>
+
+                
 
                 {/* Desktop dropdown */}
                 {openProfile && (
@@ -365,6 +369,7 @@ export default function Navbar() {
                 )}
               </div>
             )}
+             <AppDownloadButton compact />  
           </div>
         </div>
 
@@ -535,6 +540,7 @@ export default function Navbar() {
                     )}
                   </div>
                 )}
+                <AppDownloadButton />
               </div>
             </div>
           )}
