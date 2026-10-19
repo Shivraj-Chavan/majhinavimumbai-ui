@@ -17,28 +17,51 @@ export default function AppDownloadButton({ compact = false }) {
 
   return (
     <div className="relative group">
-      <button
-        type="button"
-        onClick={handleClick}
-        aria-label="Download our app"
-        className="relative flex items-center justify-center rounded-full animate-bounce hover:scale-110 transition-transform duration-300"
-        style={{ width: px, height: px }}
+ <button
+  type="button"
+  onClick={handleClick}
+  aria-label="Download MNM app"
+  className="group relative inline-flex shrink-0 items-center gap-1.5
+    overflow-hidden rounded-full border border-green-500/40
+    bg-gradient-to-r from-white via-green-50 to-emerald-100
+    px-2.5 py-1.5 text-green-800 shadow-md
+    animate-bounce
+    transition-all duration-300
+    hover:scale-105 hover:border-green-600
+    hover:shadow-lg hover:shadow-green-500/25
+    active:scale-95"
+>
+      {/* Animated shine */}
+      <span
+  className="pointer-events-none absolute inset-0
+    -translate-x-full bg-gradient-to-r
+    from-transparent via-white/80 to-transparent
+    animate-[shimmer_3s_ease-in-out_infinite]"
+/>
+
+      {/* Play Store icon */}
+      <svg
+        viewBox="0 0 21 21"
+        className="relative z-10 h-4 w-4 shrink-0
+          transition-transform duration-300 group-hover:scale-110"
+        aria-hidden="true"
       >
-        {/* Pulsing ring to catch the eye */}
-        <span className="absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-60 animate-ping" />
+        <path fill="#34A853" d="M3.5 2.5 13 12 3.5 21.5Q3 21 3 20V4Q3 3 3.5 2.5Z" />
+        <path fill="#4285F4" d="m13 12 3-3 4.5 2.6q1.5.9 0 1.8L16 16l-3-4Z" />
+        <path fill="#FBBC04" d="m3.5 2.5 12.5 6.5-3 3-9.5-9.5Z" />
+        <path fill="#EA4335" d="m3.5 21.5 12.5-5.5-3-4-9.5 9.5Z" />
+      </svg>
 
-        {/* App logo */}
-        <Image
-          src="/assests/MNMLOGO.png"
-          alt="Download MNM app"
-          width={px}
-          height={px}
-          className="relative rounded-full object-cover shadow-md ring-2 ring-white"
-        />
+      <span className="relative z-10 whitespace-nowrap text-[10px] font-bold tracking-wide">
+        Download App
+      </span>
 
-        {/* Notification dot */}
-        <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
-      </button>
+      {/* Small animated indicator */}
+      <span className="relative z-10 h-1.5 w-1.5 rounded-full
+        bg-emerald-400 shadow-[0_0_6px_#34d399]
+        animate-pulse"
+      />
+    </button>
 
       {/* Tooltip (desktop hover) */}
       {!compact && (

@@ -6,7 +6,10 @@ const Adsvideo = () => {
   const slidesMobile = [
     // { type: "image", src: "/assests/app-soon1.jpg" },
     // { type: "image", src: "/assests/app-soon1.jpg" },
+
     { type: "image", src: "/assests/Navratrimobile.png" },
+    // { type: "image", src: "/assests/DUSSEHRA.png" },
+
 
   
     // { type: "video", src: "/assests/adsvideo.mp4" },
@@ -16,7 +19,11 @@ const Adsvideo = () => {
   const slidesDesktop = [
     // { type: "image", src: "/assests/app-soon1.jpg" },
     // { type: "image", src: "/assests/advimg1.jpeg" },
-    { type: "image", src: "/assests/Navratri.png" },
+
+    // { type: "image", src: "/assests/Navratri.png" },
+    
+    { type: "image", src: "/assests/DUSSEHRA.png" },
+
 
 
     // { type: "video", src: "/assests/adsvideo.mp4" },
