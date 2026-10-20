@@ -7,8 +7,8 @@ const Adsvideo = () => {
     // { type: "image", src: "/assests/app-soon1.jpg" },
     // { type: "image", src: "/assests/app-soon1.jpg" },
 
-    { type: "image", src: "/assests/Navratrimobile.png" },
-    // { type: "image", src: "/assests/DUSSEHRA.png" },
+    // { type: "image", src: "/assests/Navratrimobile.png" },
+    { type: "image", src: "/assests/Dussehramobile.png" },
 
 
   
