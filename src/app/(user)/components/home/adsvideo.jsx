@@ -6,12 +6,10 @@ const Adsvideo = () => {
   const slidesMobile = [
     // { type: "image", src: "/assests/app-soon1.jpg" },
     // { type: "image", src: "/assests/app-soon1.jpg" },
-
-    // { type: "image", src: "/assests/Navratrimobile.png" },
-    { type: "image", src: "/assests/Dussehramobile.png" },
+    { type: "image", src: "/assests/DiwaliMobileBanner.png" },
 
 
-  
+
     // { type: "video", src: "/assests/adsvideo.mp4" },
   ];
 
@@ -20,13 +18,11 @@ const Adsvideo = () => {
     // { type: "image", src: "/assests/app-soon1.jpg" },
     // { type: "image", src: "/assests/advimg1.jpeg" },
 
-    // { type: "image", src: "/assests/Navratri.png" },
-    
-    { type: "image", src: "/assests/DUSSEHRA.png" },
-
+    { type: "image", src: "/assests/DiwaliBanner.png" },
 
 
     // { type: "video", src: "/assests/adsvideo.mp4" },
+
 
 
   ];
@@ -64,7 +60,8 @@ const Adsvideo = () => {
               <img src={slide.src} alt="slide" className="w-full h-full object-contain" />
             ) : (
               <video src={slide.src} className="w-full h-full object-contain p-1" autoPlay muted loop />
-            )}
+            )
+            }
           </div>
         ))}
       </div>
