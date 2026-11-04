@@ -92,6 +92,13 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
       setFormData({
         name: business.name || "",
         description: business.description || "",
+        address: business.address || "",
+        area: business.area || "",
+        sector: business.sector || "",
+        landmark: business.landmark || "",
+        pin_code: business.pin_code || "",
+        latitude: business.latitude || null,
+        longitude: business.longitude || null,
         website: business.website || "",
         phone: business.phone || "",
         wp_number: business.wp_number || "",
@@ -131,8 +138,8 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
 
   // Plan-based image limit function
 
-
   const handleChange = (e) => {
+    
     const { name, value, files, type } = e.target;
   // console.log("handleChange triggered:", { name, value, files, type });
 
@@ -249,6 +256,13 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
         owner_id: business.owner_id,
         name: formData.name,
         description: formData.description,
+        area: formData.area,
+        landmark: formData.landmark,
+        sector: formData.sector,
+        address: formData.address,
+        pin_code: formData.pin_code,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         timing: JSON.stringify(formData.timing),
         website: formData.website,
         phone: formData.phone,
@@ -256,10 +270,6 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
         area: formData.area,
         category_id: business.category_id,
         subcategory_id: business.subcategory_id,
-        landmark: business.landmark,
-        sector: business.sector,
-        address: business.address,
-        pin_code: business.pin_code,
         slug: business.slug,
         latitude: formData.latitude,
         longitude: formData.longitude,
@@ -405,6 +415,51 @@ export default function EditBusinessPopup({ business, plan, onClose }) {
             )}
           </div> */}
         </div>
+
+        {/* Business Address Section */}
+<div className="border border-gray-200 rounded-xl p-4 space-y-4">
+  <h3 className="text-lg font-semibold text-gray-800">
+    Business Address
+  </h3>
+
+  <Input
+    label="Full Address"
+    name="address"
+    value={formData.address}
+    onChange={handleChange}
+    required
+  />
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Input
+      label="Area"
+      name="area"
+      value={formData.area}
+      onChange={handleChange}
+    />
+
+    <Input
+      label="Sector"
+      name="sector"
+      value={formData.sector}
+      onChange={handleChange}
+    />
+
+    <Input
+      label="Landmark"
+      name="landmark"
+      value={formData.landmark}
+      onChange={handleChange}
+    />
+
+    <Input
+      label="Pin Code"
+      name="pin_code"
+      value={formData.pin_code}
+      onChange={handleChange}
+    />
+  </div>
+</div>
 
       {/* Timing Section (REPLACED input with custom logic) */}
         <div>

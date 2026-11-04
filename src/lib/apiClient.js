@@ -10,6 +10,22 @@ export const apiPost = async (url, body) => {
   return response.data;
 };
 
+export const apiPostWithImage = async (url, body) => {
+  return axios.post(url, body, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+};
+
+export const apiPutWithImage = async (url, body) => {
+  return axios.put(url, body, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+};
+
 export const apiPut = async (url, body) => {
   const response = await axios.put(url, body);
   return response.data;

@@ -85,6 +85,7 @@ import {
   LuMessageSquare, LuStar, LuCreditCard, LuShield,
 } from "react-icons/lu";
 import { BsDashCircle } from "react-icons/bs";
+import { LucideBadgePoundSterling } from "lucide-react";
 
 export default function SidebarMenu() {
   const pathname = usePathname();
@@ -123,6 +124,10 @@ export default function SidebarMenu() {
     { title: "Enquiry To Business",              href: "/admin/users/enquiryList",              icon: <LuMessageSquare size={17} /> },
     { title: "Payment & Plans",                  href: "/admin/users/paymentandplans",          icon: <LuCreditCard size={17} /> },
     { title: "Add Sub-Admin",                  href: "/admin/users/addSubadmin",          icon: <LuCreditCard size={17} /> },
+    { title: "Add Advertisement",                  href: "/admin/users/addAds",          icon: <LucideBadgePoundSterling size={17} /> },
+    { title: "Renewal Request",                  href: "/admin/users/renewal-requests",          icon: <LucideBadgePoundSterling size={17} /> },
+    { title: "AD Request",                  href: "/admin/users/ad-req",          icon: <LucideBadgePoundSterling size={17} /> },
+    
   ];
 
   const subAdminMenus = [
