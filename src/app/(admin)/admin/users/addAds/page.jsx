@@ -32,7 +32,7 @@ const API = {
   update: (id) => `/advertisements/${id}`,  // guess: PUT multipart
   remove: (id) => `/advertisements/${id}`,  // guess: DELETE
   paymentStatus: (id) => `/AdPayment/${id}/paymentStatus`, // confirmed from your controller
-  businesses: "/businesses?limit=1000",     // getBusinesses; check the Network tab for the real response shape          // guess: returns [{id, name}] (or { businesses: [...] })
+  businesses: "/businesses?limit=50",     // getBusinesses; check the Network tab for the real response shape          // guess: returns [{id, name}] (or { businesses: [...] })
   categories: "/categories",                // guess: returns [{id, name}]
 };
 
@@ -96,48 +96,119 @@ function BusinessSelect({ businesses, value, onChange }) {
 /* ── Redirect URL input that lists businesses on focus and filters while typing ── */
 const SITE_URL = ""; // e.g. "https://mazhinavimumbai.com". Leave "" for a relative path.
 
-function RedirectBusinessInput({ businesses, businessId, value, onType, onPick }) {
+function RedirectBusinessInput({
+  businesses,
+  businessId,
+  value,
+  onType,
+  onPick,
+}) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const selected = businesses.find((b) => String(b.id) === String(businessId));
-  const list = businesses
-    .filter((b) => (b.name || "").toLowerCase().includes(q.trim().toLowerCase()))
-    .slice(0, 50);
+  const [results, setResults] = useState(businesses || []);
+  const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    setResults(businesses || []);
+  }, [businesses]);
+
+  useEffect(() => {
+    if (!open || !q.trim()) {
+      setResults(businesses || []);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setSearching(true);
+
+        const res = await apiGet(
+          `/businesses?limit=50&name=${encodeURIComponent(q.trim())}`
+        );
+
+        setResults(asList(res));
+      } catch (error) {
+        console.error("Business search failed:", error);
+        setResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [q, open]);
+
+  const selected = businesses.find(
+    (b) => String(b.id) === String(businessId)
+  );
 
   return (
     <div className="relative">
       <input
         className={field}
-        placeholder="Click and type a business name, or paste a URL"
+        placeholder="Search business name or paste a URL"
         value={value}
-        onFocus={() => { setQ(""); setOpen(true); }}
-        onChange={(e) => { onType(e.target.value); setQ(e.target.value); setOpen(true); }}
-        onBlur={() => setOpen(false)}
+        onFocus={() => {
+          setQ("");
+          setResults(businesses);
+          setOpen(true);
+        }}
+        onChange={(e) => {
+          const v = e.target.value;
+          onType(v);
+          setQ(v);
+          setOpen(true);
+        }}
+        onBlur={() => {
+          setTimeout(() => setOpen(false), 150);
+        }}
       />
+
       {open && (
         <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
-          {list.length === 0 && <li className="px-3 py-2 text-xs text-gray-400">No business found</li>}
-          {list.map((b) => (
+
+          {searching && (
+            <li className="px-3 py-2 text-xs text-gray-400">
+              Searching...
+            </li>
+          )}
+
+          {!searching && results.length === 0 && (
+            <li className="px-3 py-2 text-xs text-gray-400">
+              No business found
+            </li>
+          )}
+
+          {!searching && results.map((b) => (
             <li key={b.id}>
               <button
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => { onPick(b); setOpen(false); setQ(""); }}
+                onClick={() => {
+                  onPick(b);
+                  setOpen(false);
+                  setQ("");
+                }}
                 className="w-full px-3 py-2 text-left text-sm hover:bg-blue-50"
               >
-                {b.name} <span className="text-xs text-gray-400">#{b.id}</span>
+                {b.name}
+                <span className="ml-1 text-xs text-gray-400">
+                  #{b.id}
+                </span>
               </button>
             </li>
           ))}
         </ul>
       )}
+
       {selected && (
-        <p className="mt-1 text-[11px] text-emerald-700">Linked business: {selected.name} (#{selected.id})</p>
+        <p className="mt-1 text-[11px] text-emerald-700">
+          Linked business: {selected.name} (#{selected.id})
+        </p>
       )}
     </div>
   );
 }
-
 /* ── Create / edit form ── */
 function AdForm({ ad, businesses, categories, onClose, onSaved }) {
   const editing = !!ad;
