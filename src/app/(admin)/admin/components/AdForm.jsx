@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { X, Loader2 } from "lucide-react";
-import { apiPostWithImage, apiPutWithImage } from "@/lib/apiClient";
+import { apiGet, apiPostWithImage, apiPutWithImage } from "@/lib/apiClient";
 import CONFIG from "@/constance";
 
 const API = { create: "/advertisements", update: (id) => `/advertisements/${id}` };
@@ -28,40 +28,119 @@ const readSize = (file) =>
     im.src = url;
   });
 
-function RedirectBusinessInput({ businesses, businessId, value, onType, onPick }) {
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState("");
-  const selected = businesses.find((b) => String(b.id) === String(businessId));
-  const list = businesses.filter((b) => (b.name || "").toLowerCase().includes(q.trim().toLowerCase())).slice(0, 50);
-  return (
-    <div className="relative">
-      <input
-        className={field}
-        placeholder="Click and type a business name, or paste a URL"
-        value={value}
-        onFocus={() => { setQ(""); setOpen(true); }}
-        onChange={(e) => { onType(e.target.value); setQ(e.target.value); setOpen(true); }}
-        onBlur={() => setOpen(false)}
-      />
-      {open && (
-        <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
-          {list.length === 0 && <li className="px-3 py-2 text-xs text-gray-400">No business found</li>}
-          {list.map((b) => (
-            <li key={b.id}>
-              <button type="button" onMouseDown={(e) => e.preventDefault()}
-                onClick={() => { onPick(b); setOpen(false); setQ(""); }}
-                className="w-full px-3 py-2 text-left text-sm hover:bg-orange-50">
-                {b.name} <span className="text-xs text-gray-400">#{b.id}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      {selected && <p className="mt-1 text-[11px] text-emerald-700">Linked business: {selected.name} (#{selected.id})</p>}
-    </div>
-  );
-}
-
+  function RedirectBusinessInput({
+    businesses,
+    businessId,
+    value,
+    onType,
+    onPick,
+  }) {
+    const [open, setOpen] = useState(false);
+    const [q, setQ] = useState("");
+    const [results, setResults] = useState(businesses || []);
+    const [searching, setSearching] = useState(false);
+  
+    useEffect(() => {
+      setResults(businesses || []);
+    }, [businesses]);
+  
+    useEffect(() => {
+      if (!open || !q.trim()) return;
+  
+      const timer = setTimeout(async () => {
+        try {
+          setSearching(true);
+  
+          const res = await apiGet(
+            `/businesses?limit=50&name=${encodeURIComponent(q.trim())}`
+          );
+  
+          const list = Array.isArray(res)
+            ? res
+            : res?.data || res?.businesses || res?.results || res?.rows || [];
+  
+          setResults(list);
+        } catch (error) {
+          console.error("Business search failed:", error);
+        } finally {
+          setSearching(false);
+        }
+      }, 400);
+  
+      return () => clearTimeout(timer);
+    }, [q, open]);
+  
+    const selected = businesses.find(
+      (b) => String(b.id) === String(businessId)
+    );
+  
+    return (
+      <div className="relative">
+        <input
+          className={field}
+          placeholder="Search business name or paste a URL"
+          value={value}
+          onFocus={() => {
+            setOpen(true);
+            setQ("");
+            setResults(businesses);
+          }}
+          onChange={(e) => {
+            const v = e.target.value;
+            onType(v);
+            setQ(v);
+            setOpen(true);
+          }}
+          onBlur={() => {
+            setTimeout(() => setOpen(false), 150);
+          }}
+        />
+  
+        {open && (
+          <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+  
+            {searching && (
+              <li className="px-3 py-2 text-xs text-gray-400">
+                Searching businesses...
+              </li>
+            )}
+  
+            {!searching && results.length === 0 && (
+              <li className="px-3 py-2 text-xs text-gray-400">
+                No business found
+              </li>
+            )}
+  
+            {!searching && results.map((b) => (
+              <li key={b.id}>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    onPick(b);
+                    setOpen(false);
+                    setQ("");
+                  }}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-orange-50"
+                >
+                  {b.name}
+                  <span className="ml-1 text-xs text-gray-400">
+                    #{b.id}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+  
+        {selected && (
+          <p className="mt-1 text-[11px] text-emerald-700">
+            Linked business: {selected.name} (#{selected.id})
+          </p>
+        )}
+      </div>
+    );
+  }
 
 function ImageField({ label, current, file, onPick }) {
   const preview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);

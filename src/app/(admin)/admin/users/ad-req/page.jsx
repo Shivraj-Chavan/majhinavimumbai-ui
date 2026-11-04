@@ -65,9 +65,18 @@ export default function AdRequests() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const list = (r) => (Array.isArray(r) ? r : r?.data || r?.businesses || r?.categories || r?.results || r?.rows || []);
-    apiGet("/businesses?limit=1000").then((r) => setBusinesses(list(r))).catch(() => {});
-    apiGet("/categories").then((r) => setCategories(list(r))).catch(() => {});
+    const list = (r) =>
+      Array.isArray(r)
+        ? r
+        : r?.data || r?.businesses || r?.categories || r?.results || r?.rows || [];
+  
+    apiGet("/businesses?limit=50")
+      .then((r) => setBusinesses(list(r)))
+      .catch(() => {});
+  
+    apiGet("/categories")
+      .then((r) => setCategories(list(r)))
+      .catch(() => {});
   }, []);
 
   const openCreate = (r) => {
