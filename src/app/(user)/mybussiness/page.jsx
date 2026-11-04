@@ -398,7 +398,7 @@ function AdRequestBox({ business, adRequest, onRequest }) {
         <button
           type="button"
           onClick={() => onRequest(business)}
-          className="self-start inline-flex items-center gap-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-3.5 py-2"
+          className="self-start inline-flex items-center gap-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3.5 py-2"
         >
           <FiSend /> {adRequest ? "Request again" : "Advertise"}
         </button>
@@ -448,7 +448,7 @@ function AdRequestModal({ target, form, setForm, sending, onSend, onClose }) {
 
         <div className="mt-4 flex gap-2">
           <button onClick={onClose} disabled={sending} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50">Cancel</button>
-          <button onClick={onSend} disabled={sending} className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-orange-500 py-2.5 text-sm font-bold text-white hover:bg-orange-600 disabled:opacity-60">
+          <button onClick={onSend} disabled={sending} className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-500 py-2.5 text-sm font-bold text-white hover:bg-blue-600 disabled:opacity-60">
             {sending ? <FiLoader className="animate-spin" /> : <FiSend />}
             {sending ? "Sending…" : "Send request"}
           </button>
