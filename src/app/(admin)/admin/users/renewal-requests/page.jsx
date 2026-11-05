@@ -27,10 +27,10 @@ const adImageUrl = (img) => {
 
   // Avoid adding /images twice
   if (imageName.startsWith("images/")) {
-    return `${CONFIG.API_IMAGE_BASE_URL}/${imageName}`;
+    return `${CONFIG.IMAGE_BASE_URL}/${imageName}`;
   }
 
-  return `${CONFIG.API_IMAGE_BASE_URL}/images/${imageName}`;
+  return `${CONFIG.IMAGE_BASE_URL}/images/${imageName}`;
 };
 
 const errMsg = (e, fallback) =>
