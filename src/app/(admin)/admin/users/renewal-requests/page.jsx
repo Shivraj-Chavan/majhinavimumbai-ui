@@ -25,12 +25,8 @@ const adImageUrl = (img) => {
   // Remove leading slashes
   const imageName = img.replace(/^\/+/, "");
 
-  // Avoid adding /images twice
-  if (imageName.startsWith("images/")) {
-    return `${CONFIG.IMAGE_BASE_URL}/${imageName}`;
-  }
-
-  return `${CONFIG.IMAGE_BASE_URL}/images/ads/${imageName}`;
+ 
+  return `${CONFIG.IMAGE_BASE_URL}/uploads/ads/${imageName}`;
 };
 
 const errMsg = (e, fallback) =>
