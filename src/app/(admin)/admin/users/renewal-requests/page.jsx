@@ -30,7 +30,7 @@ const adImageUrl = (img) => {
     return `${CONFIG.IMAGE_BASE_URL}/${imageName}`;
   }
 
-  return `${CONFIG.IMAGE_BASE_URL}/images/${imageName}`;
+  return `${CONFIG.IMAGE_BASE_URL}/images/ads/${imageName}`;
 };
 
 const errMsg = (e, fallback) =>
