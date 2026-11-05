@@ -37,8 +37,8 @@ const API = {
 };
 
 const SIZES = {
-  homepage: { desktop: [1024, 113], mobile: [1800, 600] },
-  category: { desktop: [1024, 113], mobile: [1800, 600] },
+  homepage: { desktop: [1024, 113], mobile: [800, 400] },
+  category: { desktop: [1024, 113], mobile: [800, 400] },
 };
 
 const imgUrl = (n) =>

@@ -10,8 +10,8 @@ const API = { create: "/advertisements", update: (id) => `/advertisements/${id}`
 const SITE_URL = "";
 
 export const SIZES = {
-  homepage: { desktop: [1024, 113], mobile: [1800, 600] },
-  category: { desktop: [1024, 113], mobile: [1800, 600] },
+  homepage: { desktop: [1024, 113], mobile: [800, 400] },
+  category: { desktop: [1024, 113], mobile: [800, 400] },
 };
 
 const imgUrl = (n) => `${CONFIG.API_IMAGE_BASE_URL}/images/${n}`;
