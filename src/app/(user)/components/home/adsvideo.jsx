@@ -156,11 +156,12 @@ import { apiGet } from "@/lib/apiClient";
 import CONFIG from "@/constance";
 
 const DEFAULT_MOBILE = [
-  { type: "image", src: "/assests/DiwaliMobileBanner.png" },
+  { type: "image", src: "/assests/add1.jpeg" },
 ];
 
 const DEFAULT_DESKTOP = [
-  { type: "image", src: "/assests/DiwaliBanner.png" },
+  { type: "image", src: "/assests/advimg1.jpeg" },
+
 ];
 
 const todayYmd = () => new Date().toLocaleDateString("en-CA");
