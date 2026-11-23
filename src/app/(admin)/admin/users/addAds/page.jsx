@@ -435,28 +435,44 @@ export default function Advertisements() {
     apiGet(API.categories).then((r) => setCategories(asList(r))).catch(() => {});
   }, [load]);
 
+
   const openInvoiceHistory = async (ad) => {
     setInvoiceModal(ad);
     setInvoices([]);
     setInvoiceLoading(true);
   
     try {
+      const businessId = ad.business_id;
+  
       const response = await apiGet(
-        `/advertisement-invoices/business/${ad.business_id}`
+        `/advertisement-invoices/business/${businessId}`
       );
   
-      setInvoices(
-        Array.isArray(response)
-          ? response
-          : response?.data || []
+      const invoiceData = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.invoices)
+            ? response.invoices
+            : [];
+  
+      // Show invoices belonging ONLY to this business
+      const filteredInvoices = invoiceData.filter(
+        (invoice) =>
+          String(invoice.business_id) === String(businessId)
       );
+  
+      setInvoices(filteredInvoices);
+  
     } catch (error) {
       console.error("Failed to load invoice history:", error);
       toast.error("Unable to load invoice history");
+      setInvoices([]);
     } finally {
       setInvoiceLoading(false);
     }
   };
+  
 
 
   
