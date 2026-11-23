@@ -160,7 +160,7 @@ const DEFAULT_MOBILE = [
 ];
 
 const DEFAULT_DESKTOP = [
-  { type: "image", src: "/assests/advimg1.jpeg" },
+  { type: "image", src: "/assests/MNMBANNER.jpg" },
 
 ];
 
