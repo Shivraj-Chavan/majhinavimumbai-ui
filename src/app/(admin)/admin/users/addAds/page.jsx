@@ -436,42 +436,48 @@ export default function Advertisements() {
   }, [load]);
 
 
-  const openInvoiceHistory = async (ad) => {
-    setInvoiceModal(ad);
+ 
+const openInvoiceHistory = async (ad) => {
+  setInvoiceModal(ad);
+  setInvoices([]);
+  setInvoiceLoading(true);
+
+  try {
+    const businessId = String(ad.business_id);
+
+    console.log("Selected Business ID:", businessId);
+
+    const response = await apiGet(
+      `/advertisement-invoices/business/${businessId}`
+    );
+
+    const invoiceData = Array.isArray(response?.data?.data)
+      ? response.data.data
+      : Array.isArray(response?.data)
+        ? response.data
+        : Array.isArray(response)
+          ? response
+          : [];
+
+    // Strict business-wise filtering
+    const businessInvoices = invoiceData.filter(
+      (invoice) =>
+        String(invoice.business_id) === businessId
+    );
+
+    console.log("Filtered invoices:", businessInvoices);
+
+    setInvoices(businessInvoices);
+
+  } catch (error) {
+    console.error("Invoice history error:", error);
+    toast.error("Unable to load invoice history");
     setInvoices([]);
-    setInvoiceLoading(true);
-  
-    try {
-      const businessId = ad.business_id;
-  
-      const response = await apiGet(
-        `/advertisement-invoices/business/${businessId}`
-      );
-  
-      const invoiceData = Array.isArray(response)
-        ? response
-        : Array.isArray(response?.data)
-          ? response.data
-          : Array.isArray(response?.invoices)
-            ? response.invoices
-            : [];
-  
-      // Show invoices belonging ONLY to this business
-      const filteredInvoices = invoiceData.filter(
-        (invoice) =>
-          String(invoice.business_id) === String(businessId)
-      );
-  
-      setInvoices(filteredInvoices);
-  
-    } catch (error) {
-      console.error("Failed to load invoice history:", error);
-      toast.error("Unable to load invoice history");
-      setInvoices([]);
-    } finally {
-      setInvoiceLoading(false);
-    }
-  };
+  } finally {
+    setInvoiceLoading(false);
+  }
+};
+
   
 
 
