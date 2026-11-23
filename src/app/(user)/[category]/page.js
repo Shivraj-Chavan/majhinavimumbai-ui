@@ -36,6 +36,7 @@ const BusinessSkeleton = () => (
 function BannerCarousel({ slides, fallbackSrc, className = "" }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
+
   useEffect(() => {
     setActiveIndex(0);
   }, [slides.length]);
@@ -105,6 +106,7 @@ function BannerCarousel({ slides, fallbackSrc, className = "" }) {
 export default function Page() {
   const { category } = useParams();
   const dispatch = useDispatch();
+  const router = useRouter();
   
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -458,7 +460,7 @@ export default function Page() {
               </div>
           
               {/* Timings */}
-              {business.timings?.length > 0 && (
+              {/* {business.timings?.length > 0 && (
                 <div className="mt-3 border-t pt-2 text-xs text-gray-600">
                   <div className="font-semibold mb-1 text-gray-700">
                     Timings:
@@ -472,7 +474,25 @@ export default function Page() {
                     ))}
                   </ul>
                 </div>
-              )}
+              )} */}
+
+
+{/* Timings */}
+{Array.isArray(business.timings) && business.timings.length > 0 && (
+  <div className="mt-3 border-t pt-2 text-xs text-gray-600">
+    <div className="font-semibold mb-1 text-gray-700">
+      Timings:
+    </div>
+
+    <ul className="space-y-1">
+      {business.timings.map((timing, idx) => (
+        <li key={idx}>
+          {timing.day}: {timing.open} - {timing.close}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
           
               {/* Website */}
               <div className="mt-2 border-b pb-5 border-gray-300">
