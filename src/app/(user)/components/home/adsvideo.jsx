@@ -156,7 +156,7 @@ import { apiGet } from "@/lib/apiClient";
 import CONFIG from "@/constance";
 
 const DEFAULT_MOBILE = [
-  { type: "image", src: "/assests/add1.jpeg" },
+  { type: "image", src: "/assests/MNMBANNERmobile.png" },
 ];
 
 const DEFAULT_DESKTOP = [
